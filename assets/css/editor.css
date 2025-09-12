@@ -1,0 +1,37 @@
+/* Estilos para el editor de bloques */
+.wp-block {
+    max-width: 800px;
+}
+
+.wp-block[data-align="wide"] {
+    max-width: 1100px;
+}
+
+.wp-block[data-align="full"] {
+    max-width: none;
+}
+
+/* Estilos para la paleta de colores del tema */
+.has-primary-color {
+    color: rgb(var(--color-primary));
+}
+
+.has-secondary-color {
+    color: rgb(var(--color-secondary));
+}
+
+.has-accent-color {
+    color: rgb(var(--color-accent));
+}
+
+.has-primary-background-color {
+    background-color: rgb(var(--color-primary));
+}
+
+.has-secondary-background-color {
+    background-color: rgb(var(--color-secondary));
+}
+
+.has-accent-background-color {
+    background-color: rgb(var(--color-accent));
+}

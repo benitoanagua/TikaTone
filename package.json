@@ -1,0 +1,30 @@
+{
+  "name": "tika-tone",
+  "version": "1.0.0",
+  "description": "Un tema moderno y minimalista con estilo único.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "svelte-check --tsconfig ./tsconfig.json",
+    "theme:screenshot": "node scripts/generate-screenshot.js"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^3.0.0",
+    "@types/node": "^20.10.0",
+    "@wordpress/blocks": "^12.5.0",
+    "@wordpress/components": "^25.10.0",
+    "@wordpress/element": "^5.20.0",
+    "@wordpress/i18n": "^4.43.0",
+    "svelte": "^4.2.8",
+    "svelte-check": "^3.6.2",
+    "tailwindcss": "^4.0.0-alpha.25",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.10"
+  },
+  "dependencies": {
+    "alpinejs": "^3.13.3"
+  }
+}

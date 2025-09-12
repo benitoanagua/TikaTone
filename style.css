@@ -1,0 +1,20 @@
+/*
+Theme Name: Tika Tone
+Description: Un tema moderno y minimalista con estilo único.
+Author: Benito Anagua
+Author URI: https://benitoanagua.me/
+Version: 1.0.0
+License: GPL v2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: tika-tone
+Domain Path: /languages
+Requires at least: 6.0
+Tested up to: 6.4
+Requires PHP: 8.0
+Tags: block-patterns, block-styles, custom-colors, custom-logo, custom-menu, editor-style, featured-images, full-site-editing, rtl-language-support, threaded-comments, translation-ready, wide-blocks
+*/
+
+/*
+Este archivo es requerido por WordPress.
+Los estilos reales se encuentran en /public/css/
+*/

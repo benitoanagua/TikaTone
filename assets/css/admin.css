@@ -1,0 +1,22 @@
+/* Estilos para el área de administración */
+.wp-admin .tika-tone-admin-panel {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+.wp-admin .tika-tone-admin-panel h2 {
+    color: #3B82F6;
+    margin-bottom: 15px;
+}
+
+.wp-admin .tika-tone-admin-panel .button-primary {
+    background: #3B82F6;
+    border-color: #3B82F6;
+}
+
+.wp-admin .tika-tone-admin-panel .button-primary:hover {
+    background: #2563EB;
+    border-color: #2563EB;
+}
