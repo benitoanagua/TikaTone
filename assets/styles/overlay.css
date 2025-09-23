@@ -1,0 +1,117 @@
+/* Overlay Component */
+.wc-overlay {
+  @apply w-full flex overflow-hidden bg-cover bg-center relative;
+  isolation: isolate;
+}
+
+/* Alignment */
+.wc-overlay--align-start {
+  @apply justify-start;
+}
+.wc-overlay--align-center {
+  @apply justify-center;
+}
+.wc-overlay--align-end {
+  @apply justify-end;
+}
+
+/* Position */
+.wc-overlay--position-top {
+  @apply items-start;
+}
+.wc-overlay--position-center {
+  @apply items-center;
+}
+.wc-overlay--position-bottom {
+  @apply items-end;
+}
+
+/* Aspect Ratios */
+.wc-overlay--aspect-square {
+  @apply aspect-square;
+}
+.wc-overlay--aspect-video {
+  @apply aspect-video;
+}
+.wc-overlay--aspect-monitor {
+  @apply aspect-4/3;
+}
+
+/* Fill Effects */
+.wc-overlay--fill-full::before {
+  content: "";
+  @apply absolute inset-0 bg-black/60 z-1;
+}
+
+/* Fill Effects con utilidades puras de Tailwind */
+.wc-overlay--fill-full::before {
+  content: "";
+  @apply absolute inset-0 z-1 bg-scrim/60;
+}
+
+.wc-overlay--fill-gradient.wc-overlay--position-top::before {
+  content: "";
+  @apply absolute inset-0 z-1 bg-linear-to-b from-scrim from-10% to-transparent;
+}
+
+.wc-overlay--fill-gradient.wc-overlay--position-bottom::before {
+  content: "";
+  @apply absolute inset-0 z-1 bg-linear-to-t from-scrim from-10% to-transparent;
+}
+
+.wc-overlay--fill-gradient.wc-overlay--position-center::before {
+  content: "";
+  @apply absolute inset-0 z-1 bg-linear-to-t from-transparent via-scrim/60 to-transparent;
+}
+
+/* Content Container */
+.wc-overlay__content {
+  @apply max-w-[42rem] p-6 flex flex-col gap-3 text-left z-2 rounded-lg relative 
+         md:p-4 md:m-2;
+}
+
+/* Box Styles */
+.wc-overlay--box-background .wc-overlay__content {
+  @apply bg-white/10 backdrop-blur-md;
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.wc-overlay--box-border .wc-overlay__content {
+  @apply border border-white/20 bg-transparent;
+}
+
+.wc-overlay--box-transparent .wc-overlay__content {
+  @apply bg-transparent;
+}
+
+/* Category/Tag */
+.wc-overlay__category {
+  @apply text-onPrimaryContainer bg-primaryContainer w-fit text-xs font-medium 
+         uppercase tracking-wide py-1 px-3 rounded-full;
+}
+
+/* Title Link */
+.wc-overlay__title-link > * {
+  @apply text-white no-underline transition-opacity duration-200 hover:opacity-90;
+}
+
+/* Meta Container */
+.wc-overlay__meta {
+  @apply flex flex-wrap items-center gap-3 text-sm;
+}
+
+/* Meta Items */
+.wc-overlay__meta-item {
+  @apply text-white/90 flex items-center font-medium;
+}
+
+.wc-overlay__meta-item:not(:last-child)::after {
+  @apply content-['•'] text-white/60 ml-2 mr-1;
+}
+
+/* Responsive aspect ratios for mobile */
+.wc-overlay--aspect-square,
+.wc-overlay--aspect-video,
+.wc-overlay--aspect-monitor {
+  @apply md:aspect-3/4;
+}

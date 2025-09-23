@@ -1,0 +1,57 @@
+/* Typography scale with responsive utilities */
+.section {
+  @apply container mx-auto py-4;
+}
+.headline-1 {
+  @apply text-2xl md:text-3xl lg:text-4xl font-medium tracking-tight;
+}
+
+.headline-2 {
+  @apply text-xl md:text-2xl lg:text-3xl font-medium tracking-tight;
+}
+
+.headline-3 {
+  @apply text-lg md:text-xl lg:text-2xl font-medium tracking-normal;
+}
+
+.headline-4 {
+  @apply text-base md:text-lg lg:text-xl font-medium tracking-wide;
+}
+
+.headline-5 {
+  @apply text-sm md:text-base lg:text-lg font-medium tracking-wide;
+}
+
+.headline-6 {
+  @apply text-xs md:text-sm lg:text-base font-medium tracking-wide;
+}
+
+/* This keeps small embeds centered */
+.kg-width-wide {
+  --at-apply: w-fit;
+}
+
+.kg-width-full {
+  --at-apply: w-screen;
+}
+
+.kg-embed-card {
+  --at-apply: flex flex-col items-center w-full;
+}
+
+.kg-embed-card iframe {
+  --at-apply: max-w-680px;
+}
+
+/* Highly specific styles for traditional Instagram embeds */
+iframe {
+  margin-top: 3vmin !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  margin-bottom: 3vmin !important;
+}
+
+/* Youtube iframe */
+iframe[src*="youtube.com"] {
+  --at-apply: aspect-video w-full h-auto;
+}

@@ -1,0 +1,47 @@
+/* Navbar Component Styles */
+.wc-navbar {
+  @apply w-full transition-all duration-300 ease-in-out;
+}
+
+.wc-navbar--sticky {
+  @apply fixed top-0 left-0 w-full z-50 bg-surface/95 backdrop-blur-md 
+         border-b border-outline/20;
+}
+
+.wc-navbar__container {
+  @apply flex items-center justify-between w-full;
+}
+
+/* Logo positioning */
+.wc-navbar__logo {
+  @apply flex items-center order-2 md:order-1; /* Center on mobile, left on desktop */
+}
+
+/* Navigation positioning */
+.wc-navbar__navigation {
+  @apply flex items-center order-1 md:order-2; /* Left on mobile, center on desktop */
+
+  /* Para centrar realmente en desktop */
+  @apply md:flex-1 md:justify-center;
+}
+
+/* Actions positioning */
+.wc-navbar__actions {
+  @apply flex items-center order-3; /* Right on both mobile and desktop */
+}
+
+/* Animation for sticky appearance */
+.wc-navbar--sticky {
+  animation: wc-navbar-slide-down 0.3s ease-in-out;
+}
+
+@keyframes wc-navbar-slide-down {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

@@ -1,0 +1,4 @@
+/* Grille component */
+.wc-grille__container {
+  @apply flex flex-wrap w-full;
+}

@@ -1,24 +1,33 @@
 {
-  "extends": "@tsconfig/svelte/tsconfig.json",
   "compilerOptions": {
-    "target": "ESNext",
-    "useDefineForClassFields": true,
-    "module": "ESNext",
+    "noImplicitAny": true,
+    "target": "es2021",
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "useDefineForClassFields": false,
+    "module": "es2020",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "skipLibCheck": true,
+    "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
-    "baseUrl": ".",
+    "isolatedModules": true,
+    "noEmit": true,
+    "strict": true,
+    "noFallthroughCasesInSwitch": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
     "paths": {
-      "@/*": ["./assets/svelte/*"]
-    },
-    /**
-     * Typecheck JS in  and  files by default.
-     * Disable checkJs if you'd like to use dynamic types in JS.
-     * Note that setting allowJs false does not prevent the use
-     * of JS in  files.
-     */
-    "allowJs": true,
-    "checkJs": true,
-    "isolatedModules": true
+      "*.css": ["./assets/types/css.d.ts"]
+    }
   },
-  "include": ["assets/svelte/**/*.ts", "assets/svelte/**/*.js", "assets/svelte/**/*.svelte"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "include": [
+    "./assets/**/*",
+    "./assets/types/**/*.d.ts",
+    "./@types/*",
+    "./types/**/*.d.ts"
+  ],
+  "exclude": ["**/node_modules"]
 }

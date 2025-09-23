@@ -1,0 +1,30 @@
+/* Offcanvas Component Styles */
+.wc-offcanvas-toggle {
+  @apply cursor-pointer border-0 bg-transparent p-2 rounded-full 
+         hover:bg-surfaceContainerLow transition-colors;
+}
+
+.wc-offcanvas-toggle-icon {
+  @apply block h-6 w-6 icon-[garden--menu-stroke-16] text-onSurfaceVariant;
+}
+
+.wc-offcanvas-overlay {
+  @apply fixed top-0 left-0 w-full h-full bg-scrim/50 z-50;
+}
+
+.wc-offcanvas-panel {
+  @apply absolute top-0 left-0 h-full w-80 bg-surfaceContainerHighest p-6 z-1;
+}
+
+.wc-offcanvas-close {
+  @apply absolute right-4 top-4 cursor-pointer border-0 bg-transparent p-2 
+         rounded-full hover:bg-surfaceContainerLow transition-colors;
+}
+
+.wc-offcanvas-close-icon {
+  @apply block h-6 w-6 icon-[garden--x-stroke-16] text-onSurfaceVariant;
+}
+
+.wc-offcanvas-content {
+  @apply pt-12;
+}

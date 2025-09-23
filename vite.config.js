@@ -1,36 +1,34 @@
-import { defineConfig } from 'vite';
-import { svelte } from '@sveltejs/vite-plugin-svelte';
-import path from 'path';
+import { defineConfig } from "vite";
+import { resolve } from "node:path";
+import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
-  plugins: [svelte()],
+  base: "./",
+  plugins: [tailwindcss()],
+  css: {
+    devSourcemap: true,
+  },
   build: {
-    outDir: 'public',
+    target: "esnext",
+    minify: "esbuild",
+    emptyOutDir: true,
+    cssCodeSplit: false,
+    outDir: "public",
+    lib: {
+      entry: resolve(__dirname, "assets/main.ts"),
+      name: "TikaToneElements",
+      fileName: (format) => `tika-tone-elements.${format}.js`,
+      formats: ["es"],
+    },
     rollupOptions: {
-      input: {
-        main: path.resolve(__dirname, 'assets/js/main.js'),
-        admin: path.resolve(__dirname, 'assets/js/admin.js'),
-        editor: path.resolve(__dirname, 'assets/js/editor.js'),
-        customizer: path.resolve(__dirname, 'assets/js/customizer.js'),
-      },
       output: {
-        entryFileNames: 'js/[name].js',
-        chunkFileNames: 'js/[name].js',
-        assetFileNames: (assetInfo) => {
-          if (assetInfo.name.endsWith('.css')) {
-            return 'css/[name].css';
-          }
-          return 'assets/[name].[ext]';
-        },
+        assetFileNames: "tika-tone-elements.[ext]",
       },
     },
   },
-  server: {
-    host: 'localhost',
-    port: 3000,
-    strictPort: true,
-    hmr: {
-      port: 3001,
+  resolve: {
+    alias: {
+      "@": resolve(__dirname, "assets"),
     },
   },
 });

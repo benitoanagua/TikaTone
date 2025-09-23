@@ -1,0 +1,14 @@
+@import "tailwindcss";
+@plugin "@iconify/tailwind4";
+
+@import "./styles/material-theme.css";
+@import "./styles/global.css";
+@import "./styles/card.css";
+@import "./styles/grille.css";
+@import "./styles/navbar.css";
+@import "./styles/offcanvas.css";
+@import "./styles/overlay.css";
+
+@source '../../*.hbs';
+@source '../../partials/**/*.hbs';
+@source '../../src/**/*.{ts,css,js}';
