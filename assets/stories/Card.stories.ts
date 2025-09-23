@@ -11,11 +11,10 @@ import {
 } from "@ngneat/falso";
 import type {
   CardProps,
-  CardDensity,
+  CardHeading,
   CardMediaAlign,
   CardMediaWidth,
   CardAspectRatio,
-  CardElevation,
 } from "../types/card.js";
 
 const meta = {
@@ -25,12 +24,7 @@ const meta = {
   argTypes: {
     heading: {
       control: { type: "range", min: 1, max: 6, step: 1 },
-      description: "Heading level (1-6)",
-    },
-    density: {
-      control: { type: "radio" },
-      options: ["normal", "compact", "minimal"] as CardDensity[],
-      description: "Content density",
+      description: "Heading level (1-6) - affects padding size",
     },
     media_align: {
       control: { type: "select" },
@@ -46,59 +40,34 @@ const meta = {
         "is-one-quarter",
         "is-one-fifth",
       ] as CardMediaWidth[],
-      description: "Media width relative to content",
+      description: "Media width relative to content (desktop only)",
     },
     aspect_ratio: {
       control: { type: "radio" },
       options: ["monitor", "square", "video"] as CardAspectRatio[],
       description: "Image aspect ratio",
     },
-    elevation: {
-      control: { type: "range", min: 0, max: 3, step: 1 },
-      description: "Visual elevation level (0-3)",
+    auto_layout: {
+      control: { type: "boolean" },
+      description: "Auto switch to column layout on mobile",
       table: {
-        type: { summary: "number" },
+        type: { summary: "boolean" },
+        defaultValue: { summary: "false" },
       },
-    },
-    feature_image: {
-      control: { type: "text" },
-      description: "Main image URL",
-    },
-    author_profile_image: {
-      control: { type: "text" },
-      description: "Author avatar URL",
-    },
-    tag_name: {
-      control: { type: "text" },
-      description: "Tag/category name",
-    },
-    tag_url: {
-      control: { type: "text" },
-      description: "Tag/category URL",
-    },
-    author_name: {
-      control: { type: "text" },
-      description: "Author name",
-    },
-    author_url: {
-      control: { type: "text" },
-      description: "Author profile URL",
-    },
-    reading_time: {
-      control: { type: "text" },
-      description: "Estimated reading time",
-    },
-    published_at: {
-      control: { type: "text" },
-      description: "Publication date",
     },
   },
   render: (args: CardProps) => {
     const card = document.createElement("wc-card");
 
     Object.entries(args).forEach(([key, value]) => {
-      if (value !== undefined && value !== null) {
-        card.setAttribute(key.replace(/_/g, "-"), String(value));
+      if (value !== undefined && value !== null && value !== "") {
+        if (typeof value === "boolean") {
+          if (value === true) {
+            card.setAttribute(key.replace(/_/g, "-"), "");
+          }
+        } else {
+          card.setAttribute(key.replace(/_/g, "-"), String(value));
+        }
       }
     });
 
@@ -109,173 +78,140 @@ const meta = {
 export default meta;
 type Story = StoryObj<CardProps>;
 
-const cardData = {
+const generateCardData = (): Omit<
+  CardProps,
+  "heading" | "media_align" | "media_width" | "aspect_ratio" | "auto_layout"
+> => ({
   title: randCatchPhrase(),
   url: randUrl(),
   excerpt: randParagraph(),
-  feature_image: "https://picsum.photos/400/300",
+  feature_image: `https://picsum.photos/400/300?random=${randNumber({ min: 1, max: 1000 })}`,
   tag_name: randWord(),
   tag_url: randUrl(),
   author_name: randFullName(),
   author_url: randUrl(),
   author_profile_image: randAvatar(),
   reading_time: `${randNumber({ min: 5, max: 25 })} min read`,
-  published_at: `${randMonth({ abbreviation: true })} ${randNumber({
-    min: 1,
-    max: 30,
-  })}, ${randNumber({ min: 2020, max: 2024 })}`,
-};
+  published_at: `${randMonth({ abbreviation: true })} ${randNumber({ min: 1, max: 30 })}, ${randNumber({ min: 2020, max: 2024 })}`,
+});
 
 export const Default: Story = {
+  name: "Default (Fixed Layout)",
   args: {
-    ...cardData,
+    ...generateCardData(),
     heading: 4,
-    density: "compact",
     media_align: "left",
     media_width: "is-half",
     aspect_ratio: "monitor",
-    elevation: 2,
+    auto_layout: false,
   },
 };
 
-export const Minimal: Story = {
+export const AutoLayout: Story = {
+  name: "With Auto Layout",
   args: {
-    ...cardData,
-    heading: 6,
-    density: "minimal",
-    media_align: "top",
+    ...generateCardData(),
+    heading: 4,
+    media_align: "left",
     media_width: "is-half",
-    aspect_ratio: "square",
-    elevation: 0,
-    author_name: "",
-    tag_name: "",
+    aspect_ratio: "monitor",
+    auto_layout: true,
   },
 };
 
-export const Featured: Story = {
+export const FixedLayout: Story = {
+  name: "With Fixed Layout",
   args: {
-    ...cardData,
-    heading: 2,
-    density: "normal",
+    ...generateCardData(),
+    heading: 4,
+    media_align: "left",
+    media_width: "is-one-third",
+    aspect_ratio: "monitor",
+    auto_layout: false,
+  },
+};
+
+export const TopAligned: Story = {
+  name: "Top Aligned Media",
+  args: {
+    ...generateCardData(),
+    heading: 3,
     media_align: "top",
     media_width: "is-half",
     aspect_ratio: "video",
-    elevation: 3,
-    feature_image: "https://picsum.photos/600/400",
+    auto_layout: true,
   },
 };
 
 export const RightAligned: Story = {
+  name: "Right Aligned Media",
   args: {
-    ...cardData,
-    heading: 5,
-    density: "compact",
+    ...generateCardData(),
+    heading: 4,
     media_align: "right",
     media_width: "is-one-third",
     aspect_ratio: "monitor",
-    elevation: 1,
-  },
-};
-
-export const BottomAligned: Story = {
-  args: {
-    ...cardData,
-    heading: 4,
-    density: "normal",
-    media_align: "bottom",
-    media_width: "is-two-fifths",
-    aspect_ratio: "square",
-    elevation: 2,
-    author_profile_image: "https://i.pravatar.cc/150?img=12",
+    auto_layout: true,
   },
 };
 
 export const NoImage: Story = {
+  name: "Without Image",
   args: {
-    ...cardData,
+    ...generateCardData(),
     heading: 3,
-    density: "normal",
     media_align: "top",
     aspect_ratio: "monitor",
-    elevation: 2,
+    auto_layout: true,
     feature_image: "",
   },
 };
 
-export const LongContent: Story = {
+export const MinimalContent: Story = {
+  name: "Minimal Content",
   args: {
-    title: randCatchPhrase() + " " + randCatchPhrase(),
+    title: randCatchPhrase(),
     url: randUrl(),
-    excerpt: randParagraph() + " " + randParagraph() + " " + randParagraph(),
-    feature_image: "https://picsum.photos/400/200",
-    tag_name: randWord() + " " + randWord(),
-    tag_url: randUrl(),
-    author_name: randFullName(),
-    author_url: randUrl(),
-    author_profile_image: "https://i.pravatar.cc/150?img=32",
-    reading_time: `${randNumber({ min: 15, max: 45 })} min read`,
-    published_at: `${randMonth({ abbreviation: true })} ${randNumber({
-      min: 1,
-      max: 30,
-    })}, ${randNumber({ min: 2020, max: 2024 })}`,
+    excerpt: "",
+    feature_image: `https://picsum.photos/400/300?random=${randNumber({ min: 1, max: 1000 })}`,
+    tag_name: "",
+    tag_url: "",
+    author_name: "",
+    author_url: "",
+    author_profile_image: "",
+    reading_time: "",
+    published_at: "",
     heading: 4,
-    density: "normal",
-    media_align: "left",
-    media_width: "is-one-third",
-    aspect_ratio: "monitor",
-    elevation: 2,
-  },
-};
-
-export const CompactDensity: Story = {
-  args: {
-    ...cardData,
-    heading: 5,
-    density: "compact",
-    media_align: "left",
-    media_width: "is-one-quarter",
-    aspect_ratio: "monitor",
-    elevation: 1,
-  },
-};
-
-export const NormalDensity: Story = {
-  args: {
-    ...cardData,
-    heading: 3,
-    density: "normal",
     media_align: "top",
     media_width: "is-half",
-    aspect_ratio: "video",
-    elevation: 2,
+    aspect_ratio: "monitor",
+    auto_layout: true,
   },
 };
 
-export const ElevationComparison: Story = {
-  args: {
-    ...cardData,
-    heading: 4,
-    density: "compact",
-    media_align: "left",
-    media_width: "is-half",
-    aspect_ratio: "monitor",
-  },
-  render: (args) => {
+export const HeadingSizes: Story = {
+  name: "Heading Sizes Comparison",
+  render: () => {
     const container = document.createElement("div");
     container.className =
       "grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-surfaceContainerLow";
 
-    ([0, 1, 2, 3] as CardElevation[]).forEach((elevation) => {
+    const headings: CardHeading[] = [1, 2, 3, 4, 5, 6];
+
+    headings.forEach((heading) => {
+      const cardData = generateCardData();
       const card = document.createElement("wc-card");
 
-      Object.entries(args).forEach(([key, value]) => {
-        if (value !== undefined && value !== null) {
+      Object.entries(cardData).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== "") {
           card.setAttribute(key.replace(/_/g, "-"), String(value));
         }
       });
 
-      card.setAttribute("elevation", elevation.toString());
-      card.setAttribute("title", `${args.title} (Elevation ${elevation})`);
+      card.setAttribute("heading", heading.toString());
+      card.setAttribute("media-align", "left");
+      card.setAttribute("media-width", "is-half");
+      card.setAttribute("aspect-ratio", "monitor");
 
       container.appendChild(card);
     });
@@ -284,35 +220,169 @@ export const ElevationComparison: Story = {
   },
 };
 
-export const MediaAlignmentShowcase: Story = {
-  args: {
-    ...cardData,
-    heading: 4,
-    density: "normal",
-    media_width: "is-half",
-    aspect_ratio: "monitor",
-    elevation: 2,
-  },
-  render: (args) => {
+export const LayoutComparison: Story = {
+  name: "Layout Variations",
+  render: () => {
     const container = document.createElement("div");
     container.className = "grid grid-cols-1 md:grid-cols-2 gap-6 p-6";
 
-    (["left", "right", "top", "bottom"] as CardMediaAlign[]).forEach(
-      (align) => {
-        const card = document.createElement("wc-card");
+    const layouts = [
+      {
+        align: "left" as CardMediaAlign,
+        width: "is-half" as CardMediaWidth,
+        name: "Left Aligned",
+        auto_layout: true,
+      },
+      {
+        align: "right" as CardMediaAlign,
+        width: "is-one-third" as CardMediaWidth,
+        name: "Right Aligned",
+        auto_layout: true,
+      },
+      {
+        align: "top" as CardMediaAlign,
+        width: "is-half" as CardMediaWidth,
+        name: "Top Aligned",
+        auto_layout: true,
+      },
+      {
+        align: "bottom" as CardMediaAlign,
+        width: "is-two-fifths" as CardMediaWidth,
+        name: "Bottom Aligned",
+        auto_layout: true,
+      },
+    ];
 
-        Object.entries(args).forEach(([key, value]) => {
-          if (value !== undefined && value !== null) {
-            card.setAttribute(key.replace(/_/g, "-"), String(value));
-          }
-        });
+    layouts.forEach((layout) => {
+      const cardData = generateCardData();
+      const card = document.createElement("wc-card");
 
-        card.setAttribute("media-align", align);
-        card.setAttribute("title", `${args.title} (${align} aligned)`);
+      Object.entries(cardData).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== "") {
+          card.setAttribute(key.replace(/_/g, "-"), String(value));
+        }
+      });
 
-        container.appendChild(card);
+      card.setAttribute("heading", "4");
+      card.setAttribute("media-align", layout.align);
+      card.setAttribute("media-width", layout.width);
+      card.setAttribute("aspect-ratio", "monitor");
+      if (layout.auto_layout) {
+        card.setAttribute("auto-layout", "");
       }
-    );
+
+      container.appendChild(card);
+    });
+
+    return container;
+  },
+};
+
+export const AspectRatios: Story = {
+  name: "Aspect Ratio Variations",
+  render: () => {
+    const container = document.createElement("div");
+    container.className = "grid grid-cols-1 md:grid-cols-3 gap-6 p-6";
+
+    const ratios = [
+      { ratio: "monitor" as CardAspectRatio, height: "300" },
+      { ratio: "square" as CardAspectRatio, height: "400" },
+      { ratio: "video" as CardAspectRatio, height: "225" },
+    ];
+
+    ratios.forEach((item) => {
+      const cardData = generateCardData();
+      const card = document.createElement("wc-card");
+
+      Object.entries(cardData).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== "") {
+          card.setAttribute(key.replace(/_/g, "-"), String(value));
+        }
+      });
+
+      card.setAttribute("heading", "4");
+      card.setAttribute("media-align", "top");
+      card.setAttribute("media-width", "is-half");
+      card.setAttribute("aspect-ratio", item.ratio);
+      card.setAttribute("auto-layout", "");
+      card.setAttribute(
+        "feature-image",
+        `https://picsum.photos/400/${item.height}?random=${randNumber({ min: 1, max: 1000 })}`
+      );
+
+      container.appendChild(card);
+    });
+
+    return container;
+  },
+};
+
+export const AutoVsFixed: Story = {
+  name: "Auto vs Fixed Layout",
+  render: () => {
+    const container = document.createElement("div");
+    container.className = "grid grid-cols-1 md:grid-cols-2 gap-6 p-6";
+
+    const cardData = generateCardData();
+
+    [true, false].forEach((autoLayout) => {
+      const card = document.createElement("wc-card");
+
+      Object.entries(cardData).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== "") {
+          card.setAttribute(key.replace(/_/g, "-"), String(value));
+        }
+      });
+
+      card.setAttribute("heading", "4");
+      card.setAttribute("media-align", "left");
+      card.setAttribute("media-width", "is-half");
+      card.setAttribute("aspect-ratio", "monitor");
+
+      if (autoLayout) {
+        card.setAttribute("auto-layout", "");
+      }
+
+      container.appendChild(card);
+    });
+
+    return container;
+  },
+};
+
+export const MediaWidthShowcase: Story = {
+  name: "Media Width Variations",
+  render: () => {
+    const container = document.createElement("div");
+    container.className =
+      "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6";
+
+    const widths: CardMediaWidth[] = [
+      "is-half",
+      "is-two-fifths",
+      "is-one-third",
+      "is-one-quarter",
+      "is-one-fifth",
+    ];
+
+    widths.forEach((width) => {
+      const cardData = generateCardData();
+      const card = document.createElement("wc-card");
+
+      Object.entries(cardData).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== "") {
+          card.setAttribute(key.replace(/_/g, "-"), String(value));
+        }
+      });
+
+      card.setAttribute("heading", "4");
+      card.setAttribute("media-align", "left");
+      card.setAttribute("media-width", width);
+      card.setAttribute("aspect-ratio", "monitor");
+      card.setAttribute("auto-layout", "");
+
+      container.appendChild(card);
+    });
 
     return container;
   },
@@ -320,18 +390,16 @@ export const MediaAlignmentShowcase: Story = {
 
 export const Playground: Story = {
   args: {
-    ...cardData,
+    ...generateCardData(),
     heading: 4,
-    density: "compact",
     media_align: "left",
     media_width: "is-half",
     aspect_ratio: "monitor",
-    elevation: 2,
+    auto_layout: false,
   },
   parameters: {
     controls: {
       expanded: true,
-      sort: "alpha",
     },
   },
 };

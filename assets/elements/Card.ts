@@ -3,11 +3,9 @@ import { customElement, property, state, query } from "lit/decorators.js";
 import mainCSS from "../main.css?inline";
 import type {
   CardHeading,
-  CardDensity,
   CardMediaAlign,
   CardMediaWidth,
   CardAspectRatio,
-  CardElevation,
 } from "../types/card.js";
 import { TitleRendererMixin } from "../mixins/TitleRenderer.js";
 
@@ -33,12 +31,11 @@ export class WcCard extends BaseClass {
   @property({ type: String, attribute: "media-width" })
   media_width: CardMediaWidth = "is-half";
   @property({ type: Number, reflect: true }) heading: CardHeading = 4;
-  @property({ type: String }) density: CardDensity = "normal";
   @property({ type: String, attribute: "aspect-ratio" })
   aspect_ratio: CardAspectRatio = "monitor";
   @property({ type: String, attribute: "reading-time" }) reading_time = "";
   @property({ type: String, attribute: "published-at" }) published_at = "";
-  @property({ type: Number }) elevation: CardElevation = 2;
+  @property({ type: Boolean, attribute: "auto-layout" }) auto_layout = false;
 
   @state() private imageSize = { width: 0, height: 0 };
 
@@ -83,41 +80,86 @@ export class WcCard extends BaseClass {
   }
 
   private getCardClasses() {
-    const classes = ["wc-card", `wc-card--elevation-${this.elevation}`];
-    return classes.join(" ");
+    const paddingClass = this.getPaddingClass();
+    return ["wc-card", paddingClass].join(" ");
+  }
+
+  private getPaddingClass(): string {
+    const paddingMap: Record<CardHeading, string> = {
+      1: "p-6",
+      2: "p-5",
+      3: "p-4",
+      4: "p-3",
+      5: "p-2",
+      6: "p-1",
+    };
+    return paddingMap[this.heading] || "p-3";
   }
 
   private getFlexClass() {
-    if (this.media_align === "left" && this.density !== "normal")
-      return "flex-row";
-    if (this.media_align === "left" && this.density === "normal")
-      return "flex-col md:flex-row";
-    if (this.media_align === "right" && this.density !== "normal")
-      return "flex-row-reverse";
-    if (this.media_align === "right" && this.density === "normal")
-      return "flex-col-reverse md:flex-row-reverse";
-    if (this.media_align === "top") return "flex-col";
-    return "flex-col-reverse";
+    const isHorizontal =
+      this.media_align === "left" || this.media_align === "right";
+
+    if (!isHorizontal) {
+      if (this.media_align === "top") return "flex-col";
+      return "flex-col-reverse";
+    }
+
+    // Para left y right, aplicar lógica de auto-layout
+    if (this.auto_layout) {
+      // Ahora solo true cuando el atributo está presente
+      // CON auto-layout: cambia de fila a columna en mobile
+      if (this.media_align === "left") {
+        return "flex-col md:flex-row";
+      }
+      if (this.media_align === "right") {
+        return "flex-col-reverse md:flex-row-reverse";
+      }
+    } else {
+      // SIN auto-layout: preserva estructura (siempre fila)
+      if (this.media_align === "left") {
+        return "flex-row";
+      }
+      if (this.media_align === "right") {
+        return "flex-row-reverse";
+      }
+    }
+
+    return "flex-col";
   }
 
   private getFigureClass() {
     const isHorizontal =
       this.media_align === "left" || this.media_align === "right";
-    const isNormalDensity = this.density === "normal";
 
-    if (!isHorizontal || (isHorizontal && isNormalDensity)) return "flex-1";
+    if (!isHorizontal) return "w-full";
 
-    switch (this.media_width) {
-      case "is-one-fifth":
-        return "w-1/5";
-      case "is-one-quarter":
-        return "w-1/4";
-      case "is-one-third":
-        return "w-1/3";
-      case "is-two-fifths":
-        return "w-2/5";
-      default:
-        return "w-1/2";
+    if (this.auto_layout) {
+      switch (this.media_width) {
+        case "is-one-fifth":
+          return "w-full md:w-1/5";
+        case "is-one-quarter":
+          return "w-full md:w-1/4";
+        case "is-one-third":
+          return "w-full md:w-1/3";
+        case "is-two-fifths":
+          return "w-full md:w-2/5";
+        default:
+          return "w-full md:w-1/2";
+      }
+    } else {
+      switch (this.media_width) {
+        case "is-one-fifth":
+          return "w-1/5";
+        case "is-one-quarter":
+          return "w-1/4";
+        case "is-one-third":
+          return "w-1/3";
+        case "is-two-fifths":
+          return "w-2/5";
+        default:
+          return "w-1/2";
+      }
     }
   }
 
@@ -181,17 +223,29 @@ export class WcCard extends BaseClass {
               ${this.renderTitle()}
             </a>
 
-            ${this.density === "normal"
+            ${this.excerpt
               ? html`<p class="wc-card__excerpt">${this.excerpt}</p>`
               : ""}
-            ${this.tag_name && this.density !== "minimal"
+            ${this.tag_name && (this.published_at || this.reading_time)
               ? html`
                   <div class="wc-card__meta">
-                    <span class="wc-card__meta-item">${this.published_at}</span>
-                    <span class="wc-card__meta-item">${this.reading_time}</span>
-                    <a href="${this.tag_url}" class="wc-card__tag">
-                      ${this.tag_name}
-                    </a>
+                    ${this.published_at
+                      ? html`<span class="wc-card__meta-item"
+                          >${this.published_at}</span
+                        >`
+                      : ""}
+                    ${this.reading_time
+                      ? html`<span class="wc-card__meta-item"
+                          >${this.reading_time}</span
+                        >`
+                      : ""}
+                    ${this.tag_name
+                      ? html`
+                          <a href="${this.tag_url}" class="wc-card__tag">
+                            ${this.tag_name}
+                          </a>
+                        `
+                      : ""}
                   </div>
                 `
               : ""}

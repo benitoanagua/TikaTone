@@ -1,27 +1,14 @@
 /* Card Component */
 .wc-card {
-  @apply block transition-all duration-300;
-}
-
-.wc-card--elevation-0 {
-  @apply p-0;
-}
-.wc-card--elevation-1 {
-  @apply bg-surfaceContainerHighest rounded-lg p-3 md:p-3;
-}
-.wc-card--elevation-2 {
-  @apply bg-surfaceContainerHighest rounded-xl p-4 md:p-3;
-}
-.wc-card--elevation-3 {
-  @apply bg-surfaceContainerHighest rounded-xl p-5 shadow-md md:p-3;
+  @apply block transition-all duration-300 bg-surfaceContainerHighest rounded-lg;
 }
 
 .wc-card__container {
-  @apply flex gap-4 w-full md:flex-col;
+  @apply flex gap-4 w-full;
 }
 
 .wc-card__figure {
-  @apply m-0 overflow-hidden flex-shrink-0 md:w-full;
+  @apply m-0 overflow-hidden flex-shrink-0;
 }
 
 .wc-card__content {
