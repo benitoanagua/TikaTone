@@ -8,9 +8,9 @@ import type {
   CardAspectRatio,
 } from "../types/card.js";
 import { TitleRendererMixin } from "../mixins/TitleRenderer.js";
+import { PaddingMixin } from "../mixins/PaddingMixin.js";
 
-// Aplicar el mixin a la clase base
-const BaseClass = TitleRendererMixin(LitElement);
+const BaseClass = PaddingMixin(TitleRendererMixin(LitElement));
 
 @customElement("wc-card")
 export class WcCard extends BaseClass {
@@ -84,16 +84,12 @@ export class WcCard extends BaseClass {
     return ["wc-card", paddingClass].join(" ");
   }
 
-  private getPaddingClass(): string {
-    const paddingMap: Record<CardHeading, string> = {
-      1: "p-6",
-      2: "p-5",
-      3: "p-4",
-      4: "p-3",
-      5: "p-2",
-      6: "p-1",
-    };
-    return paddingMap[this.heading] || "p-3";
+  private shouldShowAuthor(): boolean {
+    return !!(this.author_name || this.author_profile_image);
+  }
+
+  private shouldShowMeta(): boolean {
+    return !!(this.published_at || this.reading_time || this.tag_name);
   }
 
   private getFlexClass() {
@@ -105,10 +101,7 @@ export class WcCard extends BaseClass {
       return "flex-col-reverse";
     }
 
-    // Para left y right, aplicar lógica de auto-layout
     if (this.auto_layout) {
-      // Ahora solo true cuando el atributo está presente
-      // CON auto-layout: cambia de fila a columna en mobile
       if (this.media_align === "left") {
         return "flex-col md:flex-row";
       }
@@ -116,7 +109,6 @@ export class WcCard extends BaseClass {
         return "flex-col-reverse md:flex-row-reverse";
       }
     } else {
-      // SIN auto-layout: preserva estructura (siempre fila)
       if (this.media_align === "left") {
         return "flex-row";
       }
@@ -200,7 +192,7 @@ export class WcCard extends BaseClass {
             : ""}
 
           <div class="wc-card__content">
-            ${this.author_name
+            ${this.shouldShowAuthor()
               ? html`
                   <div class="wc-card__author">
                     ${this.author_profile_image
@@ -212,9 +204,16 @@ export class WcCard extends BaseClass {
                           />
                         `
                       : html`<span class="wc-card__author-bullet"></span>`}
-                    <a href="${this.author_url}" class="wc-card__author-link">
-                      ${this.author_name}
-                    </a>
+                    ${this.author_name
+                      ? html`
+                          <a
+                            href="${this.author_url}"
+                            class="wc-card__author-link"
+                          >
+                            ${this.author_name}
+                          </a>
+                        `
+                      : ""}
                   </div>
                 `
               : ""}
@@ -226,7 +225,7 @@ export class WcCard extends BaseClass {
             ${this.excerpt
               ? html`<p class="wc-card__excerpt">${this.excerpt}</p>`
               : ""}
-            ${this.tag_name && (this.published_at || this.reading_time)
+            ${this.shouldShowMeta()
               ? html`
                   <div class="wc-card__meta">
                     ${this.published_at

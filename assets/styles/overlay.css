@@ -4,7 +4,30 @@
   isolation: isolate;
 }
 
-/* Alignment */
+.wc-overlay__overlay {
+  @apply absolute inset-0 z-1;
+}
+
+.wc-overlay--fill-full .wc-overlay__overlay {
+  @apply bg-scrim/60;
+}
+
+.wc-overlay--fill-gradient.wc-overlay--position-top .wc-overlay__overlay {
+  @apply bg-linear-to-b from-scrim from-10% to-transparent;
+}
+
+.wc-overlay--fill-gradient.wc-overlay--position-bottom .wc-overlay__overlay {
+  @apply bg-linear-to-t from-scrim from-10% to-transparent;
+}
+
+.wc-overlay--fill-gradient.wc-overlay--position-center .wc-overlay__overlay {
+  @apply bg-linear-to-t from-transparent via-scrim/60 to-transparent;
+}
+
+.wc-overlay--fill-none .wc-overlay__overlay {
+  @apply hidden;
+}
+
 .wc-overlay--align-start {
   @apply justify-start;
 }
@@ -15,7 +38,6 @@
   @apply justify-end;
 }
 
-/* Position */
 .wc-overlay--position-top {
   @apply items-start;
 }
@@ -26,7 +48,6 @@
   @apply items-end;
 }
 
-/* Aspect Ratios */
 .wc-overlay--aspect-square {
   @apply aspect-square;
 }
@@ -37,40 +58,11 @@
   @apply aspect-4/3;
 }
 
-/* Fill Effects */
-.wc-overlay--fill-full::before {
-  content: "";
-  @apply absolute inset-0 bg-black/60 z-1;
-}
-
-/* Fill Effects con utilidades puras de Tailwind */
-.wc-overlay--fill-full::before {
-  content: "";
-  @apply absolute inset-0 z-1 bg-scrim/60;
-}
-
-.wc-overlay--fill-gradient.wc-overlay--position-top::before {
-  content: "";
-  @apply absolute inset-0 z-1 bg-linear-to-b from-scrim from-10% to-transparent;
-}
-
-.wc-overlay--fill-gradient.wc-overlay--position-bottom::before {
-  content: "";
-  @apply absolute inset-0 z-1 bg-linear-to-t from-scrim from-10% to-transparent;
-}
-
-.wc-overlay--fill-gradient.wc-overlay--position-center::before {
-  content: "";
-  @apply absolute inset-0 z-1 bg-linear-to-t from-transparent via-scrim/60 to-transparent;
-}
-
-/* Content Container */
 .wc-overlay__content {
   @apply max-w-[42rem] p-6 flex flex-col gap-3 text-left z-2 rounded-lg relative 
          md:p-4 md:m-2;
 }
 
-/* Box Styles */
 .wc-overlay--box-background .wc-overlay__content {
   @apply bg-white/10 backdrop-blur-md;
   -webkit-backdrop-filter: blur(8px);
@@ -84,23 +76,23 @@
   @apply bg-transparent;
 }
 
-/* Category/Tag */
 .wc-overlay__category {
   @apply text-onPrimaryContainer bg-primaryContainer w-fit text-xs font-medium 
          uppercase tracking-wide py-1 px-3 rounded-full;
 }
 
-/* Title Link */
-.wc-overlay__title-link > * {
-  @apply text-white no-underline transition-opacity duration-200 hover:opacity-90;
+.wc-overlay__title-link {
+  @apply no-underline transition-opacity duration-200 hover:opacity-90;
 }
 
-/* Meta Container */
+.wc-overlay__title-link > * {
+  @apply text-white;
+}
+
 .wc-overlay__meta {
   @apply flex flex-wrap items-center gap-3 text-sm;
 }
 
-/* Meta Items */
 .wc-overlay__meta-item {
   @apply text-white/90 flex items-center font-medium;
 }
@@ -109,9 +101,18 @@
   @apply content-['•'] text-white/60 ml-2 mr-1;
 }
 
-/* Responsive aspect ratios for mobile */
-.wc-overlay--aspect-square,
-.wc-overlay--aspect-video,
-.wc-overlay--aspect-monitor {
-  @apply md:aspect-3/4;
+@media (max-width: 768px) {
+  .wc-overlay--aspect-square,
+  .wc-overlay--aspect-video,
+  .wc-overlay--aspect-monitor {
+    @apply aspect-3/4;
+  }
+
+  .wc-overlay__content {
+    @apply gap-2;
+  }
+
+  .wc-overlay__meta {
+    @apply gap-2 text-xs;
+  }
 }

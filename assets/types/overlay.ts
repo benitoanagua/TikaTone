@@ -6,16 +6,15 @@ export type OverlayFill = "full" | "gradient" | "none";
 export type OverlayBox = "border" | "background" | "transparent";
 
 export interface OverlayProps {
-  title: string;
-  url: string;
-  feature_image: string;
+  title?: string;
+  url?: string;
+  feature_image?: string;
   tag_name?: string;
   author_name?: string;
   published_at?: string;
   reading_time?: string;
   aspect_ratio?: CardAspectRatio;
   heading?: CardHeading;
-  show_meta?: boolean;
   align?: OverlayAlign;
   position?: OverlayPosition;
   box?: OverlayBox;

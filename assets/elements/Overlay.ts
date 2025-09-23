@@ -1,3 +1,4 @@
+// Archivo: assets/elements/Overlay.ts
 import { LitElement, html, unsafeCSS } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import mainCSS from "../main.css?inline";
@@ -9,9 +10,10 @@ import type {
 } from "../types/overlay.js";
 import type { CardHeading, CardAspectRatio } from "../types/card.js";
 import { TitleRendererMixin } from "../mixins/TitleRenderer.js";
+import { PaddingMixin } from "../mixins/PaddingMixin.js";
 
-// Aplicar el mixin a la clase base
-const BaseClass = TitleRendererMixin(LitElement);
+// Aplicar los mixins a la clase base
+const BaseClass = PaddingMixin(TitleRendererMixin(LitElement));
 
 @customElement("wc-overlay")
 export class WcOverlay extends BaseClass {
@@ -27,7 +29,6 @@ export class WcOverlay extends BaseClass {
   @property({ type: String, attribute: "aspect-ratio" })
   aspect_ratio: CardAspectRatio = "monitor";
   @property({ type: Number, reflect: true }) heading: CardHeading = 4;
-  @property({ type: Boolean, attribute: "show-meta" }) show_meta = false;
   @property({ type: String }) align: OverlayAlign = "center";
   @property({ type: String }) position: OverlayPosition = "center";
   @property({ type: String }) box: OverlayBox = "background";
@@ -38,21 +39,23 @@ export class WcOverlay extends BaseClass {
   }
 
   private getOverlayClasses() {
+    const paddingClass = this.getPaddingClass();
+
     const classes = [
       "wc-overlay",
+      paddingClass,
       `wc-overlay--align-${this.align}`,
       `wc-overlay--position-${this.position}`,
       `wc-overlay--aspect-${this.aspect_ratio}`,
+      `wc-overlay--box-${this.box}`,
+      `wc-overlay--fill-${this.fill}`,
     ];
 
-    if (this.fill !== "none") {
-      classes.push(`wc-overlay--fill-${this.fill}`);
-    }
-
-    // Añadir la clase del tipo de box al contenedor principal
-    classes.push(`wc-overlay--box-${this.box}`);
-
     return classes.join(" ");
+  }
+
+  private shouldShowMeta(): boolean {
+    return !!(this.author_name || this.published_at || this.reading_time);
   }
 
   render() {
@@ -63,16 +66,28 @@ export class WcOverlay extends BaseClass {
           ? `background-image: url(${this.feature_image})`
           : ""}"
       >
+        ${this.fill !== "none"
+          ? html`<div class="wc-overlay__overlay"></div>`
+          : ""}
+
         <div class="wc-overlay__content">
           ${this.tag_name
             ? html` <span class="wc-overlay__category">${this.tag_name}</span> `
             : ""}
-
-          <a href="${this.url}" class="wc-overlay__title-link">
-            ${this.renderTitle("text-white")}
-          </a>
-
-          ${this.show_meta
+          ${this.title && this.url
+            ? html`
+                <a href="${this.url}" class="wc-overlay__title-link">
+                  ${this.renderTitle("text-white")}
+                </a>
+              `
+            : this.title
+              ? html`
+                  <div class="wc-overlay__title-link">
+                    ${this.renderTitle("text-white")}
+                  </div>
+                `
+              : ""}
+          ${this.shouldShowMeta()
             ? html`
                 <ul class="wc-overlay__meta">
                   ${this.author_name
