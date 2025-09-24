@@ -89,7 +89,7 @@ export class WcGrille extends LitElement {
 
       let hasRightBorder = false;
       let hasBottomBorder = false;
-      const borderColor = "var(--color-outline)";
+      const borderColor = "var(--color-outlineVariant)";
 
       // Línea derecha
       if (
