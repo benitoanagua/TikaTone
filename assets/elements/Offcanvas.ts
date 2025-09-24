@@ -39,7 +39,7 @@ export class WcOffcanvas extends LitElement {
     return html`
       <!-- Botón de apertura -->
       <button
-        class="wc-offcanvas-toggle"
+        class="wc-offcanvas-toggle wc-offcanvas-toggle--flat"
         @click="${this.toggleOffcanvas}"
         aria-label="Open navigation menu"
       >
@@ -49,13 +49,16 @@ export class WcOffcanvas extends LitElement {
       <!-- Offcanvas (solo visible cuando showOffcanvas es true) -->
       ${this.showOffcanvas
         ? html`
-            <div class="wc-offcanvas-overlay" @click="${this.toggleOffcanvas}">
+            <div
+              class="wc-offcanvas-overlay wc-offcanvas-overlay--flat"
+              @click="${this.toggleOffcanvas}"
+            >
               <div
-                class="wc-offcanvas-panel"
+                class="wc-offcanvas-panel wc-offcanvas-panel--flat"
                 @click="${(e: Event) => e.stopPropagation()}"
               >
                 <button
-                  class="wc-offcanvas-close"
+                  class="wc-offcanvas-close wc-offcanvas-close--flat"
                   @click="${this.toggleOffcanvas}"
                   aria-label="Close offcanvas"
                 >

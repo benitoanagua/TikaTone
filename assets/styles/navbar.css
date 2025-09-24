@@ -1,33 +1,55 @@
-/* Navbar Component Styles */
+/* Navbar Component Styles - Flat Design */
 .wc-navbar {
-  @apply w-full transition-all duration-300 ease-in-out;
+  @apply w-full transition-all duration-300 ease-in-out bg-surfaceContainerHighest border-b border-outlineVariant;
+}
+
+.wc-navbar--flat {
+  @apply shadow-none rounded-none;
 }
 
 .wc-navbar--sticky {
-  @apply fixed top-0 left-0 w-full z-50 bg-surface/95 backdrop-blur-md 
-         border-b border-outline/20;
+  @apply fixed top-0 left-0 w-full z-50 bg-surfaceContainerHighest/95 backdrop-blur-none border-b-2 border-primary;
 }
 
 .wc-navbar__container {
-  @apply flex items-center justify-between w-full;
+  @apply flex items-center justify-between w-full py-3;
 }
 
 /* Logo positioning */
 .wc-navbar__logo {
-  @apply flex items-center order-2 md:order-1; /* Center on mobile, left on desktop */
+  @apply flex items-center order-2 md:order-1;
 }
 
 /* Navigation positioning */
 .wc-navbar__navigation {
-  @apply flex items-center order-1 md:order-2; /* Left on mobile, center on desktop */
-
-  /* Para centrar realmente en desktop */
-  @apply md:flex-1 md:justify-center;
+  @apply flex items-center order-1 md:order-2 md:flex-1 md:justify-center;
 }
 
 /* Actions positioning */
 .wc-navbar__actions {
-  @apply flex items-center order-3; /* Right on both mobile and desktop */
+  @apply flex items-center order-3 gap-2;
+}
+
+/* Flat design navigation items */
+.wc-navbar ::slotted(a) {
+  @apply text-onSurface no-underline px-4 py-2 transition-colors border-b-2 border-transparent;
+}
+
+.wc-navbar ::slotted(a:hover) {
+  @apply text-primary border-b-2 border-primary;
+}
+
+.wc-navbar ::slotted(a[class*="bg-"]) {
+  @apply border-b-2 border-primary;
+}
+
+/* Flat design buttons */
+.wc-navbar ::slotted(button) {
+  @apply rounded-none border-2 border-transparent transition-colors;
+}
+
+.wc-navbar ::slotted(button:hover) {
+  @apply border-primary;
 }
 
 /* Animation for sticky appearance */
@@ -43,5 +65,16 @@
   to {
     transform: translateY(0);
     opacity: 1;
+  }
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .wc-navbar__container {
+    @apply py-2;
+  }
+
+  .wc-navbar__navigation {
+    @apply justify-start;
   }
 }

@@ -19,13 +19,13 @@ export interface ThemeConfig {
 }
 
 export const themeConfig: ThemeConfig = {
-  seedColor: "#29AB87",
+  seedColor: "#ff1d8d",
 
   // Contrast level (-1 = minimum, 0 = standard, 1 = maximum)
   contrastLevel: 0,
 
   // Variant of Material Design 3 scheme (use numeric values)
-  variant: 5,
+  variant: 4,
 };
 
 export const seedColor = themeConfig.seedColor;

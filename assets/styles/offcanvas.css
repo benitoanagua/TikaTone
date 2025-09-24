@@ -1,7 +1,10 @@
-/* Offcanvas Component Styles */
+/* Offcanvas Component Styles - Flat Design */
 .wc-offcanvas-toggle {
-  @apply cursor-pointer border-0 bg-transparent p-2 rounded-full 
-         hover:bg-surfaceContainerLow transition-colors;
+  @apply cursor-pointer border-0 bg-transparent p-2 rounded-none transition-colors;
+}
+
+.wc-offcanvas-toggle--flat {
+  @apply border-2 border-outlineVariant hover:border-primary;
 }
 
 .wc-offcanvas-toggle-icon {
@@ -9,16 +12,27 @@
 }
 
 .wc-offcanvas-overlay {
-  @apply fixed top-0 left-0 w-full h-full bg-scrim/50 z-50;
+  @apply fixed top-0 left-0 w-full h-full z-50;
+}
+
+.wc-offcanvas-overlay--flat {
+  @apply bg-scrim/40 backdrop-blur-none;
 }
 
 .wc-offcanvas-panel {
-  @apply absolute top-0 left-0 h-full w-80 bg-surfaceContainerHighest p-6 z-1;
+  @apply absolute top-0 left-0 h-full w-80 bg-surfaceContainerHighest z-1;
+}
+
+.wc-offcanvas-panel--flat {
+  @apply rounded-none border-r-2 border-primary shadow-none;
 }
 
 .wc-offcanvas-close {
-  @apply absolute right-4 top-4 cursor-pointer border-0 bg-transparent p-2 
-         rounded-full hover:bg-surfaceContainerLow transition-colors;
+  @apply absolute right-4 top-4 cursor-pointer border-0 bg-transparent p-2 transition-colors;
+}
+
+.wc-offcanvas-close--flat {
+  @apply border-2 border-outlineVariant hover:border-primary;
 }
 
 .wc-offcanvas-close-icon {
@@ -26,5 +40,37 @@
 }
 
 .wc-offcanvas-content {
-  @apply pt-12;
+  @apply pt-12 p-6;
+}
+
+/* Flat design for offcanvas content */
+.wc-offcanvas-content ::slotted(a) {
+  @apply block text-onSurface no-underline py-3 px-4 border-l-4 border-transparent transition-colors;
+}
+
+.wc-offcanvas-content ::slotted(a:hover) {
+  @apply text-primary border-l-4 border-primary bg-surfaceContainerLow;
+}
+
+.wc-offcanvas-content ::slotted(h2) {
+  @apply text-onSurface border-b-2 border-outlineVariant pb-3 mb-4;
+}
+
+.wc-offcanvas-content ::slotted(button) {
+  @apply rounded-none border-2 border-primary text-onPrimary bg-primary w-full py-2 px-4 transition-colors;
+}
+
+.wc-offcanvas-content ::slotted(button:hover) {
+  @apply bg-primaryContainer text-onPrimaryContainer;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .wc-offcanvas-panel {
+    @apply w-72;
+  }
+
+  .wc-offcanvas-content {
+    @apply p-4;
+  }
 }

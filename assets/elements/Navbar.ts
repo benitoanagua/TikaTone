@@ -96,7 +96,8 @@ export class WcNavbar extends LitElement {
   }
 
   private getNavbarClasses() {
-    return this.isSticky ? "wc-navbar wc-navbar--sticky" : "wc-navbar";
+    const baseClasses = "wc-navbar wc-navbar--flat";
+    return this.isSticky ? `${baseClasses} wc-navbar--sticky` : baseClasses;
   }
 
   render() {
