@@ -1,5 +1,5 @@
-import { writeFileSync, mkdirSync } from 'fs'
-import { dirname, resolve } from 'path'
+import { writeFileSync, mkdirSync } from "fs";
+import { dirname, resolve } from "path";
 import {
   argbFromHex,
   hexFromArgb,
@@ -12,11 +12,12 @@ import {
   SchemeMonochrome,
   SchemeContent,
   SchemeFidelity,
-} from '@material/material-color-utilities'
-import { themeConfig, getVariantName } from './theme-config'
+} from "@material/material-color-utilities";
+import { themeConfig, getVariantName } from "./theme-config";
+import { THEME_CSS_VARS } from "../../types/material";
 
 export function getThemeConfig() {
-  return themeConfig
+  return themeConfig;
 }
 
 // Mapeo de nombres de variante a constructores de esquema
@@ -28,111 +29,71 @@ const SCHEME_CONSTRUCTORS: Record<string, any> = {
   EXPRESSIVE: SchemeExpressive,
   FIDELITY: SchemeFidelity,
   CONTENT: SchemeContent,
-}
+};
 
 function createScheme(isDark: boolean) {
-  const config = getThemeConfig()
-  const sourceColor = argbFromHex(config.seedColor)
-  const sourceHct = Hct.fromInt(sourceColor)
+  const config = getThemeConfig();
+  const sourceColor = argbFromHex(config.seedColor);
+  const sourceHct = Hct.fromInt(sourceColor);
 
   // Convertir número de variante a nombre
-  const variantName = getVariantName(config.variant)
-  const SchemeConstructor = SCHEME_CONSTRUCTORS[variantName] || SchemeTonalSpot
+  const variantName = getVariantName(config.variant);
+  const SchemeConstructor = SCHEME_CONSTRUCTORS[variantName] || SchemeTonalSpot;
 
-  return new SchemeConstructor(sourceHct, isDark, config.contrastLevel)
+  return new SchemeConstructor(sourceHct, isDark, config.contrastLevel);
 }
 
 function extractColors(scheme: any) {
-  const props = [
-    'primary',
-    'onPrimary',
-    'primaryContainer',
-    'onPrimaryContainer',
-    'secondary',
-    'onSecondary',
-    'secondaryContainer',
-    'onSecondaryContainer',
-    'tertiary',
-    'onTertiary',
-    'tertiaryContainer',
-    'onTertiaryContainer',
-    'error',
-    'onError',
-    'errorContainer',
-    'onErrorContainer',
-    'background',
-    'onBackground',
-    'surface',
-    'surfaceDim',
-    'surfaceBright',
-    'surfaceContainerLowest',
-    'surfaceContainerLow',
-    'surfaceContainer',
-    'surfaceContainerHigh',
-    'surfaceContainerHighest',
-    'onSurface',
-    'surfaceVariant',
-    'onSurfaceVariant',
-    'outline',
-    'outlineVariant',
-    'shadow',
-    'scrim',
-    'inverseSurface',
-    'inverseOnSurface',
-    'inversePrimary',
-  ]
-
-  const colors: Record<string, string> = {}
-  for (const prop of props) {
+  const colors: Record<string, string> = {};
+  for (const prop of THEME_CSS_VARS) {
     try {
-      const color = (MaterialDynamicColors as any)[prop]?.getArgb(scheme)
-      colors[prop] = hexFromArgb(color)
+      const color = (MaterialDynamicColors as any)[prop]?.getArgb(scheme);
+      colors[prop] = hexFromArgb(color);
     } catch {
-      colors[prop] = '#FF00FF' // fallback
-      console.warn(`Could not extract color property: ${prop}`)
+      colors[prop] = "#FF00FF"; // fallback
+      console.warn(`Could not extract color property: ${prop}`);
     }
   }
-  return colors
+  return colors;
 }
 
 export function generateThemeFiles(root: string, outputDir: string): void {
   try {
-    const config = getThemeConfig()
-    const variantName = getVariantName(config.variant)
+    const config = getThemeConfig();
+    const variantName = getVariantName(config.variant);
 
-    console.log(`🎨 Generating Material Design theme:`)
-    console.log(`   • Seed Color: ${config.seedColor}`)
-    console.log(`   • Variant: ${variantName} (${config.variant})`)
-    console.log(`   • Contrast Level: ${config.contrastLevel}`)
+    console.log(`🎨 Generating Material Design theme:`);
+    console.log(`   • Seed Color: ${config.seedColor}`);
+    console.log(`   • Variant: ${variantName} (${config.variant})`);
+    console.log(`   • Contrast Level: ${config.contrastLevel}`);
 
-    const lightScheme = createScheme(false)
-    const darkScheme = createScheme(true)
+    const lightScheme = createScheme(false);
+    const darkScheme = createScheme(true);
 
-    const lightColors = extractColors(lightScheme)
-    const darkColors = extractColors(darkScheme)
+    const lightColors = extractColors(lightScheme);
+    const darkColors = extractColors(darkScheme);
 
     const cssContent = `@theme {
-${Object.entries(lightColors)
-  .map(([k, v]) => `  --color-${k}: ${v};`)
-  .join('\n')}
+${THEME_CSS_VARS.map((k) => `  --color-${k}: ${lightColors[k]};`).join("\n")}
 }
 
 [data-theme="dark"] {
-${Object.entries(darkColors)
-  .map(([k, v]) => `  --color-${k}: ${v};`)
-  .join('\n')}
-}`
+${THEME_CSS_VARS.map((k) => `  --color-${k}: ${darkColors[k]};`).join("\n")}
+}`;
 
     // Crear directorio si no existe
-    const fullPath = resolve(root, outputDir)
-    mkdirSync(dirname(fullPath), { recursive: true })
+    const fullPath = resolve(root, outputDir);
+    mkdirSync(dirname(fullPath), { recursive: true });
 
     // Escribir archivo CSS
-    writeFileSync(resolve(fullPath, 'material-theme.css'), cssContent)
+    writeFileSync(resolve(fullPath, "material-theme.css"), cssContent);
 
-    console.log('✅ Theme generated successfully at:', `${outputDir}/material-theme.css`)
+    console.log(
+      "✅ Theme generated successfully at:",
+      `${outputDir}/material-theme.css`
+    );
   } catch (error) {
-    console.error('❌ Error generating themes:', error)
-    throw error
+    console.error("❌ Error generating themes:", error);
+    throw error;
   }
 }

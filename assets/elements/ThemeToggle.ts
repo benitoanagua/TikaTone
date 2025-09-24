@@ -1,32 +1,30 @@
 import { LitElement, html, unsafeCSS } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import mainCSS from "../main.css?inline";
+import type { ThemeChangeEvent, ThemeMode } from "../types/events.js";
 
 @customElement("wc-theme-toggle")
 export class WcThemeToggle extends LitElement {
   static styles = unsafeCSS(mainCSS);
 
-  @state() private currentTheme: "light" | "dark" = "light";
+  @state() private currentTheme: ThemeMode = "light";
 
   connectedCallback() {
     super.connectedCallback();
     this.loadTheme();
-    this.setAttribute("data-theme", this.currentTheme);
   }
 
   private loadTheme() {
-    const savedTheme = localStorage.getItem("wc-theme");
+    const savedTheme = localStorage.getItem("wc-theme") as ThemeMode | null;
     const systemPrefersDark = window.matchMedia(
       "(prefers-color-scheme: dark)"
     ).matches;
 
-    this.currentTheme =
-      (savedTheme as "light" | "dark") ||
-      (systemPrefersDark ? "dark" : "light");
-    this.applyTheme(this.currentTheme, false); // No dispatchar evento en carga inicial
+    this.currentTheme = savedTheme || (systemPrefersDark ? "dark" : "light");
+    this.applyTheme(this.currentTheme, false);
   }
 
-  private applyTheme(theme: "light" | "dark", dispatchEvent = true) {
+  private applyTheme(theme: ThemeMode, dispatchEvent = true) {
     const htmlElement = document.documentElement;
 
     if (theme === "dark") {
@@ -40,16 +38,20 @@ export class WcThemeToggle extends LitElement {
     }
 
     this.currentTheme = theme;
-    this.setAttribute("data-theme", theme);
     localStorage.setItem("wc-theme", theme);
 
-    // Disparar evento global para Storybook
+    this.setAttribute("data-theme", theme);
+
+    // Dispatch global event
     if (dispatchEvent) {
-      window.dispatchEvent(
-        new CustomEvent("theme-change", {
+      const themeChangeEvent: ThemeChangeEvent = new CustomEvent(
+        "theme-change",
+        {
           detail: { theme },
-        })
-      );
+        }
+      ) as ThemeChangeEvent;
+
+      window.dispatchEvent(themeChangeEvent);
     }
   }
 
@@ -58,11 +60,14 @@ export class WcThemeToggle extends LitElement {
     this.applyTheme(newTheme);
   }
 
+  private getThemeLabel() {
+    return this.currentTheme === "light"
+      ? "Switch to dark mode"
+      : "Switch to light mode";
+  }
+
   render() {
-    const themeLabel =
-      this.currentTheme === "light"
-        ? "Cambiar a tema oscuro"
-        : "Cambiar a tema claro";
+    const themeLabel = this.getThemeLabel();
 
     return html`
       <button
@@ -70,18 +75,24 @@ export class WcThemeToggle extends LitElement {
         @click="${this.toggleTheme}"
         aria-label="${themeLabel}"
         title="${themeLabel}"
+        data-theme="${this.currentTheme}"
       >
         ${this.currentTheme === "light"
           ? html`
               <span
-                class="wc-theme-toggle-icon icon-[garden--moon-stroke-16]"
+                class="wc-theme-toggle-icon icon-[garden--sun-stroke-16]"
               ></span>
             `
           : html`
               <span
-                class="wc-theme-toggle-icon icon-[garden--sun-stroke-16]"
+                class="wc-theme-toggle-icon icon-[garden--moon-stroke-16]"
               ></span>
             `}
+
+        <!-- Visual mode indicator -->
+        <span class="wc-theme-toggle-badge">
+          ${this.currentTheme === "light" ? "L" : "D"}
+        </span>
       </button>
     `;
   }

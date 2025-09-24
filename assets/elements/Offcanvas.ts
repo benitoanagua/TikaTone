@@ -1,23 +1,30 @@
 import { LitElement, html, unsafeCSS } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import mainCSS from "../main.css?inline";
+import { ThemeAwareMixin } from "../mixins/ThemeAwareMixin.js";
+
+const ThemeAwareBase = ThemeAwareMixin(LitElement);
 
 @customElement("wc-offcanvas")
-export class WcOffcanvas extends LitElement {
-  static styles = unsafeCSS(mainCSS);
+export class WcOffcanvas extends ThemeAwareBase {
+  static styles = [unsafeCSS(mainCSS)];
 
   @state() private showOffcanvas = false;
 
-  // Usar Shadow DOM pero con estilos globales
   protected createRenderRoot() {
     const shadowRoot = super.createRenderRoot();
 
-    // Aplicar estilos globales manualmente
-    const style = document.createElement("style");
-    style.textContent = (mainCSS as any).toString();
-    shadowRoot.appendChild(style);
+    // Ensure theme style element is created
+    const themeStyle = document.createElement("style");
+    themeStyle.id = "theme-vars";
+    shadowRoot.appendChild(themeStyle);
 
     return shadowRoot;
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    document.body.style.overflow = "auto";
   }
 
   private toggleOffcanvas() {
@@ -30,14 +37,8 @@ export class WcOffcanvas extends LitElement {
     }
   }
 
-  disconnectedCallback() {
-    super.disconnectedCallback();
-    document.body.style.overflow = "auto";
-  }
-
   render() {
     return html`
-      <!-- Botón de apertura -->
       <button
         class="wc-offcanvas-toggle wc-offcanvas-toggle--flat"
         @click="${this.toggleOffcanvas}"
@@ -46,7 +47,6 @@ export class WcOffcanvas extends LitElement {
         <span class="wc-offcanvas-toggle-icon"></span>
       </button>
 
-      <!-- Offcanvas (solo visible cuando showOffcanvas es true) -->
       ${this.showOffcanvas
         ? html`
             <div

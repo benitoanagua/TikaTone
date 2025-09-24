@@ -1,10 +1,13 @@
 import { LitElement, html, unsafeCSS } from "lit";
 import { customElement, state, query } from "lit/decorators.js";
 import mainCSS from "../main.css?inline";
+import { ThemeAwareMixin } from "../mixins/ThemeAwareMixin.js";
+
+const ThemeAwareBase = ThemeAwareMixin(LitElement);
 
 @customElement("wc-navbar")
-export class WcNavbar extends LitElement {
-  static styles = unsafeCSS(mainCSS);
+export class WcNavbar extends ThemeAwareBase {
+  static styles = [unsafeCSS(mainCSS)];
 
   @state() private isSticky = false;
   @query(".wc-navbar") private navbarElement?: HTMLElement;
@@ -13,14 +16,13 @@ export class WcNavbar extends LitElement {
   private scrollY = 0;
   private elementTop = 0;
 
-  // Deshabilitar Shadow DOM para usar estilos globales de Tailwind
   protected createRenderRoot() {
     const shadowRoot = super.createRenderRoot();
 
-    // Aplicar estilos globales manualmente
-    const style = document.createElement("style");
-    style.textContent = (mainCSS as any).toString();
-    shadowRoot.appendChild(style);
+    // Ensure theme style element is created
+    const themeStyle = document.createElement("style");
+    themeStyle.id = "theme-vars";
+    shadowRoot.appendChild(themeStyle);
 
     return shadowRoot;
   }
@@ -104,17 +106,12 @@ export class WcNavbar extends LitElement {
     return html`
       <nav class="${this.getNavbarClasses()}">
         <div class="section wc-navbar__container">
-          <!-- Logo: Izquierda en desktop, centro en mobile -->
           <div class="wc-navbar__logo">
             <slot name="logo"></slot>
           </div>
-
-          <!-- Navigation: Centro en desktop, izquierda en mobile -->
           <div class="wc-navbar__navigation">
             <slot name="navigation"></slot>
           </div>
-
-          <!-- Actions: Derecha en desktop, derecha en mobile -->
           <div class="wc-navbar__actions">
             <slot name="actions"></slot>
           </div>

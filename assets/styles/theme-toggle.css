@@ -1,13 +1,20 @@
 /* Theme Toggle Component Styles - Matching Offcanvas */
 .wc-theme-toggle {
   @apply cursor-pointer border-0 bg-transparent p-2 rounded-none 
-         hover:bg-surfaceContainerLow transition-colors;
+         hover:bg-surfaceContainerLow transition-colors relative;
 }
 
 .wc-theme-toggle-icon {
-  @apply block h-6 w-6 transition-all duration-200 text-onSurfaceVariant;
+  @apply block size-6 transition-all duration-200 text-onSurfaceVariant;
 }
 
 .wc-theme-toggle:hover .wc-theme-toggle-icon {
   @apply text-primary;
+}
+
+/* Theme toggle badge indicator */
+.wc-theme-toggle-badge {
+  @apply absolute -top-0.5 -right-0.5 bg-primary text-onPrimary 
+         rounded-full size-4 text-xs flex items-center justify-center 
+         font-bold pointer-events-none;
 }
