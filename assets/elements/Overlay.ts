@@ -1,4 +1,3 @@
-// Archivo: assets/elements/Overlay.ts
 import { LitElement, html, unsafeCSS } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import mainCSS from "../main.css?inline";
@@ -12,7 +11,6 @@ import type { CardHeading, CardAspectRatio } from "../types/card.js";
 import { TitleRendererMixin } from "../mixins/TitleRenderer.js";
 import { PaddingMixin } from "../mixins/PaddingMixin.js";
 
-// Aplicar los mixins a la clase base
 const BaseClass = PaddingMixin(TitleRendererMixin(LitElement));
 
 @customElement("wc-overlay")
@@ -43,6 +41,7 @@ export class WcOverlay extends BaseClass {
 
     const classes = [
       "wc-overlay",
+      "wc-overlay--flat",
       paddingClass,
       `wc-overlay--align-${this.align}`,
       `wc-overlay--position-${this.position}`,

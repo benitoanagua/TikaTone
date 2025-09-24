@@ -1,6 +1,10 @@
-/* Card Component */
+/* Card Component - Flat Design */
 .wc-card {
-  @apply block transition-all duration-300 bg-surfaceContainerHighest rounded-lg;
+  @apply block transition-all duration-300 bg-surface border border-outlineVariant;
+}
+
+.wc-card--flat {
+  @apply shadow-none rounded-none border-l-4 border-l-primary;
 }
 
 .wc-card__container {
@@ -12,7 +16,7 @@
 }
 
 .wc-card__content {
-  @apply flex flex-col gap-y-3 flex-1 min-w-0;
+  @apply flex flex-col gap-y-3 flex-1 min-w-0 p-4;
 }
 
 .wc-card__author {
@@ -20,11 +24,11 @@
 }
 
 .wc-card__author-image {
-  @apply w-8 h-8 rounded-full object-cover;
+  @apply w-8 h-8 rounded-none object-cover;
 }
 
 .wc-card__author-bullet {
-  @apply bg-primary w-2 h-2 rounded-full inline-block;
+  @apply bg-primary w-2 h-2 rounded-none inline-block;
 }
 
 .wc-card__author-link {
@@ -52,18 +56,9 @@
 }
 
 .wc-card__tag {
-  background-color: color-mix(
-    in srgb,
-    var(--color-primaryContainer) 30%,
-    transparent
-  );
-  @apply text-primary py-1 px-3 rounded-full text-xs no-underline font-medium transition-colors;
+  @apply bg-primaryContainer text-onPrimaryContainer py-1 px-3 rounded-none text-xs no-underline font-medium transition-colors border border-primary;
 }
 
 .wc-card__tag:hover {
-  background-color: color-mix(
-    in srgb,
-    var(--color-primaryContainer) 50%,
-    transparent
-  );
+  @apply bg-primary text-onPrimary;
 }

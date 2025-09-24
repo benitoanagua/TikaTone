@@ -81,7 +81,7 @@ export class WcCard extends BaseClass {
 
   private getCardClasses() {
     const paddingClass = this.getPaddingClass();
-    return ["wc-card", paddingClass].join(" ");
+    return ["wc-card", "wc-card--flat", paddingClass].join(" ");
   }
 
   private shouldShowAuthor(): boolean {
@@ -156,12 +156,8 @@ export class WcCard extends BaseClass {
   }
 
   private getImageClasses() {
-    const sizeClass =
-      this.imageSize.width < 240
-        ? "rounded"
-        : this.imageSize.width >= 240 && this.imageSize.width <= 440
-          ? "rounded-md"
-          : "rounded-lg";
+    // Flat design: sin bordes redondeados
+    const sizeClass = "rounded-none";
 
     const aspectClass =
       this.aspect_ratio === "square"

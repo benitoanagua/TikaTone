@@ -15,9 +15,8 @@ import type {
   OverlayBox,
 } from "../types/overlay.js";
 
-const meta: Meta<OverlayProps> = {
+const meta = {
   title: "Components/Overlay",
-  component: "wc-overlay",
   tags: ["autodocs"],
   argTypes: {
     heading: {
@@ -54,7 +53,6 @@ const meta: Meta<OverlayProps> = {
     const overlay = document.createElement("wc-overlay");
 
     Object.entries(args).forEach(([key, value]) => {
-      // Solo establecer atributos si el valor no es undefined, null o vacío
       if (value !== undefined && value !== null && value !== "") {
         overlay.setAttribute(key.replace(/_/g, "-"), String(value));
       }
@@ -62,7 +60,7 @@ const meta: Meta<OverlayProps> = {
 
     return overlay;
   },
-};
+} satisfies Meta<OverlayProps>;
 
 export default meta;
 type Story = StoryObj<OverlayProps>;
@@ -89,7 +87,10 @@ export const Default: Story = {
 
 export const ContentVariations: Story = {
   name: "Content Variations",
-  render: () => {
+  args: {
+    ...generateOverlayData(),
+  },
+  render: (args) => {
     const container = document.createElement("div");
     container.className = "grid grid-cols-1 md:grid-cols-2 gap-6 p-6";
 
@@ -101,7 +102,6 @@ export const ContentVariations: Story = {
           author_name: randFullName(),
           published_at: `${randMonth({ abbreviation: true })} ${randNumber({ min: 1, max: 30 })}, ${randNumber({ min: 2020, max: 2024 })}`,
           reading_time: `${randNumber({ min: 5, max: 25 })} min read`,
-          feature_image: "https://picsum.photos/800/500?random=1",
         },
       },
       {
@@ -111,7 +111,6 @@ export const ContentVariations: Story = {
           author_name: "",
           published_at: "",
           reading_time: "",
-          feature_image: "https://picsum.photos/800/400?random=2",
         },
       },
       {
@@ -121,7 +120,6 @@ export const ContentVariations: Story = {
           author_name: "",
           published_at: "",
           reading_time: "",
-          feature_image: "https://picsum.photos/800/450?random=3",
         },
       },
       {
@@ -131,26 +129,28 @@ export const ContentVariations: Story = {
           author_name: "",
           published_at: "",
           reading_time: "",
-          feature_image: "",
-          fill: "none" as OverlayFill,
-          box: "transparent" as OverlayBox,
+          fill: "none",
+          box: "transparent",
         },
       },
     ];
 
     variations.forEach((variation) => {
-      const baseData = generateOverlayData();
       const overlay = document.createElement("wc-overlay");
 
-      Object.entries({ ...baseData, ...variation.data }).forEach(
-        ([key, value]) => {
-          if (value !== undefined && value !== null && value !== "") {
-            overlay.setAttribute(key.replace(/_/g, "-"), String(value));
-          }
-        }
-      );
+      // Usar args base y aplicar variación
+      const combinedData = {
+        ...args,
+        ...variation.data,
+        title: `${args.title} (${variation.name})`,
+      };
 
-      overlay.setAttribute("title", `${baseData.title} (${variation.name})`);
+      Object.entries(combinedData).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== "") {
+          overlay.setAttribute(key.replace(/_/g, "-"), String(value));
+        }
+      });
+
       container.appendChild(overlay);
     });
 
@@ -158,52 +158,37 @@ export const ContentVariations: Story = {
   },
 };
 
-export const FillAndBoxVariations: Story = {
-  name: "Fill & Box Variations",
-  render: () => {
+export const StyleVariations: Story = {
+  name: "Style Variations",
+  args: {
+    ...generateOverlayData(),
+  },
+  render: (args) => {
     const container = document.createElement("div");
     container.className = "grid grid-cols-1 md:grid-cols-2 gap-6 p-6";
 
-    const combinations = [
-      {
-        fill: "full" as OverlayFill,
-        box: "background" as OverlayBox,
-        name: "Full + Background",
-      },
-      {
-        fill: "gradient" as OverlayFill,
-        box: "border" as OverlayBox,
-        name: "Gradient + Border",
-      },
-      {
-        fill: "none" as OverlayFill,
-        box: "transparent" as OverlayBox,
-        name: "None + Transparent",
-      },
-      {
-        fill: "gradient" as OverlayFill,
-        box: "background" as OverlayBox,
-        name: "Gradient + Background",
-      },
+    const styles = [
+      { fill: "full", box: "background", name: "Full + Background" },
+      { fill: "gradient", box: "border", name: "Gradient + Border" },
+      { fill: "none", box: "transparent", name: "None + Transparent" },
+      { fill: "gradient", box: "background", name: "Gradient + Background" },
     ];
 
-    combinations.forEach((combo) => {
-      const baseData = generateOverlayData();
+    styles.forEach((style) => {
       const overlay = document.createElement("wc-overlay");
 
-      Object.entries(baseData).forEach(([key, value]) => {
+      const combinedData = {
+        ...args,
+        ...style,
+        title: `${args.title} (${style.name})`,
+        feature_image: `https://picsum.photos/600/400?random=${randNumber({ min: 1, max: 1000 })}`,
+      };
+
+      Object.entries(combinedData).forEach(([key, value]) => {
         if (value !== undefined && value !== null && value !== "") {
           overlay.setAttribute(key.replace(/_/g, "-"), String(value));
         }
       });
-
-      overlay.setAttribute("fill", combo.fill);
-      overlay.setAttribute("box", combo.box);
-      overlay.setAttribute("title", `${baseData.title} (${combo.name})`);
-      overlay.setAttribute(
-        "feature-image",
-        `https://picsum.photos/600/400?random=${randNumber({ min: 1, max: 1000 })}`
-      );
 
       container.appendChild(overlay);
     });
@@ -214,50 +199,35 @@ export const FillAndBoxVariations: Story = {
 
 export const PositioningVariations: Story = {
   name: "Positioning Variations",
-  render: () => {
+  args: {
+    ...generateOverlayData(),
+  },
+  render: (args) => {
     const container = document.createElement("div");
     container.className = "grid grid-cols-1 md:grid-cols-2 gap-6 p-6";
 
     const positions = [
-      {
-        align: "start" as OverlayAlign,
-        position: "top" as OverlayPosition,
-        name: "Top Start",
-      },
-      {
-        align: "center" as OverlayAlign,
-        position: "center" as OverlayPosition,
-        name: "Center",
-      },
-      {
-        align: "end" as OverlayAlign,
-        position: "bottom" as OverlayPosition,
-        name: "Bottom End",
-      },
-      {
-        align: "start" as OverlayAlign,
-        position: "bottom" as OverlayPosition,
-        name: "Bottom Start",
-      },
+      { align: "start", position: "top", name: "Top Start" },
+      { align: "center", position: "center", name: "Center" },
+      { align: "end", position: "bottom", name: "Bottom End" },
+      { align: "start", position: "bottom", name: "Bottom Start" },
     ];
 
     positions.forEach((pos) => {
-      const baseData = generateOverlayData();
       const overlay = document.createElement("wc-overlay");
 
-      Object.entries(baseData).forEach(([key, value]) => {
+      const combinedData = {
+        ...args,
+        ...pos,
+        title: `${args.title} (${pos.name})`,
+        feature_image: `https://picsum.photos/700/500?random=${randNumber({ min: 1, max: 1000 })}`,
+      };
+
+      Object.entries(combinedData).forEach(([key, value]) => {
         if (value !== undefined && value !== null && value !== "") {
           overlay.setAttribute(key.replace(/_/g, "-"), String(value));
         }
       });
-
-      overlay.setAttribute("align", pos.align);
-      overlay.setAttribute("position", pos.position);
-      overlay.setAttribute("title", `${baseData.title} (${pos.name})`);
-      overlay.setAttribute(
-        "feature-image",
-        `https://picsum.photos/700/500?random=${randNumber({ min: 1, max: 1000 })}`
-      );
 
       container.appendChild(overlay);
     });
@@ -268,61 +238,34 @@ export const PositioningVariations: Story = {
 
 export const AspectRatioVariations: Story = {
   name: "Aspect Ratio Variations",
-  render: () => {
+  args: {
+    ...generateOverlayData(),
+  },
+  render: (args) => {
     const container = document.createElement("div");
     container.className = "grid grid-cols-1 md:grid-cols-3 gap-6 p-6";
 
     const ratios = [
-      { ratio: "monitor" as const, name: "Monitor (4:3)", height: "450" },
-      { ratio: "square" as const, name: "Square (1:1)", height: "600" },
-      { ratio: "video" as const, name: "Video (16:9)", height: "400" },
+      { ratio: "monitor", name: "Monitor (4:3)", height: "450" },
+      { ratio: "square", name: "Square (1:1)", height: "600" },
+      { ratio: "video", name: "Video (16:9)", height: "400" },
     ];
 
     ratios.forEach((item) => {
-      const baseData = generateOverlayData();
       const overlay = document.createElement("wc-overlay");
 
-      Object.entries(baseData).forEach(([key, value]) => {
+      const combinedData = {
+        ...args,
+        aspect_ratio: item.ratio,
+        title: `${args.title} (${item.name})`,
+        feature_image: `https://picsum.photos/600/${item.height}?random=${randNumber({ min: 1, max: 1000 })}`,
+      };
+
+      Object.entries(combinedData).forEach(([key, value]) => {
         if (value !== undefined && value !== null && value !== "") {
           overlay.setAttribute(key.replace(/_/g, "-"), String(value));
         }
       });
-
-      overlay.setAttribute("aspect-ratio", item.ratio);
-      overlay.setAttribute("title", `${baseData.title} (${item.name})`);
-      overlay.setAttribute(
-        "feature-image",
-        `https://picsum.photos/600/${item.height}?random=${randNumber({ min: 1, max: 1000 })}`
-      );
-
-      container.appendChild(overlay);
-    });
-
-    return container;
-  },
-};
-
-export const HeadingSizeVariations: Story = {
-  name: "Heading Size Variations",
-  render: () => {
-    const container = document.createElement("div");
-    container.className =
-      "grid grid-cols-1 md:grid-cols-3 gap-6 p-6 bg-surfaceContainerLow";
-
-    const headings = [1, 3, 6] as const;
-
-    headings.forEach((heading) => {
-      const baseData = generateOverlayData();
-      const overlay = document.createElement("wc-overlay");
-
-      Object.entries(baseData).forEach(([key, value]) => {
-        if (value !== undefined && value !== null && value !== "") {
-          overlay.setAttribute(key.replace(/_/g, "-"), String(value));
-        }
-      });
-
-      overlay.setAttribute("heading", heading.toString());
-      overlay.setAttribute("title", `Heading ${heading} Example`);
 
       container.appendChild(overlay);
     });
