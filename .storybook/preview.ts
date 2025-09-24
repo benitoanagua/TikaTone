@@ -1,8 +1,18 @@
 import type { Preview } from "@storybook/html";
 
-// Importa tus estilos y custom elements
 import "../public/tika-tone-elements.css";
 import "../public/tika-tone-elements.es.js";
+
+const applyTheme = () => {
+  const savedTheme = localStorage.getItem("wc-theme");
+  const systemPrefersDark = window.matchMedia(
+    "(prefers-color-scheme: dark)"
+  ).matches;
+  const theme = savedTheme || (systemPrefersDark ? "dark" : "light");
+  document.documentElement.setAttribute("data-theme", theme);
+};
+
+applyTheme();
 
 const preview: Preview = {
   parameters: {

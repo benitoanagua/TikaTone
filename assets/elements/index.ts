@@ -5,9 +5,18 @@ import { WcLogo } from "./Logo.js";
 import { WcNavbar } from "./Navbar.js";
 import { WcOverlay } from "./Overlay.js";
 import { WcOffcanvas } from "./Offcanvas.js";
+import { WcThemeToggle } from "./ThemeToggle.js";
 
 // Export all components and types
-export { WcCard, WcGrille, WcLogo, WcNavbar, WcOverlay, WcOffcanvas };
+export {
+  WcCard,
+  WcGrille,
+  WcLogo,
+  WcNavbar,
+  WcOverlay,
+  WcOffcanvas,
+  WcThemeToggle,
+};
 
 // Global type declarations
 declare global {
@@ -18,5 +27,6 @@ declare global {
     "wc-sticky": WcNavbar;
     "wc-overlay": WcOverlay;
     "wc-offcanvas": WcOffcanvas;
+    "wc-theme-toggle": WcThemeToggle;
   }
 }

@@ -1,0 +1,41 @@
+/* Global Theme System */
+:root,
+[data-theme="light"] {
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+/* Asegurar que el tema se aplique a todo el documento */
+html,
+body,
+#storybook-root,
+.story-container {
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+/* Theme-aware backgrounds */
+[data-theme="light"] {
+  background-color: var(--color-background);
+  color: var(--color-onBackground);
+}
+
+[data-theme="dark"] {
+  background-color: var(--color-background);
+  color: var(--color-onBackground);
+}
+
+/* Asegurar que los custom elements hereden el tema */
+wc-card,
+wc-navbar,
+wc-overlay,
+wc-offcanvas,
+wc-grille,
+wc-logo,
+wc-theme-toggle {
+  color: inherit;
+}
