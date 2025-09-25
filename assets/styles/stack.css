@@ -1,16 +1,16 @@
-/* Stack Component - Flat Design con efecto 3D */
+/* Stack Component - Flat Design con efecto 3D Vue-like */
 .wc-stack {
   @apply relative w-full;
 }
 
-.wc-stack__container {
-  @apply hidden;
+.wc-stack-item {
+  @apply w-full;
+  display: none !important;
 }
 
 .wc-stack__button {
-  @apply px-4 py-2 border-2 font-medium text-sm transition-colors duration-200 
-         cursor-pointer disabled:cursor-not-allowed disabled:opacity-50
-         rounded-none; /* Flat design - no rounded corners */
+  @apply px-6 py-2 border-2 font-medium text-sm transition-all duration-300 
+         cursor-pointer rounded-lg w-auto min-w-32; /* Botones más compactos como Vue */
 }
 
 .wc-stack__button--primary {
@@ -19,43 +19,31 @@
 }
 
 .wc-stack__button--secondary {
-  @apply bg-secondaryContainer text-onSecondaryContainer border-outlineVariant
+  @apply bg-secondaryContainer text-onSecondaryContainer border-secondary
          hover:bg-secondary hover:text-onSecondary;
 }
 
-.wc-stack__button:disabled {
-  @apply bg-surfaceContainer text-onSurfaceVariant border-outlineVariant;
+.wc-stack__content {
+  @apply p-4 transition-all duration-300;
 }
 
-/* Efecto 3D mejorado */
-.wc-stack > div {
-  transition: all 0.3s ease-out;
-}
-
-/* Sombra sutil para profundidad */
-.wc-stack > div > div:last-child {
-  box-shadow:
-    0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06);
-}
-
-/* Asegurar que los elementos se superponen correctamente */
+/* Efecto 3D Vue-like */
 .wc-stack > div {
   transform-style: preserve-3d;
 }
 
-/* Responsive adjustments manteniendo el efecto 3D */
+/* Responsive adjustments */
 @media (max-width: 768px) {
-  .wc-stack > div {
-    @apply right-0 left-0; /* En mobile, centrado pero mantiene traslación vertical */
-  }
-
   .wc-stack__button {
-    @apply w-full;
+    @apply w-full max-w-40;
   }
 
-  /* Efecto 3D más suave en mobile */
   .wc-stack > div {
-    transform: translateY(var(--translate-y)) !important;
+    @apply right-0 left-0;
   }
+}
+
+/* Mostrar solo el contenido posicionado, ocultar el original */
+.wc-stack > div .wc-stack-item {
+  display: block !important;
 }

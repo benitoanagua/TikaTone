@@ -1,178 +1,116 @@
 import type { Meta, StoryObj } from "@storybook/web-components";
 import { html, TemplateResult } from "lit-html";
-import { randPhrase, randWord, randCatchPhrase } from "@ngneat/falso";
-import type { StackProps, StackItem } from "../types/stack";
+import { randPhrase, randCatchPhrase } from "@ngneat/falso";
 
 const meta = {
   title: "Components/Stack",
   component: "wc-stack",
   tags: ["autodocs"],
   argTypes: {
-    maxVisible: {
+    maxItems: {
       control: { type: "range", min: 1, max: 5, step: 1 },
       description: "Maximum number of items visible at once",
     },
   },
-} satisfies Meta<StackProps>;
+} satisfies Meta;
 
 export default meta;
-type Story = StoryObj<StackProps>;
+type Story = StoryObj;
 
 /** Renderiza un Stack */
-const renderStack = (
-  args: StackProps,
-  content: TemplateResult | TemplateResult[]
-) => html`
-  <wc-stack
-    max-visible=${args.maxVisible ?? 3}
-    direction=${args.direction ?? "vertical"}
-    spacing=${args.spacing ?? "medium"}
-    animation-duration=${args.animationDuration ?? 300}
-    ?reverse-order=${args.reverseOrder ?? false}
-    ?auto-height=${args.autoHeight ?? false}
-    shadow=${args.shadow ?? "medium"}
-    rounded=${args.rounded ?? "medium"}
-  >
-    ${content}
-  </wc-stack>
+const renderStack = (items: TemplateResult[]) => html`
+  <wc-stack> ${items} </wc-stack>
 `;
 
-/** Renderiza un item genérico */
+/** Renderiza un item del stack */
 const renderStackItem = (
-  label: string,
-  index: number,
-  total: number
+  title: string,
+  content: string
 ): TemplateResult => html`
-  <div data-caption="${label}">
-    <div
-      class="p-6 border-2 border-outlineVariant min-h-[200px] flex flex-col justify-between"
-      style="background: linear-gradient(135deg, var(--color-surfaceContainerHigh), var(--color-surfaceContainer))"
-    >
+  <wc-stack-item title="${title}">
+    <div class="p-6 min-h-[200px] flex flex-col justify-between">
       <div>
         <h3 class="text-xl font-medium text-onSurface mb-3">
           ${randCatchPhrase()}
         </h3>
-        <p class="text-onSurfaceVariant leading-relaxed">${randPhrase()}</p>
-        <p class="text-onSurfaceVariant mt-3 text-sm">${randPhrase()}</p>
+        <p class="text-onSurfaceVariant leading-relaxed">${content}</p>
       </div>
       <div class="mt-4 pt-3 border-t border-outlineVariant">
-        <span class="text-xs text-onSurfaceVariant"
-          >Item ${index + 1} of ${total}</span
-        >
+        <span class="text-xs text-onSurfaceVariant">${title} Content</span>
       </div>
     </div>
-  </div>
+  </wc-stack-item>
 `;
 
 /** Contenedor para demos */
-const DemoContainer = (content: TemplateResult | TemplateResult[]) => html`
+const DemoContainer = (content: TemplateResult) => html`
   <div class="p-8 bg-background min-h-screen">
     <div class="text-center mb-8">
-      <h2 class="text-2xl font-bold text-onSurface mb-2">Stack Component</h2>
-      <p class="text-onSurfaceVariant">Interactive 3D stack demo</p>
+      <h2 class="text-2xl font-bold text-onSurface mb-2">3D Stack Component</h2>
+      <p class="text-onSurfaceVariant">Vue-like 3D stacking effect</p>
     </div>
     ${content}
   </div>
 `;
 
 export const Default: Story = {
-  render: (args) =>
-    DemoContainer(
-      renderStack(
-        args,
-        Array.from({ length: 5 }, (_, i) =>
-          renderStackItem(`Card ${i + 1}`, i, 5)
-        )
-      )
-    ),
-  args: { maxVisible: 3 },
-};
-
-export const DifferentMaxVisible: Story = {
-  name: "Different Max Visible Items",
   render: () =>
     DemoContainer(html`
-      ${[2, 3, 4, 5].map(
-        (max) => html`
-          <div class="mb-8">
-            <h3 class="text-lg font-medium text-onSurface mb-3">
-              Max Visible: ${max}
-            </h3>
-            ${renderStack(
-              { maxVisible: max },
-              Array.from({ length: 5 }, (_, i) =>
-                renderStackItem(`Card ${i + 1}`, i, 5)
-              )
-            )}
-          </div>
-        `
-      )}
-    `),
-};
-
-export const MixedContent: Story = {
-  name: "Mixed Content Types",
-  render: (args) =>
-    DemoContainer(html`
-      ${renderStack(args, [
-        html`<div data-caption="Basic Card">
-          <div class="p-6 bg-surfaceContainer border-2 border-outlineVariant">
-            <h3 class="text-lg font-medium text-onSurface mb-2">Simple Card</h3>
-            <p class="text-onSurfaceVariant">
-              This is a basic card with minimal content.
-            </p>
-          </div>
-        </div>`,
-        html`<div data-caption="Image Card">
-          <div class="border-2 border-outlineVariant bg-surfaceContainer">
-            <img
-              src="https://picsum.photos/300/200?random=1"
-              class="w-full h-32 object-cover"
-            />
-            <div class="p-4">
-              <h3 class="text-lg font-medium text-onSurface mb-2">
-                Card with Image
-              </h3>
-              <p class="text-onSurfaceVariant">
-                This card includes a header image.
-              </p>
-            </div>
-          </div>
-        </div>`,
-        html`<div data-caption="Action Card">
-          <div class="p-6 bg-surfaceContainer border-2 border-outlineVariant">
-            <h3 class="text-lg font-medium text-onSurface mb-2">
-              Card with Actions
-            </h3>
-            <p class="text-onSurfaceVariant mb-4">
-              This card includes interactive elements.
-            </p>
-            <div class="flex gap-2">
-              <button class="px-3 py-1 bg-primary text-onPrimary text-sm">
-                Action</button
-              ><button
-                class="px-3 py-1 bg-surfaceContainerHigh text-onSurface text-sm"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>`,
+      ${renderStack([
+        renderStackItem("Today", "Daily tasks and priorities for today."),
+        renderStackItem("Week", "Weekly goals and upcoming deadlines."),
+        renderStackItem("Month", "Monthly objectives and long-term planning."),
       ])}
     `),
-  args: { maxVisible: 3 },
 };
 
-export const Playground: Story = {
-  render: (args) =>
-    DemoContainer(
-      renderStack(
-        args,
-        Array.from({ length: 5 }, (_, i) =>
-          renderStackItem(`Card ${i + 1}`, i, 5)
-        )
-      )
-    ),
-  args: { maxVisible: 3 },
-  parameters: { controls: { expanded: true } },
+export const CustomTitles: Story = {
+  name: "With Custom Titles",
+  render: () =>
+    DemoContainer(html`
+      ${renderStack([
+        renderStackItem(
+          "Project Brief",
+          "Critical project information and requirements."
+        ),
+        renderStackItem(
+          "Meeting Notes",
+          "Notes from the last team meeting and action items."
+        ),
+        renderStackItem(
+          "Design Mockups",
+          "Latest design concepts and UI mockups."
+        ),
+      ])}
+    `),
+};
+
+export const DifferentContent: Story = {
+  name: "Different Content Heights",
+  render: () =>
+    DemoContainer(html`
+      ${renderStack([
+        html`<wc-stack-item title="Short">
+          <div class="p-4">
+            <h3 class="font-medium">Brief Content</h3>
+            <p>Short description.</p>
+          </div>
+        </wc-stack-item>`,
+        html`<wc-stack-item title="Medium">
+          <div class="p-4">
+            <h3 class="font-medium">Medium Content</h3>
+            <p>${randPhrase()}</p>
+            <p class="mt-2">Additional details here.</p>
+          </div>
+        </wc-stack-item>`,
+        html`<wc-stack-item title="Long">
+          <div class="p-4">
+            <h3 class="font-medium">Detailed Content</h3>
+            <p>${randPhrase()}</p>
+            <p class="mt-2">${randPhrase()}</p>
+            <p class="mt-2">More information and extended content.</p>
+          </div>
+        </wc-stack-item>`,
+      ])}
+    `),
 };

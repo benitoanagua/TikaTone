@@ -1,21 +1,16 @@
 import { LitElement, html, unsafeCSS } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import mainCSS from "../main.css?inline";
-
-interface StackItem {
-  height: number;
-  order: number;
-  element: HTMLElement;
-  caption: string;
-}
+import type { StackItem, StackProps } from "../types/stack.js";
 
 @customElement("wc-stack")
-export class WcStack extends LitElement {
+export class WcStack extends LitElement implements StackProps {
   static styles = [unsafeCSS(mainCSS)];
 
-  @property({ type: Number }) maxItems = 5;
+  @property({ type: Number }) maxItems = 3; // Fijo a 3 elementos como el Vue original
   @state() private items: StackItem[] = [];
-  @state() private wrapHeight = 0;
+  @state() private containerHeight = 0;
+  @state() private itemOrders: number[] = [0, 1, 2]; // Orden inicial como Vue
 
   // Deshabilitar Shadow DOM para mejor integración con slots
   protected createRenderRoot() {
@@ -35,38 +30,32 @@ export class WcStack extends LitElement {
   }
 
   protected firstUpdated() {
-    // Esperar a que el DOM esté completamente renderizado
     setTimeout(() => {
       this.initializeItems();
+      this.calculateContainerHeight();
     }, 0);
   }
 
   private initializeItems() {
-    const children = Array.from(this.children);
-    const visibleElements = children.slice(0, this.maxItems);
+    const children = Array.from(this.children).filter(
+      (child) => child.tagName.toLowerCase() === "wc-stack-item"
+    );
 
-    // Limpiar observadores anteriores
-    this.items.forEach((item) => {
-      this.resizeObserver?.unobserve(item.element);
-    });
+    const visibleElements = children.slice(0, this.maxItems);
 
     this.items = visibleElements.map((element, index) => {
       const htmlElement = element as HTMLElement;
-      const caption =
-        htmlElement.getAttribute("data-caption") || `Item ${index + 1}`;
-
-      // Observar este elemento
-      this.resizeObserver?.observe(htmlElement);
+      const title = htmlElement.getAttribute("title") || `Item ${index + 1}`;
 
       return {
         height: htmlElement.offsetHeight || 0,
-        order: index,
+        order: this.itemOrders[index],
         element: htmlElement,
-        caption,
+        title,
       };
     });
 
-    this.updateWrapHeight();
+    this.calculateContainerHeight();
   }
 
   private setupResizeObserver() {
@@ -79,150 +68,132 @@ export class WcStack extends LitElement {
 
         if (itemIndex !== -1) {
           this.items[itemIndex].height = Math.round(entry.contentRect.height);
-          this.updateWrapHeight();
+          this.calculateContainerHeight();
         }
       });
+    });
+
+    // Observar todos los elementos del stack
+    this.items.forEach((item) => {
+      this.resizeObserver?.observe(item.element);
     });
   }
 
   private cleanupResizeObserver() {
     this.resizeObserver?.disconnect();
-    this.items.forEach((item) => {
-      this.resizeObserver?.unobserve(item.element);
-    });
   }
 
-  private updateWrapHeight() {
+  private calculateContainerHeight() {
     if (this.items.length === 0) {
-      this.wrapHeight = 0;
+      this.containerHeight = 0;
       return;
     }
 
-    this.wrapHeight = Math.max(
-      ...this.items.map(
-        (item, index) => item.height + 32 * (this.items.length - index - 1)
-      )
+    // Calcular altura máxima como en Vue original
+    const maxHeight = Math.max(...this.items.map((item) => item.height));
+    this.containerHeight = maxHeight + 100; // Margen adicional como en Vue
+  }
+
+  private bringToFront(clickedIndex: number) {
+    // Lógica similar a Vue: rotar los órdenes
+    const newOrders = [...this.itemOrders];
+
+    // Rotación circular como en Vue: (order + clickedIndex * 2) % 3
+    this.itemOrders = this.itemOrders.map(
+      (order, index) => (order + clickedIndex * 2) % 3
+    );
+
+    // Actualizar órdenes en los items
+    this.items = this.items.map((item, index) => ({
+      ...item,
+      order: this.itemOrders[index],
+    }));
+
+    this.requestUpdate();
+
+    // Emitir evento de cambio
+    this.dispatchEvent(
+      new CustomEvent("stack-change", {
+        detail: {
+          activeItem: clickedIndex,
+          previousItem: this.findPreviousActive(clickedIndex),
+        },
+      })
     );
   }
 
-  private sendToFront(order: number) {
-    const currentIndex = this.items.findIndex((item) => item.order === order);
-    if (currentIndex === 0) return;
-
-    const item = this.items[currentIndex];
-
-    // Reordenar moviendo el item al frente
-    const newItems = this.items.filter((_, index) => index !== currentIndex);
-    newItems.unshift(item);
-
-    // Actualizar órdenes manteniendo la secuencia
-    this.items = newItems.map((item, index) => ({
-      ...item,
-      order: index,
-    }));
-
-    this.updateWrapHeight();
-    this.requestUpdate();
+  private findPreviousActive(currentIndex: number): number {
+    return this.itemOrders.findIndex((order) => order === 0);
   }
 
-  // Preservar exactamente la lógica original del efecto 3D
-  private getTopZindexClass(index: number): string {
-    const zIndexValue = (this.items.length - index - 1) * 10;
-
-    switch (zIndexValue) {
-      case 50:
-        return "translate-y-40 z-50 md:right-20";
-      case 40:
-        return "translate-y-32 z-40 md:right-16";
-      case 30:
-        return "translate-y-24 z-30 md:right-12";
-      case 20:
-        return "translate-y-16 z-20 md:right-8";
-      case 10:
-        return "translate-y-8 z-10 md:right-4";
+  // Efecto 3D exacto como en Vue original
+  private getTopZindexClass(order: number): string {
+    switch (order) {
+      case 2: // Bottom layer
+        return "translate-y-0 z-0 md:right-0 md:left-8";
+      case 1: // Middle layer
+        return "translate-y-8 z-10 md:right-4 md:left-4";
+      case 0: // Top layer
+        return "translate-y-16 z-20 md:right-8 md:left-0";
       default:
         return "translate-y-0 z-0 md:right-0";
     }
   }
 
-  private getMdLeftClass(index: number): string {
-    const leftValue = index * 4;
-
-    switch (leftValue) {
-      case 20:
-        return "md:left-20";
-      case 16:
-        return "md:left-16";
-      case 12:
-        return "md:left-12";
-      case 8:
-        return "md:left-8";
-      case 4:
-        return "md:left-4";
-      default:
-        return "md:left-0";
-    }
+  private getButtonColor(order: number): string {
+    return order === 0 ? "secondary" : "primary";
   }
 
-  private getBgClass(index: number): string {
+  private getStackBgClass(order: number): string {
     const bgClasses = [
-      "bg-primaryContainer",
-      "bg-surfaceContainerHigh",
-      "bg-surfaceContainer",
-      "bg-surfaceContainerLow",
-      "bg-surfaceContainerLowest",
+      "bg-primaryContainer", // Top (order 0)
+      "bg-surfaceContainerHigh", // Middle (order 1)
+      "bg-surfaceContainer", // Bottom (order 2)
     ];
-
-    return bgClasses[Math.min(index, bgClasses.length - 1)];
+    return bgClasses[order] || bgClasses[0];
   }
 
-  private getStackItemClasses(index: number): string {
-    const baseClasses =
-      "absolute transition-all duration-300 ease-out flex items-center flex-col w-full";
-    const zIndexClass = this.getTopZindexClass(index);
-    const leftClass = this.getMdLeftClass(index);
-
-    return `${baseClasses} ${zIndexClass} ${leftClass}`
-      .replace(/\s+/g, " ")
-      .trim();
+  private getStackItemClasses(order: number): string {
+    return `absolute w-full flex flex-col transition-all duration-300 ease-out ${this.getTopZindexClass(order)}`;
   }
 
-  private getItemBgClass(index: number): string {
-    const bgClass = this.getBgClass(index);
-    return `pt-5 px-2 border border-outlineVariant ${bgClass}`;
-  }
-
-  private getButtonColor(index: number): string {
-    return index === 0 ? "secondary" : "primary";
+  private handleSlotChange() {
+    this.initializeItems();
   }
 
   render() {
     return html`
-      <div class="wc-stack relative" style="height: ${this.wrapHeight}px">
-        ${this.items.map(
-          (item, index) => html`
-            <div class="${this.getStackItemClasses(index)}">
-              <!-- Botón de encabezado -->
-              <div class="-mb-3 z-10 w-full max-w-40">
+      <div class="wc-stack relative" style="height: ${this.containerHeight}px">
+        <slot @slotchange="${this.handleSlotChange}"></slot>
+
+        ${this.items.map((item, index) => {
+          const order = item.order;
+          return html`
+            <div class="${this.getStackItemClasses(order)}">
+              <!-- Botón de encabezado - igual que Vue -->
+              <div class="flex justify-center mb-2">
                 <button
                   class="wc-stack__button wc-stack__button--${this.getButtonColor(
-                    index
+                    order
                   )}"
-                  @click="${() => this.sendToFront(item.order)}"
-                  ?disabled="${index === 0}"
-                  aria-label="Bring ${item.caption} to front"
+                  @click="${() => this.bringToFront(index)}"
+                  aria-label="Bring ${item.title} to front"
                 >
-                  ${item.caption}
+                  ${item.title}
                 </button>
               </div>
 
-              <!-- Contenido del item - usar el elemento original -->
-              <div class="${this.getItemBgClass(index)} w-full">
+              <!-- Contenido del item con sombra Tailwind -->
+              <div
+                class="wc-stack__content ${this.getStackBgClass(
+                  order
+                )} shadow-lg rounded-lg border border-outlineVariant"
+              >
                 ${item.element}
               </div>
             </div>
-          `
-        )}
+          `;
+        })}
       </div>
     `;
   }

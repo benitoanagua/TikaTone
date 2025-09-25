@@ -6,8 +6,7 @@ import mainCSS from "../main.css?inline";
 export class WcStackItem extends LitElement {
   static styles = [unsafeCSS(mainCSS)];
 
-  @property({ type: String }) caption = "Title";
-  @property({ type: Number }) order = 0;
+  @property({ type: String }) title = "Title";
 
   // Deshabilitar Shadow DOM para mejor integración
   protected createRenderRoot() {
@@ -16,13 +15,18 @@ export class WcStackItem extends LitElement {
 
   connectedCallback() {
     super.connectedCallback();
-    this.setAttribute("data-caption", this.caption);
-    this.setAttribute("data-order", this.order.toString());
+    this.setAttribute("title", this.title);
+  }
+
+  updated(changedProperties: Map<string, any>) {
+    if (changedProperties.has("title")) {
+      this.setAttribute("title", this.title);
+    }
   }
 
   render() {
     return html`
-      <div class="wc-stack-item">
+      <div class="wc-stack-item" style="display: none;">
         <slot></slot>
       </div>
     `;
