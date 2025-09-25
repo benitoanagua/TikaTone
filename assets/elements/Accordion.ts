@@ -1,16 +1,17 @@
 import { LitElement, html, unsafeCSS } from "lit";
 import { customElement, property, state, query } from "lit/decorators.js";
 import mainCSS from "../main.css?inline";
+import type { AccordionVariant } from "../types/accordion.js";
 
 @customElement("wc-accordion")
 export class WcAccordion extends LitElement {
   static styles = [unsafeCSS(mainCSS)];
 
   @property({ type: Boolean }) multiple = false;
-  @property({ type: String }) variant: "default" | "bordered" | "separated" =
-    "default";
+  @property({ type: String }) variant: AccordionVariant = "default";
 
   @state() private openItems = new Set<number>();
+  @state() private itemsCount = 0;
 
   @query("slot") private slotElement?: HTMLSlotElement;
 
@@ -38,6 +39,7 @@ export class WcAccordion extends LitElement {
     if (!this.slotElement) return;
 
     const assignedElements = this.slotElement.assignedElements();
+    this.itemsCount = assignedElements.length;
 
     assignedElements.forEach((element, index) => {
       if (

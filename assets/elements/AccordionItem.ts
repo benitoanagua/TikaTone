@@ -1,6 +1,7 @@
 import { LitElement, html, unsafeCSS } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import mainCSS from "../main.css?inline";
+import type { AccordionVariant } from "../types/accordion.js";
 
 @customElement("wc-accordion-item")
 export class WcAccordionItem extends LitElement {
@@ -12,7 +13,7 @@ export class WcAccordionItem extends LitElement {
   @property({ type: Boolean }) disabled = false;
 
   @state() private index = 0;
-  @state() private variant: "default" | "bordered" | "separated" = "default";
+  @state() private variant: AccordionVariant = "default";
   @state() private multiple = false;
 
   // Deshabilitar Shadow DOM para mejor integración con el sistema
@@ -32,11 +33,9 @@ export class WcAccordionItem extends LitElement {
     const multipleAttr = this.getAttribute("data-multiple");
 
     if (indexAttr) this.index = parseInt(indexAttr, 10);
-    if (variantAttr)
-      this.variant = variantAttr as "default" | "bordered" | "separated";
+    if (variantAttr) this.variant = variantAttr as AccordionVariant;
     if (multipleAttr) this.multiple = multipleAttr === "true";
 
-    this.classList.add("wc-accordion-item");
     this.updateClasses();
   }
 
@@ -104,6 +103,7 @@ export class WcAccordionItem extends LitElement {
           ?disabled="${this.disabled}"
           aria-expanded="${this.open}"
           aria-controls="content-${this.index}"
+          id="header-${this.index}"
         >
           <div class="wc-accordion-item__header-content">
             <div class="wc-accordion-item__header-text">

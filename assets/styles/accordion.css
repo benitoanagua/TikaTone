@@ -1,10 +1,10 @@
 /* Accordion Component - Flat Design */
 .wc-accordion {
-  @apply w-full;
+  @apply w-full bg-surface border-l-4 border-l-primary;
 }
 
 .wc-accordion--flat {
-  @apply border-l-4 border-l-primary;
+  @apply shadow-none rounded-none;
 }
 
 .wc-accordion--default .wc-accordion-item:not(:last-child) {
@@ -41,7 +41,7 @@
 }
 
 .wc-accordion-item--disabled {
-  @apply opacity-60;
+  @apply opacity-60 pointer-events-none;
 }
 
 .wc-accordion-item__container {
@@ -49,34 +49,35 @@
 }
 
 .wc-accordion-item__header {
-  @apply w-full p-4 text-left border-0 bg-transparent cursor-pointer 
+  @apply w-full p-4 md:p-6 text-left border-0 bg-transparent cursor-pointer 
          transition-colors duration-200 focus:outline-none
          hover:bg-surfaceContainerLow focus:bg-surfaceContainerLow
-         disabled:cursor-not-allowed disabled:hover:bg-transparent;
+         disabled:cursor-not-allowed disabled:hover:bg-transparent
+         disabled:opacity-50;
 }
 
 .wc-accordion-item__header--disabled {
-  @apply text-onSurfaceVariant;
+  @apply text-onSurfaceVariant cursor-not-allowed;
 }
 
 .wc-accordion-item__header-content {
-  @apply flex items-center justify-between w-full;
+  @apply flex items-center justify-between w-full gap-4;
 }
 
 .wc-accordion-item__header-text {
-  @apply flex-1 text-left;
+  @apply flex-1 text-left min-w-0;
 }
 
 .wc-accordion-item__title {
-  @apply text-lg font-medium text-onSurface m-0 leading-tight;
+  @apply text-lg md:text-xl font-medium text-onSurface m-0 leading-tight;
 }
 
 .wc-accordion-item__subtitle {
-  @apply text-sm text-onSurfaceVariant mt-1 m-0 leading-tight;
+  @apply text-sm md:text-base text-onSurfaceVariant mt-1 m-0 leading-tight;
 }
 
 .wc-accordion-item__icon {
-  @apply ml-4 text-onSurfaceVariant transition-transform duration-200 flex-shrink-0;
+  @apply text-onSurfaceVariant transition-transform duration-200 flex-shrink-0;
 }
 
 .wc-accordion-item__icon--open {
@@ -93,7 +94,7 @@
 }
 
 .wc-accordion-item__body {
-  @apply p-4 pt-0 text-onSurface;
+  @apply p-4 md:p-6 pt-0 text-onSurface;
 }
 
 /* Focus styles for accessibility */
@@ -118,30 +119,7 @@
 }
 
 .wc-accordion-item__content--open .wc-accordion-item__body {
-  @apply border-t border-outlineVariant;
-}
-
-/* Mobile responsive adjustments */
-@media (max-width: 768px) {
-  .wc-accordion-item__header {
-    @apply p-3;
-  }
-
-  .wc-accordion-item__body {
-    @apply p-3 pt-0;
-  }
-
-  .wc-accordion-item__title {
-    @apply text-base;
-  }
-
-  .wc-accordion-item__subtitle {
-    @apply text-xs;
-  }
-
-  .wc-accordion-item__icon {
-    @apply ml-2;
-  }
+  @apply border-t border-outlineVariant pt-4 md:pt-6;
 }
 
 /* High contrast mode support */
