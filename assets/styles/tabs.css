@@ -1,0 +1,183 @@
+/* Tabs Component - Flat Design */
+.wc-tabs {
+  @apply w-full;
+}
+
+.wc-tabs--flat {
+  @apply border-l-4 border-l-primary bg-surface;
+}
+
+.wc-tabs--horizontal {
+  @apply flex flex-col;
+}
+
+.wc-tabs--vertical {
+  @apply flex flex-row;
+}
+
+.wc-tabs--disabled {
+  @apply opacity-60 pointer-events-none;
+}
+
+/* Tab Header Styles */
+.wc-tabs__header {
+  @apply border-b border-outlineVariant;
+}
+
+.wc-tabs--horizontal .wc-tabs__header {
+  @apply flex flex-row overflow-x-auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.wc-tabs--horizontal .wc-tabs__header::-webkit-scrollbar {
+  display: none;
+}
+
+.wc-tabs--vertical .wc-tabs__header {
+  @apply flex flex-col border-b-0 border-r border-outlineVariant min-w-48;
+}
+
+/* Tab Content Styles */
+.wc-tabs__content {
+  @apply flex-1;
+}
+
+/* Individual Tab Styles */
+.wc-tab {
+  @apply flex-shrink-0;
+}
+
+.wc-tab--flat {
+  @apply rounded-none;
+}
+
+.wc-tab__button {
+  @apply px-4 py-3 border-0 bg-transparent text-onSurfaceVariant font-medium
+         cursor-pointer transition-all duration-200 focus:outline-none
+         hover:text-onSurface hover:bg-surfaceContainerLow
+         disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+/* Horizontal Tab Styles */
+.wc-tab--horizontal .wc-tab__button {
+  @apply flex items-center gap-2 whitespace-nowrap
+         border-b-2 border-transparent;
+}
+
+.wc-tab--horizontal.wc-tab--active .wc-tab__button {
+  @apply text-primary border-b-primary bg-primaryContainer;
+}
+
+/* Vertical Tab Styles */
+.wc-tab--vertical .wc-tab__button {
+  @apply flex items-center gap-2 w-full text-left
+         border-r-2 border-transparent;
+}
+
+.wc-tab--vertical.wc-tab--active .wc-tab__button {
+  @apply text-primary border-r-primary bg-primaryContainer;
+}
+
+/* Pills Variant */
+.wc-tabs--pills .wc-tab__button {
+  @apply mx-1 border-2 border-transparent bg-surfaceContainer;
+}
+
+.wc-tabs--pills .wc-tab--active .wc-tab__button {
+  @apply border-primary bg-primaryContainer text-onPrimaryContainer;
+}
+
+.wc-tabs--pills .wc-tab__button:hover {
+  @apply border-primary/50;
+}
+
+/* Underlined Variant */
+.wc-tabs--underlined .wc-tabs__header {
+  @apply border-b-2 border-primary;
+}
+
+.wc-tabs--underlined .wc-tab__button {
+  @apply border-b-2 border-transparent -mb-0.5;
+}
+
+.wc-tabs--underlined .wc-tab--active .wc-tab__button {
+  @apply border-b-primary bg-transparent text-primary;
+}
+
+/* Tab Icon and Label */
+.wc-tab__icon {
+  @apply w-5 h-5 flex-shrink-0;
+}
+
+.wc-tab__label {
+  @apply flex-1;
+}
+
+/* Focus Styles */
+.wc-tab__button:focus {
+  @apply outline-2 outline-primary outline-offset-2;
+}
+
+/* Tab Panel Styles */
+.wc-tab-panel {
+  @apply w-full;
+}
+
+.wc-tab-panel--flat {
+  @apply rounded-none;
+}
+
+.wc-tab-panel__content {
+  @apply p-4 focus:outline-none;
+}
+
+.wc-tab-panel--hidden {
+  @apply hidden;
+}
+
+.wc-tab-panel--active {
+  @apply block;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .wc-tabs--vertical {
+    @apply flex-col;
+  }
+
+  .wc-tabs--vertical .wc-tabs__header {
+    @apply flex-row border-r-0 border-b border-outlineVariant min-w-full
+           overflow-x-auto;
+  }
+
+  .wc-tabs--vertical .wc-tab__button {
+    @apply border-r-0 border-b-2 border-transparent whitespace-nowrap;
+  }
+
+  .wc-tabs--vertical.wc-tab--active .wc-tab__button {
+    @apply border-r-0 border-b-primary;
+  }
+
+  .wc-tab-panel__content {
+    @apply p-3;
+  }
+
+  .wc-tab__button {
+    @apply px-3 py-2 text-sm;
+  }
+}
+
+/* High Contrast Support */
+@media (prefers-contrast: high) {
+  .wc-tab--active .wc-tab__button {
+    @apply border-onSurface text-onSurface;
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .wc-tab__button {
+    @apply transition-none;
+  }
+}

@@ -11,6 +11,7 @@
 @import "./styles/offcanvas.css";
 @import "./styles/overlay.css";
 @import "./styles/stack.css";
+@import "./styles/tabs.css";
 
 @source '../assets/**/*.{ts,css,js}';
 @source '../src/**/*.{ts,css,js,php}';

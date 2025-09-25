@@ -1,0 +1,104 @@
+/* Carousel Component - Flat Design */
+.wc-carousel {
+  @apply w-full;
+}
+
+.wc-carousel--flat {
+  @apply border-l-4 border-l-primary bg-surface;
+}
+
+.wc-carousel__navigation {
+  @apply flex flex-col md:flex-row items-center justify-between gap-4 p-4 
+         bg-surfaceContainerLow border-b border-outlineVariant;
+}
+
+.wc-carousel__arrows {
+  @apply flex gap-2 order-2 md:order-1;
+}
+
+.wc-carousel__arrow {
+  @apply p-2 border-2 border-outlineVariant bg-surfaceContainer text-onSurfaceVariant
+         transition-colors cursor-pointer rounded-none
+         hover:border-primary hover:text-primary hover:bg-surfaceContainerHigh
+         disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+.wc-carousel__arrow--prev,
+.wc-carousel__arrow--next {
+  @apply w-10 h-10 flex items-center justify-center;
+}
+
+.wc-carousel__dots {
+  @apply flex gap-2 order-1 md:order-2;
+}
+
+.wc-carousel__dot {
+  @apply w-3 h-3 border-2 border-outlineVariant bg-surfaceContainer
+         transition-colors cursor-pointer rounded-none
+         hover:border-primary hover:bg-primary;
+}
+
+.wc-carousel__dot--active {
+  @apply border-primary bg-primary;
+}
+
+.wc-carousel__container {
+  @apply flex overflow-x-auto scroll-smooth gap-4 p-4;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scroll-snap-type: x mandatory;
+}
+
+.wc-carousel__container::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+/* Carousel Item Styles */
+.wc-carousel-item {
+  @apply flex-shrink-0;
+  scroll-snap-align: start;
+}
+
+.wc-carousel-item__content {
+  @apply h-full w-full;
+}
+
+/* Flat design adjustments */
+.wc-carousel--flat .wc-carousel__navigation {
+  @apply shadow-none;
+}
+
+.wc-carousel--flat .wc-carousel__arrow {
+  @apply shadow-none;
+}
+
+.wc-carousel--flat .wc-carousel__dot {
+  @apply shadow-none;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+  .wc-carousel__navigation {
+    @apply flex-col gap-3 p-3;
+  }
+
+  .wc-carousel__arrows {
+    @apply order-1 w-full justify-center;
+  }
+
+  .wc-carousel__dots {
+    @apply order-2 w-full justify-center;
+  }
+
+  .wc-carousel__container {
+    @apply p-3 gap-3;
+  }
+
+  .wc-carousel__arrow {
+    @apply w-12 h-12;
+  }
+
+  .wc-carousel__dot {
+    @apply w-4 h-4;
+  }
+}
