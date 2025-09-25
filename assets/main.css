@@ -10,6 +10,7 @@
 @import "./styles/navbar.css";
 @import "./styles/offcanvas.css";
 @import "./styles/overlay.css";
+@import "./styles/stack.css";
 
 @source '../assets/**/*.{ts,css,js}';
 @source '../src/**/*.{ts,css,js,php}';

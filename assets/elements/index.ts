@@ -6,6 +6,8 @@ import { WcNavbar } from "./Navbar.js";
 import { WcOverlay } from "./Overlay.js";
 import { WcOffcanvas } from "./Offcanvas.js";
 import { WcThemeToggle } from "./ThemeToggle.js";
+import { WcStack } from "./Stack.js";
+import { WcStackItem } from "./StackItem.js";
 
 // Export all components and types
 export {
@@ -16,6 +18,8 @@ export {
   WcOverlay,
   WcOffcanvas,
   WcThemeToggle,
+  WcStack,
+  WcStackItem,
 };
 
 // Global type declarations
@@ -24,9 +28,11 @@ declare global {
     "wc-card": WcCard;
     "wc-grille": WcGrille;
     "wc-logo": WcLogo;
-    "wc-sticky": WcNavbar;
+    "wc-navbar": WcNavbar;
     "wc-overlay": WcOverlay;
     "wc-offcanvas": WcOffcanvas;
     "wc-theme-toggle": WcThemeToggle;
+    "wc-stack": WcStack;
+    "wc-stack-item": WcStackItem;
   }
 }
