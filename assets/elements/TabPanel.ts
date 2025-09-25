@@ -33,7 +33,6 @@ export class WcTabPanel extends LitElement {
     if (indexAttr) this.index = parseInt(indexAttr, 10);
     if (activeAttr) this.active = activeAttr === "true";
 
-    this.classList.add("wc-tab-panel");
     this.updateClasses();
   }
 

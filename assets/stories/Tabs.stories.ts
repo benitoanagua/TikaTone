@@ -1,12 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/html";
 import { randPhrase, randParagraph, randWord } from "@ngneat/falso";
-
-interface TabsProps {
-  orientation: "horizontal" | "vertical";
-  variant: "default" | "pills" | "underlined";
-  activeTab: number;
-  disabled: boolean;
-}
+import type { TabsProps } from "../types/tabs.js";
 
 const meta = {
   title: "Components/Tabs",
@@ -36,9 +30,9 @@ const meta = {
     const tabs = document.createElement("wc-tabs");
 
     // Set properties
-    tabs.setAttribute("orientation", args.orientation);
-    tabs.setAttribute("variant", args.variant);
-    tabs.setAttribute("active-tab", args.activeTab.toString());
+    tabs.setAttribute("orientation", args.orientation || "horizontal");
+    tabs.setAttribute("variant", args.variant || "default");
+    tabs.setAttribute("active-tab", (args.activeTab || 0).toString());
     if (args.disabled) tabs.setAttribute("disabled", "");
 
     // Create tabs

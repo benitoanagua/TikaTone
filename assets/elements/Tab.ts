@@ -1,6 +1,7 @@
 import { LitElement, html, unsafeCSS } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import mainCSS from "../main.css?inline";
+import type { TabsOrientation, TabsVariant } from "../types/tabs.js";
 
 @customElement("wc-tab")
 export class WcTab extends LitElement {
@@ -12,8 +13,8 @@ export class WcTab extends LitElement {
 
   @state() private index = 0;
   @state() private active = false;
-  @state() private orientation: "horizontal" | "vertical" = "horizontal";
-  @state() private variant: "default" | "pills" | "underlined" = "default";
+  @state() private orientation: TabsOrientation = "horizontal";
+  @state() private variant: TabsVariant = "default";
 
   // Deshabilitar Shadow DOM para mejor integración
   protected createRenderRoot() {
@@ -38,12 +39,9 @@ export class WcTab extends LitElement {
 
     if (indexAttr) this.index = parseInt(indexAttr, 10);
     if (activeAttr) this.active = activeAttr === "true";
-    if (orientationAttr)
-      this.orientation = orientationAttr as "horizontal" | "vertical";
-    if (variantAttr)
-      this.variant = variantAttr as "default" | "pills" | "underlined";
+    if (orientationAttr) this.orientation = orientationAttr as TabsOrientation;
+    if (variantAttr) this.variant = variantAttr as TabsVariant;
 
-    this.classList.add("wc-tab");
     this.updateClasses();
 
     // Register with parent
@@ -93,31 +91,44 @@ export class WcTab extends LitElement {
   }
 
   private handleKeyDown(event: KeyboardEvent) {
+    if (this.disabled) return;
+
     // Let parent handle keyboard navigation
-    event.stopPropagation();
+    this.dispatchEvent(
+      new CustomEvent("tab-keydown", {
+        detail: {
+          index: this.index,
+          key: event.key,
+          event: event,
+        },
+        bubbles: true,
+      })
+    );
   }
 
   render() {
     return html`
-      <button
-        class="wc-tab__button"
-        role="tab"
-        tabindex="${this.active ? "0" : "-1"}"
-        ?disabled="${this.disabled}"
-        aria-selected="${this.active}"
-        aria-controls="panel-${this.index}"
-        id="tab-${this.index}"
-        @click="${this.handleClick}"
-        @keydown="${this.handleKeyDown}"
-      >
-        ${this.icon
-          ? html`<span class="${this.icon} wc-tab__icon"></span>`
-          : ""}
-
-        <span class="wc-tab__label">${this.label}</span>
-
-        ${this.label === "" && !this.icon ? html`<slot></slot>` : ""}
-      </button>
+      <div class="wc-tab__container" role="presentation">
+        <button
+          class="wc-tab__button"
+          role="tab"
+          tabindex="${this.active ? "0" : "-1"}"
+          ?disabled="${this.disabled}"
+          aria-selected="${this.active}"
+          aria-controls="panel-${this.index}"
+          id="tab-${this.index}"
+          @click="${this.handleClick}"
+          @keydown="${this.handleKeyDown}"
+        >
+          ${this.icon
+            ? html`<span class="${this.icon} wc-tab__icon"></span>`
+            : ""}
+          ${this.label
+            ? html`<span class="wc-tab__label">${this.label}</span>`
+            : ""}
+          ${!this.label && !this.icon ? html`<slot></slot>` : ""}
+        </button>
+      </div>
     `;
   }
 }

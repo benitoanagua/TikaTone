@@ -1,19 +1,17 @@
 import { LitElement, html, unsafeCSS } from "lit";
 import { customElement, property, state, query } from "lit/decorators.js";
 import mainCSS from "../main.css?inline";
+import type { TabsOrientation, TabsVariant } from "../types/tabs.js";
 
 @customElement("wc-tabs")
 export class WcTabs extends LitElement {
   static styles = [unsafeCSS(mainCSS)];
 
-  @property({ type: String }) orientation: "horizontal" | "vertical" =
-    "horizontal";
-  @property({ type: String }) variant: "default" | "pills" | "underlined" =
-    "default";
+  @property({ type: String }) orientation: TabsOrientation = "horizontal";
+  @property({ type: String }) variant: TabsVariant = "default";
   @property({ type: Number, attribute: "active-tab" }) activeTab = 0;
   @property({ type: Boolean }) disabled = false;
 
-  @state() private tabCount = 0;
   @state() private tabs: Array<{
     label: string;
     disabled: boolean;
@@ -30,6 +28,10 @@ export class WcTabs extends LitElement {
       this.handleTabRegister as EventListener
     );
     this.addEventListener("tab-click", this.handleTabClick as EventListener);
+    this.addEventListener(
+      "tab-keydown",
+      this.handleTabKeyDown as EventListener
+    );
   }
 
   disconnectedCallback() {
@@ -39,6 +41,10 @@ export class WcTabs extends LitElement {
       this.handleTabRegister as EventListener
     );
     this.removeEventListener("tab-click", this.handleTabClick as EventListener);
+    this.removeEventListener(
+      "tab-keydown",
+      this.handleTabKeyDown as EventListener
+    );
   }
 
   protected firstUpdated() {
@@ -54,7 +60,6 @@ export class WcTabs extends LitElement {
     if (!this.tabsSlotElement) return;
 
     const assignedElements = this.tabsSlotElement.assignedElements();
-    this.tabCount = assignedElements.length;
 
     assignedElements.forEach((element, index) => {
       if (
@@ -108,8 +113,60 @@ export class WcTabs extends LitElement {
     this.setActiveTab(index);
   };
 
+  private handleTabKeyDown = (event: CustomEvent) => {
+    const { index, key } = event.detail;
+    if (this.disabled) return;
+
+    const isHorizontal = this.orientation === "horizontal";
+    let newIndex = index;
+
+    switch (key) {
+      case "ArrowLeft":
+        if (isHorizontal) {
+          event.detail.event.preventDefault();
+          newIndex = index > 0 ? index - 1 : this.tabs.length - 1;
+        }
+        break;
+      case "ArrowRight":
+        if (isHorizontal) {
+          event.detail.event.preventDefault();
+          newIndex = index < this.tabs.length - 1 ? index + 1 : 0;
+        }
+        break;
+      case "ArrowUp":
+        if (!isHorizontal) {
+          event.detail.event.preventDefault();
+          newIndex = index > 0 ? index - 1 : this.tabs.length - 1;
+        }
+        break;
+      case "ArrowDown":
+        if (!isHorizontal) {
+          event.detail.event.preventDefault();
+          newIndex = index < this.tabs.length - 1 ? index + 1 : 0;
+        }
+        break;
+      case "Home":
+        event.detail.event.preventDefault();
+        newIndex = 0;
+        break;
+      case "End":
+        event.detail.event.preventDefault();
+        newIndex = this.tabs.length - 1;
+        break;
+      case "Enter":
+      case " ":
+        event.detail.event.preventDefault();
+        this.setActiveTab(index);
+        return;
+    }
+
+    if (newIndex !== index) {
+      this.setActiveTab(newIndex);
+    }
+  };
+
   private setActiveTab(index: number) {
-    if (index < 0 || index >= this.tabCount) return;
+    if (index < 0 || index >= this.tabs.length) return;
 
     const oldIndex = this.activeTab;
     this.activeTab = index;
@@ -126,52 +183,6 @@ export class WcTabs extends LitElement {
         bubbles: true,
       })
     );
-  }
-
-  private handleKeyDown(event: KeyboardEvent, index: number) {
-    if (this.disabled) return;
-
-    const isHorizontal = this.orientation === "horizontal";
-    let newIndex = index;
-
-    switch (event.key) {
-      case "ArrowLeft":
-        if (isHorizontal) {
-          event.preventDefault();
-          newIndex = index > 0 ? index - 1 : this.tabCount - 1;
-        }
-        break;
-      case "ArrowRight":
-        if (isHorizontal) {
-          event.preventDefault();
-          newIndex = index < this.tabCount - 1 ? index + 1 : 0;
-        }
-        break;
-      case "ArrowUp":
-        if (!isHorizontal) {
-          event.preventDefault();
-          newIndex = index > 0 ? index - 1 : this.tabCount - 1;
-        }
-        break;
-      case "ArrowDown":
-        if (!isHorizontal) {
-          event.preventDefault();
-          newIndex = index < this.tabCount - 1 ? index + 1 : 0;
-        }
-        break;
-      case "Home":
-        event.preventDefault();
-        newIndex = 0;
-        break;
-      case "End":
-        event.preventDefault();
-        newIndex = this.tabCount - 1;
-        break;
-    }
-
-    if (newIndex !== index) {
-      this.setActiveTab(newIndex);
-    }
   }
 
   private getTabsClasses() {
