@@ -1,9 +1,10 @@
 import { LitElement, html, unsafeCSS } from "lit";
 import { customElement, property, state, query } from "lit/decorators.js";
 import mainCSS from "../main.css?inline";
+import type { SlideshowProps } from "../types/slideshow.js";
 
 @customElement("wc-slideshow")
-export class WcSlideshow extends LitElement {
+export class WcSlideshow extends LitElement implements SlideshowProps {
   static styles = [unsafeCSS(mainCSS)];
 
   @property({ type: Boolean, attribute: "show-nav" }) showNav = true;
@@ -130,6 +131,7 @@ export class WcSlideshow extends LitElement {
       this.currentIndex++;
       this.updateNavigationState();
       this.scrollToIndex(this.currentIndex);
+      this.dispatchChangeEvent();
     }
   }
 
@@ -138,6 +140,7 @@ export class WcSlideshow extends LitElement {
       this.currentIndex--;
       this.updateNavigationState();
       this.scrollToIndex(this.currentIndex);
+      this.dispatchChangeEvent();
     }
   }
 
@@ -146,7 +149,35 @@ export class WcSlideshow extends LitElement {
       this.currentIndex = index;
       this.updateNavigationState();
       this.scrollToIndex(this.currentIndex);
+      this.dispatchChangeEvent();
     }
+  }
+
+  private dispatchChangeEvent() {
+    this.dispatchEvent(
+      new CustomEvent("slideshow-change", {
+        detail: {
+          currentIndex: this.currentIndex,
+          totalSlides: this.childCount,
+        },
+        bubbles: true,
+      })
+    );
+  }
+
+  private dispatchNavigationEvent(
+    direction: "next" | "prev" | "goto",
+    index?: number
+  ) {
+    this.dispatchEvent(
+      new CustomEvent("slideshow-navigation", {
+        detail: {
+          direction,
+          index,
+        },
+        bubbles: true,
+      })
+    );
   }
 
   private handleScroll = () => {
@@ -170,6 +201,7 @@ export class WcSlideshow extends LitElement {
         Math.min(calculatedIndex, this.childCount - 1)
       );
       this.updateNavigationState();
+      this.dispatchChangeEvent();
     }
   }
 
@@ -183,30 +215,40 @@ export class WcSlideshow extends LitElement {
             .canGoLeft
             ? "wc-slideshow__nav-button--disabled"
             : ""}"
-          @click="${this.goPrev}"
+          @click="${() => {
+            this.goPrev();
+            this.dispatchNavigationEvent("prev");
+          }}"
           ?disabled="${!this.canGoLeft}"
           aria-label="Previous slide"
         >
-          <span class="icon-[garden--arrow-up-stroke-16] w-5 h-5"></span>
+          <span
+            class="icon-[garden--arrow-up-stroke-16] w-5 h-5 md:w-6 md:h-6"
+          ></span>
         </button>
+
+        <div class="wc-slideshow__counter">
+          <span class="text-sm md:text-base font-medium">
+            ${this.currentIndex + 1}/${this.childCount}
+          </span>
+        </div>
 
         <button
           class="wc-slideshow__nav-button wc-slideshow__nav-button--next ${!this
             .canGoRight
             ? "wc-slideshow__nav-button--disabled"
             : ""}"
-          @click="${this.goNext}"
+          @click="${() => {
+            this.goNext();
+            this.dispatchNavigationEvent("next");
+          }}"
           ?disabled="${!this.canGoRight}"
           aria-label="Next slide"
         >
-          <span class="icon-[garden--arrow-down-stroke-16] w-5 h-5"></span>
+          <span
+            class="icon-[garden--arrow-down-stroke-16] w-5 h-5 md:w-6 md:h-6"
+          ></span>
         </button>
-
-        <div class="wc-slideshow__counter">
-          <span class="text-sm font-medium">
-            ${this.currentIndex + 1}/${this.childCount}
-          </span>
-        </div>
       </div>
     `;
   }
@@ -224,7 +266,10 @@ export class WcSlideshow extends LitElement {
               class="wc-slideshow__indicator ${this.currentIndex === index
                 ? "wc-slideshow__indicator--active"
                 : ""}"
-              @click="${() => this.goToIndex(index)}"
+              @click="${() => {
+                this.goToIndex(index);
+                this.dispatchNavigationEvent("goto", index);
+              }}"
               aria-label="Go to slide ${index + 1}"
             ></button>
           `
@@ -233,14 +278,19 @@ export class WcSlideshow extends LitElement {
     `;
   }
 
-  render() {
-    const containerClass =
+  private getSlideshowClasses() {
+    return [
+      "wc-slideshow",
+      "wc-slideshow--flat",
       this.modal || this.childCount < 2
         ? "wc-slideshow--full-width"
-        : "wc-slideshow--with-nav";
+        : "wc-slideshow--with-nav",
+    ].join(" ");
+  }
 
+  render() {
     return html`
-      <div class="wc-slideshow wc-slideshow--flat ${containerClass}">
+      <div class="${this.getSlideshowClasses()}">
         <div class="wc-slideshow__content">
           <div
             class="wc-slideshow__container"

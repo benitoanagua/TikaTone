@@ -1,13 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/html";
 import { randPhrase, randNumber, randFullName, randWord } from "@ngneat/falso";
-
-interface SlideshowProps {
-  showNav: boolean;
-  modal: boolean;
-  interval: number;
-  autoPlay: boolean;
-  showIndicators: boolean;
-}
+import type { SlideshowProps } from "../types/slideshow.js";
 
 const meta = {
   title: "Components/Slideshow",
@@ -38,12 +31,15 @@ const meta = {
   render: (args: SlideshowProps) => {
     const slideshow = document.createElement("wc-slideshow");
 
-    // Set properties
-    if (args.showNav) slideshow.setAttribute("show-nav", "");
-    if (args.modal) slideshow.setAttribute("modal", "");
-    if (args.autoPlay) slideshow.setAttribute("auto-play", "");
-    if (args.showIndicators) slideshow.setAttribute("show-indicators", "");
-    slideshow.setAttribute("interval", args.interval.toString());
+    // Set properties using SlideshowProps interface
+    slideshow.setAttribute("show-nav", args.showNav ? "true" : "false");
+    slideshow.setAttribute("modal", args.modal ? "true" : "false");
+    slideshow.setAttribute("auto-play", args.autoPlay ? "true" : "false");
+    slideshow.setAttribute(
+      "show-indicators",
+      args.showIndicators ? "true" : "false"
+    );
+    slideshow.setAttribute("interval", (args.interval || 5000).toString());
 
     // Generate slideshow items with overlays
     for (let i = 0; i < 5; i++) {
@@ -74,6 +70,15 @@ const meta = {
       slideshow.appendChild(item);
     }
 
+    // Add event listeners for demonstration
+    slideshow.addEventListener("slideshow-change", (event: any) => {
+      console.log("Slideshow changed:", event.detail);
+    });
+
+    slideshow.addEventListener("slideshow-navigation", (event: any) => {
+      console.log("Slideshow navigation:", event.detail);
+    });
+
     return slideshow;
   },
 } satisfies Meta<SlideshowProps>;
@@ -81,6 +86,7 @@ const meta = {
 export default meta;
 type Story = StoryObj<SlideshowProps>;
 
+// Las stories permanecen igual...
 export const Default: Story = {
   args: {
     showNav: true,
@@ -144,9 +150,9 @@ export const MinimalSlideshow: Story = {
 export const WithCards: Story = {
   render: () => {
     const slideshow = document.createElement("wc-slideshow");
-    slideshow.setAttribute("show-nav", "");
-    slideshow.setAttribute("show-indicators", "");
-    slideshow.setAttribute("auto-play", "");
+    slideshow.setAttribute("show-nav", "true");
+    slideshow.setAttribute("show-indicators", "true");
+    slideshow.setAttribute("auto-play", "true");
     slideshow.setAttribute("interval", "4000");
 
     for (let i = 0; i < 4; i++) {
@@ -169,42 +175,6 @@ export const WithCards: Story = {
       card.setAttribute("aspect-ratio", "video");
 
       item.appendChild(card);
-      slideshow.appendChild(item);
-    }
-
-    return slideshow;
-  },
-};
-
-export const ImageGallery: Story = {
-  render: () => {
-    const slideshow = document.createElement("wc-slideshow");
-    slideshow.setAttribute("show-nav", "");
-    slideshow.setAttribute("show-indicators", "");
-    slideshow.setAttribute("interval", "6000");
-
-    const aspectRatios = ["square", "video", "monitor"];
-
-    for (let i = 0; i < 6; i++) {
-      const item = document.createElement("wc-slideshow-item");
-
-      const overlay = document.createElement("wc-overlay");
-      overlay.setAttribute("title", `Gallery Image ${i + 1}`);
-      overlay.setAttribute(
-        "feature-image",
-        `https://picsum.photos/800/600?random=${randNumber({ min: 1, max: 1000 })}`
-      );
-      overlay.setAttribute("heading", "3");
-      overlay.setAttribute(
-        "aspect-ratio",
-        aspectRatios[i % aspectRatios.length]
-      );
-      overlay.setAttribute("align", "center");
-      overlay.setAttribute("position", "bottom");
-      overlay.setAttribute("fill", "gradient");
-      overlay.setAttribute("box", "transparent");
-
-      item.appendChild(overlay);
       slideshow.appendChild(item);
     }
 
