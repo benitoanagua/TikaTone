@@ -1,4 +1,36 @@
-/* Grille component */
+/* Grille component - Flat Design con lógica Vue */
 .wc-grille__container {
   @apply flex flex-wrap w-full;
+}
+
+.wc-grille-item {
+  @apply box-border;
+}
+
+.wc-grille-item__content {
+  @apply w-full h-full;
+}
+
+.wc-grille-item--border-right::after {
+  content: "";
+  @apply absolute top-0 right-0 bottom-0 w-px bg-outlineVariant hidden md:block;
+  right: calc(var(--gap-offset, -0.5rem));
+}
+
+.wc-grille-item--border-bottom::after {
+  content: "";
+  @apply absolute bottom-0 left-0 right-0 h-px bg-outlineVariant;
+  bottom: calc(var(--gap-offset, -0.5rem));
+}
+
+.wc-grille.gap-2 {
+  --gap-offset: -0.25rem;
+}
+
+.wc-grille.gap-4 {
+  --gap-offset: -0.5rem;
+}
+
+.wc-grille.gap-6 {
+  --gap-offset: -0.75rem;
 }

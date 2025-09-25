@@ -5,6 +5,7 @@ import { WcCard } from "./Card.js";
 import { WcCarousel } from "./Carousel.js";
 import { WcCarouselItem } from "./CarouselItem.js";
 import { WcGrille } from "./Grille.js";
+import { WcGrilleItem } from "./GrilleItem.js";
 import { WcLogo } from "./Logo.js";
 import { WcNavbar } from "./Navbar.js";
 import { WcOffcanvas } from "./Offcanvas.js";
@@ -26,6 +27,7 @@ export {
   WcCarousel,
   WcCarouselItem,
   WcGrille,
+  WcGrilleItem,
   WcLogo,
   WcNavbar,
   WcOffcanvas,
@@ -49,6 +51,7 @@ declare global {
     "wc-carousel": WcCarousel;
     "wc-carousel-item": WcCarouselItem;
     "wc-grille": WcGrille;
+    "wc-grille-item": WcGrilleItem;
     "wc-logo": WcLogo;
     "wc-navbar": WcNavbar;
     "wc-offcanvas": WcOffcanvas;
