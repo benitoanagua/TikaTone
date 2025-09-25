@@ -1,4 +1,4 @@
-import type { Preview } from "@storybook/html";
+import type { Preview } from "@storybook/web-components";
 
 import "../public/tika-tone-elements.css";
 import "../public/tika-tone-elements.es.js";
@@ -12,7 +12,9 @@ const applyTheme = () => {
   document.documentElement.setAttribute("data-theme", theme);
 };
 
-applyTheme();
+if (typeof document !== "undefined") {
+  applyTheme();
+}
 
 const preview: Preview = {
   parameters: {
@@ -22,6 +24,7 @@ const preview: Preview = {
         color: /(background|color)$/i,
         date: /Date$/i,
       },
+      expanded: true,
     },
     a11y: {
       config: {
@@ -38,7 +41,21 @@ const preview: Preview = {
         order: ["Intro", "Components", "*"],
       },
     },
+    docs: {
+      source: {
+        type: "dynamic",
+      },
+    },
   },
+
+  decorators: [
+    (storyFn, context) => {
+      applyTheme();
+
+      const template = storyFn();
+      return template;
+    },
+  ],
 };
 
 export default preview;

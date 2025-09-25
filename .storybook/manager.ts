@@ -10,8 +10,13 @@ const theme = create({
   base: systemPrefersDark ? "dark" : "light",
   brandTitle: "TikaTone Components",
   brandUrl: "/",
+
+  // brandImage: "./logo.svg",
 });
 
 addons.setConfig({
   theme,
+
+  enableShortcuts: true,
+  showToolbar: true,
 });

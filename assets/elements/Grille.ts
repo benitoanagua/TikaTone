@@ -1,14 +1,15 @@
 import { LitElement, html, unsafeCSS } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
 import mainCSS from "../main.css?inline";
+import type { GrilleProps, Gap } from "../types/grille.js";
 
 @customElement("wc-grille")
-export class WcGrille extends LitElement {
+export class WcGrille extends LitElement implements GrilleProps {
   static styles = [unsafeCSS(mainCSS)];
 
-  @property({ type: Number }) desktop = 3;
-  @property({ type: Number }) mobile = 2;
-  @property({ type: String }) gap = "medium";
+  @property({ type: Number }) desktop: GrilleProps["desktop"] = 3;
+  @property({ type: Number }) mobile: GrilleProps["mobile"] = 2;
+  @property({ type: String }) gap: Gap = "medium";
 
   @query("slot", true)
   private slotElement!: HTMLSlotElement;
@@ -16,16 +17,16 @@ export class WcGrille extends LitElement {
   @query(".wc-grille__container", true)
   private containerElement!: HTMLElement;
 
-  firstUpdated() {
+  firstUpdated(): void {
     this.setupResizeObserver();
     this.gridRendering();
   }
 
-  updated() {
+  updated(): void {
     this.gridRendering();
   }
 
-  setupResizeObserver() {
+  private setupResizeObserver(): void {
     if (this.containerElement && window.ResizeObserver) {
       const resizeObserver = new ResizeObserver(() => {
         this.gridRendering();
@@ -39,7 +40,11 @@ export class WcGrille extends LitElement {
     });
   }
 
-  grid(breakpoint: number, index: number, length: number) {
+  private grid(
+    breakpoint: number,
+    index: number,
+    length: number
+  ): { rows: number; row: number; col: number } {
     const divInt = Math.floor(length / breakpoint);
     const divMod = length % breakpoint;
     const rows = divMod > 0 ? divInt + 1 : divInt;
@@ -48,10 +53,10 @@ export class WcGrille extends LitElement {
     return { rows, row, col };
   }
 
-  gridRendering() {
+  private gridRendering(): void {
     if (!this.slotElement || !this.containerElement) return;
 
-    const assignedElements = this.slotElement.assignedElements();
+    const assignedElements: Element[] = this.slotElement.assignedElements();
 
     assignedElements.forEach((element: Element, i: number) => {
       if (!(element instanceof HTMLElement)) return;
@@ -59,11 +64,11 @@ export class WcGrille extends LitElement {
       // Reset styles
       element.style.cssText = "";
 
-      const isMobile = window.innerWidth < 768;
+      const isMobile: boolean = window.innerWidth < 768;
       const dsk = this.grid(this.desktop, i, assignedElements.length);
       const mbl = this.grid(this.mobile, i, assignedElements.length);
 
-      const padding =
+      const padding: number =
         this.gap === "small" ? 8 : this.gap === "medium" ? 16 : 24;
 
       element.style.boxSizing = "content-box";
@@ -75,7 +80,7 @@ export class WcGrille extends LitElement {
             2 * padding * (this.mobile - 1)) /
             this.mobile
         );
-        const borderM = (i + 1) % this.mobile !== 0 ? 1 : 0;
+        const borderM: number = (i + 1) % this.mobile !== 0 ? 1 : 0;
         element.style.width = `${widthM - borderM}px`;
       } else {
         const widthd = Math.floor(
@@ -83,7 +88,7 @@ export class WcGrille extends LitElement {
             2 * padding * (this.desktop - 1)) /
             this.desktop
         );
-        const borderD = (i + 1) % this.desktop !== 0 ? 1 : 0;
+        const borderD: number = (i + 1) % this.desktop !== 0 ? 1 : 0;
         element.style.width = `${widthd - borderD}px`;
       }
 
@@ -115,7 +120,9 @@ export class WcGrille extends LitElement {
 
       // Esquina (donde se cruzan las líneas)
       if (hasRightBorder && hasBottomBorder) {
-        const gradientSize = Math.round((2 * padding * Math.sqrt(2)) / 4 + 1);
+        const gradientSize: number = Math.round(
+          (2 * padding * Math.sqrt(2)) / 4 + 1
+        );
         element.style.borderImage = `linear-gradient(315deg, transparent ${gradientSize}px, ${borderColor} 0) 1`;
       }
     });

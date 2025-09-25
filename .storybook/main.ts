@@ -1,4 +1,4 @@
-import type { StorybookConfig } from "@storybook/html-vite";
+import type { StorybookConfig } from "@storybook/web-components-vite";
 
 const config: StorybookConfig = {
   stories: [
@@ -7,17 +7,17 @@ const config: StorybookConfig = {
   ],
   addons: ["@storybook/addon-essentials", "@storybook/addon-a11y"],
   framework: {
-    name: "@storybook/html-vite",
+    name: "@storybook/web-components-vite",
     options: {},
   },
   staticDirs: ["../public"],
-  // Configura Vite para observar los archivos public
+
   viteFinal: async (config) => {
     config.server = {
       ...config.server,
       watch: {
         ...config.server?.watch,
-        ignored: ["!**/public/**"], // No ignorar la carpeta public
+        ignored: ["!**/public/**"],
       },
     };
     return config;

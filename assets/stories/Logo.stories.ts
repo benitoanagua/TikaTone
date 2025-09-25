@@ -1,4 +1,5 @@
-import type { Meta, StoryObj } from "@storybook/html";
+import type { Meta, StoryObj } from "@storybook/web-components";
+import { html } from "lit-html";
 
 interface LogoProps {
   className: string;
@@ -8,19 +9,6 @@ const meta = {
   title: "Components/Logo",
   component: "wc-logo",
   tags: ["autodocs"],
-  decorators: [
-    (story) => {
-      const container = document.createElement("div");
-      const storyResult = story();
-      if (typeof storyResult === "string") {
-        container.innerHTML = storyResult;
-      } else {
-        container.appendChild(storyResult);
-      }
-
-      return container;
-    },
-  ],
   argTypes: {
     className: {
       control: { type: "text" },
@@ -31,64 +19,49 @@ const meta = {
       },
     },
   },
-  render: (args: LogoProps) => {
-    const logo = document.createElement("wc-logo");
-
-    if (args.className) {
-      logo.className = args.className;
-    }
-
-    return logo;
-  },
 } satisfies Meta<LogoProps>;
 
 export default meta;
 type Story = StoryObj<LogoProps>;
 
+const renderLogo = (args: LogoProps) => html`
+  <wc-logo class=${args.className || ""}></wc-logo>
+`;
+
 export const Default: Story = {
+  render: (args) => renderLogo(args),
   args: {
     className: "",
   },
 };
 
 export const Small: Story = {
+  render: (args) => renderLogo(args),
   args: {
     className: "h-4",
   },
 };
 
 export const Large: Story = {
+  render: (args) => renderLogo(args),
   args: {
     className: "h-12",
   },
 };
 
 export const Colored: Story = {
+  render: (args) => renderLogo(args),
   args: {
     className: "h-8 fill-red-500",
   },
 };
 
 export const OnDark: Story = {
+  name: "On Dark Background",
+  render: (args) => html`
+    <div class="bg-gray-900 p-4 rounded">${renderLogo(args)}</div>
+  `,
   args: {
     className: "h-8 fill-white",
   },
-  decorators: [
-    (story) => {
-      const container = document.createElement("div");
-
-      const wrapper = document.createElement("div");
-      wrapper.className = "bg-gray-900 p-4 rounded";
-
-      const storyResult = story();
-      if (typeof storyResult === "string") {
-        wrapper.innerHTML = storyResult;
-      } else {
-        wrapper.appendChild(storyResult);
-      }
-
-      container.appendChild(wrapper);
-      return container;
-    },
-  ],
 };
