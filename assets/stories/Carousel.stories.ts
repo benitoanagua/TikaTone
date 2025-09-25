@@ -7,17 +7,10 @@ import {
   randFullName,
   randAvatar,
 } from "@ngneat/falso";
+import type { CarouselProps } from "../types/carousel.js";
 
-interface CarouselProps {
-  layout: {
-    desktop: number;
-    mobile: number;
-    gap: number;
-  };
-  interval: number;
-  autoPlay: boolean;
-  showArrows: boolean;
-  showDots: boolean;
+interface CarouselStoryProps extends CarouselProps {
+  itemsCount?: number;
 }
 
 const meta = {
@@ -25,17 +18,9 @@ const meta = {
   component: "wc-carousel",
   tags: ["autodocs"],
   argTypes: {
-    "layout.desktop": {
-      control: { type: "range", min: 1, max: 5, step: 1 },
-      description: "Number of columns on desktop",
-    },
-    "layout.mobile": {
-      control: { type: "range", min: 1, max: 3, step: 1 },
-      description: "Number of columns on mobile",
-    },
-    "layout.gap": {
-      control: { type: "range", min: 8, max: 32, step: 4 },
-      description: "Gap between items in pixels",
+    layout: {
+      control: { type: "object" },
+      description: "Layout configuration for desktop and mobile",
     },
     interval: {
       control: { type: "range", min: 1000, max: 10000, step: 500 },
@@ -53,19 +38,33 @@ const meta = {
       control: { type: "boolean" },
       description: "Show dot indicators",
     },
+    itemsCount: {
+      control: { type: "range", min: 3, max: 12, step: 1 },
+      description: "Number of carousel items",
+    },
   },
-  render: (args: CarouselProps) => {
+  render: (args: CarouselStoryProps) => {
     const carousel = document.createElement("wc-carousel");
 
-    // Set properties
-    carousel.setAttribute("layout", JSON.stringify(args.layout));
-    carousel.setAttribute("interval", args.interval.toString());
-    if (args.autoPlay) carousel.setAttribute("auto-play", "");
-    if (args.showArrows) carousel.setAttribute("show-arrows", "");
-    if (args.showDots) carousel.setAttribute("show-dots", "");
+    // Set properties using CarouselProps interface
+    carousel.setAttribute(
+      "layout",
+      JSON.stringify(
+        args.layout || {
+          desktop: 3,
+          mobile: 1,
+          gap: 16,
+        }
+      )
+    );
+    carousel.setAttribute("interval", (args.interval || 5000).toString());
+    carousel.setAttribute("auto-play", args.autoPlay ? "true" : "false");
+    carousel.setAttribute("show-arrows", args.showArrows ? "true" : "false");
+    carousel.setAttribute("show-dots", args.showDots ? "true" : "false");
 
     // Generate carousel items with cards
-    for (let i = 0; i < 8; i++) {
+    const itemsCount = args.itemsCount || 8;
+    for (let i = 0; i < itemsCount; i++) {
       const item = document.createElement("wc-carousel-item");
 
       const card = document.createElement("wc-card");
@@ -85,12 +84,21 @@ const meta = {
       carousel.appendChild(item);
     }
 
+    // Add event listeners for demonstration
+    carousel.addEventListener("carousel-change", (event: any) => {
+      console.log("Carousel changed:", event.detail);
+    });
+
+    carousel.addEventListener("carousel-navigation", (event: any) => {
+      console.log("Carousel navigation:", event.detail);
+    });
+
     return carousel;
   },
-} satisfies Meta<CarouselProps>;
+} satisfies Meta<CarouselStoryProps>;
 
 export default meta;
-type Story = StoryObj<CarouselProps>;
+type Story = StoryObj<CarouselStoryProps>;
 
 export const Default: Story = {
   args: {
@@ -103,6 +111,7 @@ export const Default: Story = {
     autoPlay: true,
     showArrows: true,
     showDots: true,
+    itemsCount: 8,
   },
 };
 
@@ -117,6 +126,7 @@ export const SingleColumn: Story = {
     autoPlay: true,
     showArrows: true,
     showDots: true,
+    itemsCount: 6,
   },
 };
 
@@ -131,6 +141,7 @@ export const FiveColumns: Story = {
     autoPlay: false,
     showArrows: true,
     showDots: true,
+    itemsCount: 10,
   },
 };
 
@@ -145,6 +156,7 @@ export const NoAutoPlay: Story = {
     autoPlay: false,
     showArrows: true,
     showDots: true,
+    itemsCount: 8,
   },
 };
 
@@ -159,6 +171,7 @@ export const NavigationOnly: Story = {
     autoPlay: false,
     showArrows: true,
     showDots: false,
+    itemsCount: 6,
   },
 };
 
@@ -173,6 +186,7 @@ export const DotsOnly: Story = {
     autoPlay: true,
     showArrows: false,
     showDots: true,
+    itemsCount: 12,
   },
 };
 
@@ -187,6 +201,7 @@ export const MinimalControls: Story = {
     autoPlay: false,
     showArrows: false,
     showDots: false,
+    itemsCount: 8,
   },
 };
 
@@ -198,9 +213,9 @@ export const WithOverlayCards: Story = {
       JSON.stringify({ desktop: 2, mobile: 1, gap: 16 })
     );
     carousel.setAttribute("interval", "5000");
-    carousel.setAttribute("auto-play", "");
-    carousel.setAttribute("show-arrows", "");
-    carousel.setAttribute("show-dots", "");
+    carousel.setAttribute("auto-play", "true");
+    carousel.setAttribute("show-arrows", "true");
+    carousel.setAttribute("show-dots", "true");
 
     for (let i = 0; i < 6; i++) {
       const item = document.createElement("wc-carousel-item");
@@ -238,6 +253,7 @@ export const Playground: Story = {
     autoPlay: true,
     showArrows: true,
     showDots: true,
+    itemsCount: 8,
   },
   parameters: {
     controls: {

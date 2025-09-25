@@ -1,15 +1,10 @@
 import { LitElement, html, unsafeCSS } from "lit";
 import { customElement, property, state, query } from "lit/decorators.js";
 import mainCSS from "../main.css?inline";
-
-interface CarouselLayout {
-  desktop: number;
-  mobile: number;
-  gap: number;
-}
+import type { CarouselProps, CarouselLayout } from "../types/carousel.js";
 
 @customElement("wc-carousel")
-export class WcCarousel extends LitElement {
+export class WcCarousel extends LitElement implements CarouselProps {
   static styles = [unsafeCSS(mainCSS)];
 
   @property({ type: Object }) layout: CarouselLayout = {
@@ -28,6 +23,7 @@ export class WcCarousel extends LitElement {
   @state() private isMobile = false;
   @state() private childCount = 0;
   @state() private maxIndex = 0;
+  @state() private visibleSlides = 3;
 
   @query(".wc-carousel__container") private containerElement?: HTMLElement;
   @query("slot") private slotElement?: HTMLSlotElement;
@@ -94,6 +90,7 @@ export class WcCarousel extends LitElement {
 
     const containerWidth = this.containerElement.offsetWidth;
     const columns = this.isMobile ? this.layout.mobile : this.layout.desktop;
+    this.visibleSlides = columns;
     const gaps = (columns - 1) * this.layout.gap;
 
     this.itemWidth = (containerWidth - gaps) / columns;
@@ -150,6 +147,8 @@ export class WcCarousel extends LitElement {
       this.currentIndex = 0; // Loop back to start
     }
     this.scrollToIndex(this.currentIndex);
+    this.dispatchChangeEvent();
+    this.dispatchNavigationEvent("next");
   }
 
   private goPrev() {
@@ -159,13 +158,45 @@ export class WcCarousel extends LitElement {
       this.currentIndex = this.maxIndex; // Loop to end
     }
     this.scrollToIndex(this.currentIndex);
+    this.dispatchChangeEvent();
+    this.dispatchNavigationEvent("prev");
   }
 
   private goToIndex(index: number) {
     if (index >= 0 && index <= this.maxIndex) {
       this.currentIndex = index;
       this.scrollToIndex(this.currentIndex);
+      this.dispatchChangeEvent();
+      this.dispatchNavigationEvent("goto", index);
     }
+  }
+
+  private dispatchChangeEvent() {
+    this.dispatchEvent(
+      new CustomEvent("carousel-change", {
+        detail: {
+          currentIndex: this.currentIndex,
+          totalSlides: this.childCount,
+          visibleSlides: this.visibleSlides,
+        },
+        bubbles: true,
+      })
+    );
+  }
+
+  private dispatchNavigationEvent(
+    direction: "next" | "prev" | "goto",
+    index?: number
+  ) {
+    this.dispatchEvent(
+      new CustomEvent("carousel-navigation", {
+        detail: {
+          direction,
+          index,
+        },
+        bubbles: true,
+      })
+    );
   }
 
   private handleScroll = () => {
@@ -187,28 +218,46 @@ export class WcCarousel extends LitElement {
     const calculatedIndex = Math.round(scrollLeft / itemStep);
 
     this.currentIndex = Math.max(0, Math.min(calculatedIndex, this.maxIndex));
+    this.dispatchChangeEvent();
   }
 
   private renderArrows() {
-    if (!this.showArrows) return html``;
+    if (!this.showArrows || this.childCount <= this.visibleSlides)
+      return html``;
 
     return html`
       <div class="wc-carousel__arrows">
         <button
-          class="wc-carousel__arrow wc-carousel__arrow--prev"
-          @click="${this.goPrev}"
-          ?disabled="${this.currentIndex === 0 && !this.autoPlay}"
+          class="wc-carousel__arrow wc-carousel__arrow--prev ${this
+            .currentIndex === 0
+            ? "wc-carousel__arrow--disabled"
+            : ""}"
+          @click="${() => {
+            this.goPrev();
+            this.dispatchNavigationEvent("prev");
+          }}"
+          ?disabled="${this.currentIndex === 0}"
           aria-label="Previous slide"
         >
-          <span class="icon-[garden--arrow-left-stroke-16] w-6 h-6"></span>
+          <span
+            class="icon-[garden--arrow-left-stroke-16] w-5 h-5 md:w-6 md:h-6"
+          ></span>
         </button>
         <button
-          class="wc-carousel__arrow wc-carousel__arrow--next"
-          @click="${this.goNext}"
-          ?disabled="${this.currentIndex === this.maxIndex && !this.autoPlay}"
+          class="wc-carousel__arrow wc-carousel__arrow--next ${this
+            .currentIndex === this.maxIndex
+            ? "wc-carousel__arrow--disabled"
+            : ""}"
+          @click="${() => {
+            this.goNext();
+            this.dispatchNavigationEvent("next");
+          }}"
+          ?disabled="${this.currentIndex === this.maxIndex}"
           aria-label="Next slide"
         >
-          <span class="icon-[garden--arrow-right-stroke-16] w-6 h-6"></span>
+          <span
+            class="icon-[garden--arrow-right-stroke-16] w-5 h-5 md:w-6 md:h-6"
+          ></span>
         </button>
       </div>
     `;
@@ -228,7 +277,10 @@ export class WcCarousel extends LitElement {
               class="wc-carousel__dot ${this.currentIndex === index
                 ? "wc-carousel__dot--active"
                 : ""}"
-              @click="${() => this.goToIndex(index)}"
+              @click="${() => {
+                this.goToIndex(index);
+                this.dispatchNavigationEvent("goto", index);
+              }}"
               aria-label="Go to slide ${index + 1}"
             ></button>
           `
@@ -237,9 +289,13 @@ export class WcCarousel extends LitElement {
     `;
   }
 
+  private getCarouselClasses() {
+    return ["wc-carousel", "wc-carousel--flat"].join(" ");
+  }
+
   render() {
     return html`
-      <div class="wc-carousel wc-carousel--flat">
+      <div class="${this.getCarouselClasses()}">
         <div class="wc-carousel__navigation">
           ${this.renderArrows()} ${this.renderDots()}
         </div>

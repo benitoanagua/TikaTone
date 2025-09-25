@@ -1,15 +1,15 @@
 /* Carousel Component - Flat Design */
 .wc-carousel {
-  @apply w-full;
+  @apply w-full bg-surface border-l-4 border-l-primary;
 }
 
 .wc-carousel--flat {
-  @apply border-l-4 border-l-primary bg-surface;
+  @apply shadow-none rounded-none;
 }
 
 .wc-carousel__navigation {
-  @apply flex flex-col md:flex-row items-center justify-between gap-4 p-4 
-         bg-surfaceContainerLow border-b border-outlineVariant;
+  @apply flex flex-col md:flex-row items-center justify-between gap-3 md:gap-4 
+         p-3 md:p-4 bg-surfaceContainerLow border-b border-outlineVariant;
 }
 
 .wc-carousel__arrows {
@@ -18,14 +18,15 @@
 
 .wc-carousel__arrow {
   @apply p-2 border-2 border-outlineVariant bg-surfaceContainer text-onSurfaceVariant
-         transition-colors cursor-pointer rounded-none
+         transition-colors cursor-pointer rounded-none w-10 h-10 md:w-12 md:h-12
+         flex items-center justify-center
          hover:border-primary hover:text-primary hover:bg-surfaceContainerHigh
-         disabled:opacity-50 disabled:cursor-not-allowed;
+         disabled:opacity-30 disabled:cursor-not-allowed;
 }
 
-.wc-carousel__arrow--prev,
-.wc-carousel__arrow--next {
-  @apply w-10 h-10 flex items-center justify-center;
+.wc-carousel__arrow--disabled {
+  @apply opacity-30 cursor-not-allowed border-outlineVariant text-onSurfaceVariant
+         bg-surfaceContainer hover:border-outlineVariant hover:text-onSurfaceVariant hover:bg-surfaceContainer;
 }
 
 .wc-carousel__dots {
@@ -33,7 +34,7 @@
 }
 
 .wc-carousel__dot {
-  @apply w-3 h-3 border-2 border-outlineVariant bg-surfaceContainer
+  @apply w-3 h-3 md:w-4 md:h-4 border-2 border-outlineVariant bg-surfaceContainer
          transition-colors cursor-pointer rounded-none
          hover:border-primary hover:bg-primary;
 }
@@ -43,14 +44,14 @@
 }
 
 .wc-carousel__container {
-  @apply flex overflow-x-auto scroll-smooth gap-4 p-4;
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE and Edge */
+  @apply flex overflow-x-auto scroll-smooth gap-3 md:gap-4 p-3 md:p-4 w-full;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
   scroll-snap-type: x mandatory;
 }
 
 .wc-carousel__container::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Opera */
+  display: none;
 }
 
 /* Carousel Item Styles */
@@ -77,28 +78,46 @@
 }
 
 /* Mobile responsive adjustments */
-@media (max-width: 768px) {
-  .wc-carousel__navigation {
-    @apply flex-col gap-3 p-3;
-  }
+.wc-carousel__navigation {
+  @apply flex-col gap-3 p-3 md:flex-row md:gap-4 md:p-4;
+}
 
-  .wc-carousel__arrows {
-    @apply order-1 w-full justify-center;
-  }
+.wc-carousel__arrows {
+  @apply order-2 w-full justify-center md:order-1 md:w-auto;
+}
 
-  .wc-carousel__dots {
-    @apply order-2 w-full justify-center;
-  }
+.wc-carousel__dots {
+  @apply order-1 w-full justify-center md:order-2 md:w-auto;
+}
 
+.wc-carousel__container {
+  @apply p-3 gap-3 md:p-4 md:gap-4;
+}
+
+.wc-carousel__arrow {
+  @apply w-10 h-10 md:w-12 md:h-12;
+}
+
+.wc-carousel__dot {
+  @apply w-3 h-3 md:w-4 md:h-4;
+}
+
+/* Focus styles */
+.wc-carousel__arrow:focus {
+  @apply outline-2 outline-primary outline-offset-2;
+}
+
+.wc-carousel__dot:focus {
+  @apply outline-2 outline-primary outline-offset-1;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
   .wc-carousel__container {
-    @apply p-3 gap-3;
+    scroll-behavior: auto;
   }
 
   .wc-carousel__arrow {
-    @apply w-12 h-12;
-  }
-
-  .wc-carousel__dot {
-    @apply w-4 h-4;
+    @apply transition-none;
   }
 }
