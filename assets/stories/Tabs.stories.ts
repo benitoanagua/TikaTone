@@ -29,17 +29,17 @@ const renderTabs = (args: TabsProps) => {
     <wc-tabs active-tab="${activeTab}" ?disabled="${args.disabled ?? false}">
       <!-- Tabs con contenido flexible via slot -->
       <wc-tab slot="tabs" ?active="${activeTab === 0}">
-        <span class="icon-[garden--home-stroke-16] w-5 h-5"></span>
+        <span class="icon-[carbon--home] w-5 h-5"></span>
         <span>Home</span>
       </wc-tab>
 
       <wc-tab slot="tabs" ?active="${activeTab === 1}">
-        <span class="icon-[garden--adjust-stroke-16] w-5 h-5"></span>
+        <span class="icon-[carbon--settings-adjust] w-5 h-5"></span>
         <span>Settings</span>
       </wc-tab>
 
       <wc-tab slot="tabs" ?active="${activeTab === 2}">
-        <span class="icon-[garden--messenger-stroke-16] w-5 h-5"></span>
+        <span class="icon-[carbon--send-alt] w-5 h-5"></span>
         <span>Help</span>
       </wc-tab>
 
@@ -48,7 +48,7 @@ const renderTabs = (args: TabsProps) => {
         ?active="${activeTab === 3}"
         ?disabled="${args.disabled ?? false}"
       >
-        <span class="icon-[garden--user-circle-stroke-16] w-5 h-5"></span>
+        <span class="icon-[carbon--user-avatar] w-5 h-5"></span>
         <span>Profile</span>
       </wc-tab>
 
@@ -130,9 +130,7 @@ export const CustomContent: Story = {
     <div class="p-6">
       <wc-tabs active-tab="0">
         <wc-tab slot="tabs" ?active="${true}">
-          <span
-            class="icon-[garden--star-stroke-16] w-5 h-5 text-yellow-500"
-          ></span>
+          <span class="icon-[carbon--star] w-5 h-5 text-yellow-500"></span>
           <span>Featured</span>
           <span class="ml-2 px-2 py-1 bg-primary text-onPrimary text-xs rounded"
             >New</span
@@ -140,7 +138,7 @@ export const CustomContent: Story = {
         </wc-tab>
 
         <wc-tab slot="tabs" ?active="${false}">
-          <span class="icon-[garden--bar-chart-stroke-16] w-5 h-5"></span>
+          <span class="icon-[carbon--chart-multitype] w-5 h-5"></span>
           <span>Analytics</span>
           <span class="ml-2 px-2 py-1 bg-error text-onError text-xs rounded"
             >3</span
@@ -186,12 +184,12 @@ export const Disabled: Story = {
     <div class="p-6">
       <wc-tabs active-tab="0" disabled>
         <wc-tab slot="tabs" ?active="${true}">
-          <span class="icon-[garden--home-stroke-16] w-5 h-5"></span>
+          <span class="icon-[carbon--home] w-5 h-5"></span>
           <span>Home</span>
         </wc-tab>
 
         <wc-tab slot="tabs" ?active="${false}">
-          <span class="icon-[garden--cutlery-stroke-16] w-5 h-5"></span>
+          <span class="icon-[carbon--cut] w-5 h-5"></span>
           <span>Settings</span>
         </wc-tab>
 

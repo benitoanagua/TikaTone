@@ -94,7 +94,7 @@ export const InNavigation: Story = {
             class="p-2 hover:bg-surfaceContainerLow rounded transition-colors"
           >
             <span
-              class="icon-[garden--bell-stroke-16] w-5 h-5 text-onSurfaceVariant"
+              class="icon-[carbon--music] w-5 h-5 text-onSurfaceVariant"
             ></span>
           </button>
           ${renderThemeToggle()}

@@ -8,7 +8,7 @@
 }
 
 .wc-offcanvas-toggle-icon {
-  @apply block h-6 w-6 icon-[garden--menu-stroke-16] text-onSurfaceVariant;
+  @apply block h-6 w-6 icon-[carbon--menu] text-onSurfaceVariant;
 }
 
 .wc-offcanvas-overlay {
@@ -36,7 +36,7 @@
 }
 
 .wc-offcanvas-close-icon {
-  @apply block h-6 w-6 icon-[garden--x-stroke-16] text-onSurfaceVariant;
+  @apply block h-6 w-6 icon-[carbon--close-large] text-onSurfaceVariant;
 }
 
 .wc-offcanvas-content {

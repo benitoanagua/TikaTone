@@ -74,7 +74,7 @@ const renderNavbar = () => html`
         title="Search"
       >
         <span
-          class="icon-[garden--search-stroke-16] w-5 h-5 text-onSurfaceVariant"
+          class="icon-[carbon--search] w-5 h-5 text-onSurfaceVariant"
         ></span>
       </button>
     </div>
@@ -154,7 +154,7 @@ export const WithCustomContent: Story = {
       <div slot="actions" class="flex items-center space-x-2">
         <button class="p-2 hover:bg-surfaceContainerLow rounded">
           <span
-            class="icon-[garden--bell-stroke-16] w-5 h-5 text-onSurfaceVariant"
+            class="icon-[carbon--eyedropper] w-5 h-5 text-onSurfaceVariant"
           ></span>
         </button>
         <wc-theme-toggle></wc-theme-toggle>

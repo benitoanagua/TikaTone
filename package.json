@@ -35,7 +35,7 @@
     "desktop": "assets/hello-world-thumb.png"
   },
   "devDependencies": {
-    "@iconify-json/garden": "^1.2.2",
+    "@iconify-json/carbon": "^1.2.13",
     "@iconify/tailwind4": "^1.0.6",
     "@material/material-color-utilities": "^0.3.0",
     "@ngneat/falso": "^8.0.2",

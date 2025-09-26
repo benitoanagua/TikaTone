@@ -28,9 +28,7 @@ const renderAccordion = (args: AccordionProps) => html`
   >
     <wc-accordion-item ?open="${true}">
       <div slot="header" class="flex items-center gap-3">
-        <span
-          class="icon-[garden--translation-exists-stroke-16] w-5 h-5 text-primary"
-        ></span>
+        <span class="icon-[carbon--translate] w-5 h-5 text-primary"></span>
         <span class="font-medium">Getting Started</span>
       </div>
       <p class="text-onSurfaceVariant">${randParagraph()}</p>
@@ -41,9 +39,7 @@ const renderAccordion = (args: AccordionProps) => html`
 
     <wc-accordion-item>
       <div slot="header" class="flex items-center gap-3">
-        <span
-          class="icon-[garden--puzzle-piece-stroke-16] w-5 h-5 text-primary"
-        ></span>
+        <span class="icon-[carbon--game-console] w-5 h-5 text-primary"></span>
         <span class="font-medium">Configuration</span>
       </div>
       <p class="text-onSurfaceVariant">${randParagraph()}</p>
@@ -63,7 +59,7 @@ const renderAccordion = (args: AccordionProps) => html`
     <wc-accordion-item ?disabled="${true}">
       <div slot="header" class="flex items-center gap-3">
         <span
-          class="icon-[garden--calendar-stroke-16] w-5 h-5 text-onSurfaceVariant"
+          class="icon-[carbon--calendar-heat-map] w-5 h-5 text-onSurfaceVariant"
         ></span>
         <span class="font-medium text-onSurfaceVariant">Advanced Settings</span>
       </div>

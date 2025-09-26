@@ -389,9 +389,7 @@ export class WcSlideshow extends LitElement implements SlideshowProps {
           aria-label="${ariaLabels.prevButton}"
           aria-controls="slideshow-items"
         >
-          <span
-            class="icon-[garden--arrow-up-stroke-16] w-5 h-5 md:w-6 md:h-6"
-          ></span>
+          <span class="icon-[carbon--arrow-left] w-5 h-5 md:w-6 md:h-6"></span>
         </button>
 
         <div
@@ -417,9 +415,7 @@ export class WcSlideshow extends LitElement implements SlideshowProps {
           aria-label="${ariaLabels.nextButton}"
           aria-controls="slideshow-items"
         >
-          <span
-            class="icon-[garden--arrow-down-stroke-16] w-5 h-5 md:w-6 md:h-6"
-          ></span>
+          <span class="icon-[carbon--arrow-right] w-5 h-5 md:w-6 md:h-6"></span>
         </button>
       </div>
     `;

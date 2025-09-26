@@ -428,9 +428,7 @@ export class WcCarousel extends LitElement implements CarouselProps {
           aria-label="${ariaLabels.prevButton}"
           aria-controls="carousel-items"
         >
-          <span
-            class="icon-[garden--arrow-left-stroke-16] w-5 h-5 md:w-6 md:h-6"
-          ></span>
+          <span class="icon-[carbon--arrow-left] w-5 h-5 md:w-6 md:h-6"></span>
         </button>
 
         <button
@@ -442,9 +440,7 @@ export class WcCarousel extends LitElement implements CarouselProps {
           aria-label="${ariaLabels.nextButton}"
           aria-controls="carousel-items"
         >
-          <span
-            class="icon-[garden--arrow-right-stroke-16] w-5 h-5 md:w-6 md:h-6"
-          ></span>
+          <span class="icon-[carbon--arrow-right] w-5 h-5 md:w-6 md:h-6"></span>
         </button>
       </div>
     `;

@@ -84,7 +84,7 @@ export class WcAccordionItem extends LitElement implements AccordionItemProps {
           </span>
           <span class="wc-accordion-item__icon">
             <span
-              class="icon-[garden--chevron-down-stroke-16] w-5 h-5 transition-transform duration-200 ${this
+              class="icon-[carbon--chevron-down] w-5 h-5 transition-transform duration-200 ${this
                 .open
                 ? "rotate-180"
                 : ""}"

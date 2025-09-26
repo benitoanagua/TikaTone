@@ -79,14 +79,10 @@ export class WcThemeToggle extends LitElement {
       >
         ${this.currentTheme === "light"
           ? html`
-              <span
-                class="wc-theme-toggle-icon icon-[garden--sun-stroke-16]"
-              ></span>
+              <span class="wc-theme-toggle-icon icon-[carbon--sun]"></span>
             `
           : html`
-              <span
-                class="wc-theme-toggle-icon icon-[garden--moon-stroke-16]"
-              ></span>
+              <span class="wc-theme-toggle-icon icon-[carbon--moon]"></span>
             `}
 
         <!-- Visual mode indicator -->
