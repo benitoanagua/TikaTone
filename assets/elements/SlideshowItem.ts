@@ -8,20 +8,49 @@ export class WcSlideshowItem extends LitElement implements SlideshowItemProps {
   static styles = [unsafeCSS(mainCSS)];
 
   @property({ type: Number }) order = 0;
+  @property({ type: Boolean }) active = false;
 
-  // Deshabilitar Shadow DOM para mejor integración
   protected createRenderRoot() {
-    return this;
+    return this.attachShadow({ mode: "open" });
   }
 
   connectedCallback() {
     super.connectedCallback();
-    this.classList.add("wc-slideshow-item");
+
+    this.setAttribute("role", "group");
+    this.setAttribute("aria-roledescription", "slide");
+  }
+
+  updated(changedProperties: Map<string, any>) {
+    if (changedProperties.has("active")) {
+      this.updateAriaAttributes();
+    }
+  }
+
+  private updateAriaAttributes() {
+    if (this.active) {
+      this.removeAttribute("aria-hidden");
+      this.setAttribute("tabindex", "0");
+    } else {
+      this.setAttribute("aria-hidden", "true");
+      this.removeAttribute("tabindex");
+    }
+  }
+
+  private handleFocus() {
+    if (this.active) {
+      this.focus();
+    }
   }
 
   render() {
     return html`
-      <div class="wc-slideshow-item__content">
+      <div
+        class="wc-slideshow-item__content"
+        @focus="${this.handleFocus}"
+        tabindex="${this.active ? "0" : "-1"}"
+        aria-label="${`Slide ${this.order + 1}`}"
+      >
         <slot></slot>
       </div>
     `;

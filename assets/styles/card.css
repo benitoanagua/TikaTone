@@ -4,7 +4,7 @@
 }
 
 .wc-card--flat {
-  @apply shadow-none rounded-none border-l-4 border-l-primary;
+  @apply shadow-none rounded-none border-b-4 border-b-primary;
 }
 
 .wc-card__container {

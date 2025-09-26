@@ -1,10 +1,37 @@
 /* Slideshow Component - Flat Design */
 .wc-slideshow {
-  @apply w-full flex bg-surface border-l-4 border-l-primary;
+  @apply w-full bg-surface overflow-hidden;
 }
 
 .wc-slideshow--flat {
   @apply shadow-none rounded-none;
+}
+
+.wc-slideshow--dragging {
+  @apply cursor-grabbing;
+}
+
+.wc-slideshow--dragging .wc-slideshow-item__content {
+  @apply pointer-events-none;
+}
+
+.wc-slideshow-item {
+  @apply flex-none w-full flex-shrink-0 min-w-full h-full;
+  scroll-snap-align: start;
+  flex-basis: 100%;
+}
+
+.wc-slideshow-item__content {
+  @apply w-full h-full outline-none transition-transform duration-300;
+  transform: scale(1);
+}
+
+.wc-slideshow-item__content:hover:not(.wc-slideshow--dragging *) {
+  transform: scale(1.02);
+}
+
+.wc-slideshow-item__content:focus-visible {
+  @apply outline-2 outline-primary outline-offset-2;
 }
 
 .wc-slideshow--full-width {
@@ -32,24 +59,29 @@
   scrollbar-width: none;
   -ms-overflow-style: none;
   scroll-snap-type: x mandatory;
+  cursor: grab;
+}
+
+.wc-slideshow__container:active {
+  @apply cursor-grabbing;
 }
 
 .wc-slideshow__container::-webkit-scrollbar {
   display: none;
 }
 
-/* Navigation Styles */
 .wc-slideshow__navigation {
-  @apply flex flex-row md:flex-col items-center justify-center gap-3 md:gap-4 
-         p-3 md:p-4 bg-surfaceContainerLow border-t md:border-t-0 md:border-l 
+  @apply flex flex-row items-center justify-center gap-3 md:gap-4 
+         p-3 md:p-4 bg-surfaceContainerLow border-t md:border-t-0  
          border-outlineVariant min-w-12 md:min-w-16;
 }
 
 .wc-slideshow__nav-button {
   @apply p-2 border-2 border-outlineVariant bg-surfaceContainer text-onSurfaceVariant
-         transition-colors cursor-pointer rounded-none w-10 h-10 md:w-12 md:h-12
+         transition-all duration-200 cursor-pointer rounded-none w-10 h-10 md:w-12 md:h-12
          flex items-center justify-center
          hover:border-primary hover:text-primary hover:bg-surfaceContainerHigh
+         focus:outline-2 focus:outline-primary focus:outline-offset-2
          disabled:opacity-30 disabled:cursor-not-allowed;
 }
 
@@ -59,35 +91,24 @@
 }
 
 .wc-slideshow__counter {
-  @apply text-onSurfaceVariant text-center font-mono text-sm md:text-base;
+  @apply text-onSurfaceVariant text-center font-medium text-sm md:text-base;
 }
 
-/* Indicators Styles */
 .wc-slideshow__indicators {
   @apply absolute bottom-4 left-1/2 transform -translate-x-1/2 
-         flex gap-1 bg-scrim/20 p-2 backdrop-blur-sm;
+         flex gap-2 bg-scrim/20 p-2 backdrop-blur-sm;
 }
 
 .wc-slideshow__indicator {
-  @apply w-8 h-1 bg-outlineVariant transition-colors cursor-pointer
-         rounded-none min-w-8 hover:bg-primary/70;
+  @apply w-8 h-1 bg-outlineVariant transition-all duration-200 cursor-pointer
+         rounded-none min-w-8 hover:bg-primary/70
+         focus:outline-2 focus:outline-primary focus:outline-offset-1;
 }
 
 .wc-slideshow__indicator--active {
   @apply bg-primary;
 }
 
-/* Slideshow Item Styles */
-.wc-slideshow-item {
-  @apply w-full flex-shrink-0;
-  scroll-snap-align: center;
-}
-
-.wc-slideshow-item__content {
-  @apply w-full h-full;
-}
-
-/* Modal mode adjustments */
 .wc-slideshow--full-width .wc-slideshow__navigation {
   @apply hidden;
 }
@@ -96,33 +117,6 @@
   @apply flex;
 }
 
-/* Mobile responsive adjustments */
-.wc-slideshow {
-  @apply flex-col;
-}
-
-.wc-slideshow__navigation {
-  @apply flex-row justify-center border-t border-outlineVariant border-l-0
-         p-3 min-w-full w-full md:flex-col md:border-t-0 md:border-l md:min-w-16;
-}
-
-.wc-slideshow__nav-button--prev .icon-[garden--arrow-up-stroke-16] {
-  @apply transform rotate-90 md:rotate-0;
-}
-
-.wc-slideshow__nav-button--next .icon-[garden--arrow-down-stroke-16] {
-  @apply transform -rotate-90 md:rotate-0;
-}
-
-.wc-slideshow__indicators {
-  @apply bottom-16 md:bottom-4 bg-scrim/30;
-}
-
-.wc-slideshow__indicator {
-  @apply h-1.5 md:h-1;
-}
-
-/* Flat design emphasis */
 .wc-slideshow--flat .wc-slideshow__navigation {
   @apply shadow-none;
 }
@@ -133,24 +127,4 @@
 
 .wc-slideshow--flat .wc-slideshow__indicators {
   @apply shadow-none;
-}
-
-/* Focus styles */
-.wc-slideshow__nav-button:focus {
-  @apply outline-2 outline-primary outline-offset-2;
-}
-
-.wc-slideshow__indicator:focus {
-  @apply outline-2 outline-primary outline-offset-1;
-}
-
-/* Reduced motion support */
-@media (prefers-reduced-motion: reduce) {
-  .wc-slideshow__container {
-    scroll-behavior: auto;
-  }
-
-  .wc-slideshow__nav-button {
-    @apply transition-none;
-  }
 }
