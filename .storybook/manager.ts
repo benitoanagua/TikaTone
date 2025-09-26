@@ -11,7 +11,7 @@ const theme = create({
   brandTitle: "TikaTone Components",
   brandUrl: "/",
 
-  // brandImage: "./logo.svg",
+  brandImage: "logo.svg",
 });
 
 addons.setConfig({

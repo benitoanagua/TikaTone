@@ -10,7 +10,7 @@ const config: StorybookConfig = {
     name: "@storybook/web-components-vite",
     options: {},
   },
-  staticDirs: ["../public"],
+  staticDirs: ["../public", "../assets/static"],
 
   viteFinal: async (config) => {
     config.server = {
