@@ -1,11 +1,7 @@
-export interface CarouselLayout {
+export interface CarouselProps {
   desktop: number;
   mobile: number;
-  gap: number;
-}
-
-export interface CarouselProps {
-  layout?: CarouselLayout;
+  gap: "none" | "small" | "medium" | "large" | "xlarge";
   interval?: number;
   autoPlay?: boolean;
   showArrows?: boolean;
@@ -14,17 +10,21 @@ export interface CarouselProps {
 
 export interface CarouselItemProps {
   order?: number;
+  active?: boolean;
 }
 
 export type CarouselChangeEvent = CustomEvent<{
   currentIndex: number;
   totalSlides: number;
   visibleSlides: number;
+  isAtStart: boolean;
+  isAtEnd: boolean;
 }>;
 
 export type CarouselNavigationEvent = CustomEvent<{
   direction: "next" | "prev" | "goto";
   index?: number;
+  timestamp: number;
 }>;
 
 declare global {

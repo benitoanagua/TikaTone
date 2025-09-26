@@ -1,10 +1,18 @@
 /* Carousel Component - Flat Design */
 .wc-carousel {
-  @apply w-full bg-surface border-l-4 border-l-primary;
+  @apply w-full bg-surface relative;
 }
 
 .wc-carousel--flat {
   @apply shadow-none rounded-none;
+}
+
+.wc-carousel--dragging {
+  @apply cursor-grabbing;
+}
+
+.wc-carousel--dragging .wc-carousel-item__content {
+  @apply pointer-events-none;
 }
 
 .wc-carousel__navigation {
@@ -18,9 +26,10 @@
 
 .wc-carousel__arrow {
   @apply p-2 border-2 border-outlineVariant bg-surfaceContainer text-onSurfaceVariant
-         transition-colors cursor-pointer rounded-none w-10 h-10 md:w-12 md:h-12
+         transition-all duration-200 cursor-pointer rounded-none w-10 h-10 md:w-12 md:h-12
          flex items-center justify-center
          hover:border-primary hover:text-primary hover:bg-surfaceContainerHigh
+         focus:outline-2 focus:outline-primary focus:outline-offset-2
          disabled:opacity-30 disabled:cursor-not-allowed;
 }
 
@@ -35,36 +44,73 @@
 
 .wc-carousel__dot {
   @apply w-3 h-3 md:w-4 md:h-4 border-2 border-outlineVariant bg-surfaceContainer
-         transition-colors cursor-pointer rounded-none
-         hover:border-primary hover:bg-primary;
+         transition-all duration-200 cursor-pointer rounded-none
+         hover:border-primary hover:bg-primary
+         focus:outline-2 focus:outline-primary focus:outline-offset-1;
 }
 
 .wc-carousel__dot--active {
   @apply border-primary bg-primary;
 }
 
+.wc-carousel__counter {
+  @apply order-3 text-onSurfaceVariant text-sm font-medium px-2 py-1 
+         bg-surfaceContainerHigh rounded-none;
+}
+
 .wc-carousel__container {
-  @apply flex overflow-x-auto scroll-smooth gap-3 md:gap-4 p-3 md:p-4 w-full;
+  @apply flex overflow-x-auto scroll-smooth p-3 md:p-4 w-full;
   scrollbar-width: none;
   -ms-overflow-style: none;
   scroll-snap-type: x mandatory;
+  cursor: grab;
+}
+
+.wc-carousel__container:active {
+  @apply cursor-grabbing;
 }
 
 .wc-carousel__container::-webkit-scrollbar {
   display: none;
 }
 
-/* Carousel Item Styles */
+.wc-carousel__container.gap-0 {
+  @apply gap-0;
+}
+
+.wc-carousel__container.gap-1 {
+  @apply gap-1;
+}
+
+.wc-carousel__container.gap-2 {
+  @apply gap-2;
+}
+
+.wc-carousel__container.gap-3 {
+  @apply gap-3;
+}
+
+.wc-carousel__container.gap-4 {
+  @apply gap-4;
+}
+
 .wc-carousel-item {
-  @apply flex-shrink-0;
+  @apply flex-shrink-0 transition-transform duration-300;
   scroll-snap-align: start;
 }
 
 .wc-carousel-item__content {
-  @apply h-full w-full;
+  @apply h-full w-full outline-none transition-all duration-200;
 }
 
-/* Flat design adjustments */
+.wc-carousel-item__content:focus-visible {
+  @apply outline-2 outline-primary outline-offset-2;
+}
+
+.wc-carousel-item {
+  flex: 0 0 auto;
+}
+
 .wc-carousel--flat .wc-carousel__navigation {
   @apply shadow-none;
 }
@@ -77,47 +123,32 @@
   @apply shadow-none;
 }
 
-/* Mobile responsive adjustments */
-.wc-carousel__navigation {
-  @apply flex-col gap-3 p-3 md:flex-row md:gap-4 md:p-4;
-}
+@media (max-width: 768px) {
+  .wc-carousel__navigation {
+    @apply flex-col gap-3 p-3 md:flex-row md:gap-4 md:p-4;
+  }
 
-.wc-carousel__arrows {
-  @apply order-2 w-full justify-center md:order-1 md:w-auto;
-}
+  .wc-carousel__arrows {
+    @apply order-2 w-full justify-center md:order-1 md:w-auto;
+  }
 
-.wc-carousel__dots {
-  @apply order-1 w-full justify-center md:order-2 md:w-auto;
-}
+  .wc-carousel__dots {
+    @apply order-1 w-full justify-center md:order-2 md:w-auto;
+  }
 
-.wc-carousel__container {
-  @apply p-3 gap-3 md:p-4 md:gap-4;
-}
+  .wc-carousel__counter {
+    @apply order-3;
+  }
 
-.wc-carousel__arrow {
-  @apply w-10 h-10 md:w-12 md:h-12;
-}
-
-.wc-carousel__dot {
-  @apply w-3 h-3 md:w-4 md:h-4;
-}
-
-/* Focus styles */
-.wc-carousel__arrow:focus {
-  @apply outline-2 outline-primary outline-offset-2;
-}
-
-.wc-carousel__dot:focus {
-  @apply outline-2 outline-primary outline-offset-1;
-}
-
-/* Reduced motion support */
-@media (prefers-reduced-motion: reduce) {
   .wc-carousel__container {
-    scroll-behavior: auto;
+    @apply p-3 md:p-4;
   }
 
   .wc-carousel__arrow {
-    @apply transition-none;
+    @apply w-10 h-10 md:w-12 md:h-12;
+  }
+
+  .wc-carousel__dot {
+    @apply w-3 h-3 md:w-4 md:h-4;
   }
 }
