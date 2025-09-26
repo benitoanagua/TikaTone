@@ -1,49 +1,83 @@
-/* Stack Component - Flat Design con efecto 3D Vue-like */
+/* Stack Component - Flat Design */
 .wc-stack {
   @apply relative w-full;
 }
 
 .wc-stack-item {
-  @apply w-full;
-  display: none !important;
+  @apply absolute w-full flex flex-col transition-all duration-300 ease-out;
+}
+
+.wc-stack-item--bottom {
+  @apply translate-y-0 z-0 md:right-0 md:left-8;
+}
+
+.wc-stack-item--middle {
+  @apply translate-y-8 z-10 md:right-4 md:left-4;
+}
+
+.wc-stack-item--top {
+  @apply translate-y-16 z-20 md:right-8 md:left-0;
+}
+
+.wc-stack__button-container {
+  @apply flex justify-center;
 }
 
 .wc-stack__button {
   @apply px-6 py-2 border-2 font-medium text-sm transition-all duration-300 
-         cursor-pointer rounded-lg w-auto min-w-32; /* Botones más compactos como Vue */
+         cursor-pointer rounded-none w-auto min-w-32;
 }
 
 .wc-stack__button--primary {
-  @apply bg-primary text-onPrimary border-primary 
-         hover:bg-primaryContainer hover:text-onPrimaryContainer;
+  @apply bg-primaryContainer text-onPrimaryContainer border-primaryContainer 
+         hover:bg-primary hover:text-onPrimary;
 }
 
 .wc-stack__button--secondary {
-  @apply bg-secondaryContainer text-onSecondaryContainer border-secondary
+  @apply bg-secondaryContainer text-onSecondaryContainer border-secondaryContainer 
          hover:bg-secondary hover:text-onSecondary;
 }
 
 .wc-stack__content {
-  @apply p-4 transition-all duration-300;
+  @apply p-4 transition-all duration-300 border border-outlineVariant;
 }
 
-/* Efecto 3D Vue-like */
-.wc-stack > div {
-  transform-style: preserve-3d;
+.wc-stack__content--top {
+  @apply bg-surfaceContainerHighest;
 }
 
-/* Responsive adjustments */
+.wc-stack__content--middle {
+  @apply bg-surfaceContainerHigh;
+}
+
+.wc-stack__content--bottom {
+  @apply bg-surfaceContainer;
+}
+
+.wc-stack-item[style*="display: none"] {
+  display: none !important;
+}
+
+.wc-stack > div .wc-stack-item {
+  display: block !important;
+}
+
 @media (max-width: 768px) {
+  .wc-stack-item--bottom,
+  .wc-stack-item--middle,
+  .wc-stack-item--top {
+    @apply right-0 left-0;
+  }
+
   .wc-stack__button {
     @apply w-full max-w-40;
   }
-
-  .wc-stack > div {
-    @apply right-0 left-0;
-  }
 }
 
-/* Mostrar solo el contenido posicionado, ocultar el original */
-.wc-stack > div .wc-stack-item {
-  display: block !important;
+.wc-stack__content {
+  box-shadow: none !important;
+}
+
+.wc-stack__button:focus-visible {
+  @apply outline-2 outline-primary outline-offset-2;
 }
