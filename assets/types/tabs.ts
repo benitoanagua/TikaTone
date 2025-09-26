@@ -1,21 +1,15 @@
-export type TabsOrientation = "horizontal" | "vertical";
-export type TabsVariant = "default" | "pills" | "underlined";
-
 export interface TabsProps {
-  orientation?: TabsOrientation;
-  variant?: TabsVariant;
   activeTab?: number;
   disabled?: boolean;
 }
 
 export interface TabProps {
-  label?: string;
-  icon?: string;
   disabled?: boolean;
+  active?: boolean;
 }
 
 export interface TabPanelProps {
-  label?: string;
+  active?: boolean;
 }
 
 export interface TabChangeEvent extends CustomEvent {
@@ -25,24 +19,8 @@ export interface TabChangeEvent extends CustomEvent {
   };
 }
 
-export interface TabClickEvent extends CustomEvent {
-  detail: {
-    index: number;
-  };
-}
-
-export interface TabRegisterEvent extends CustomEvent {
-  detail: {
-    index: number;
-    label: string;
-    disabled: boolean;
-  };
-}
-
 declare global {
   interface HTMLElementEventMap {
     "tab-change": TabChangeEvent;
-    "tab-click": TabClickEvent;
-    "tab-register": TabRegisterEvent;
   }
 }

@@ -1,7 +1,6 @@
-// assets/stories/Tabs.stories.ts
 import type { Meta, StoryObj } from "@storybook/web-components";
 import { html } from "lit-html";
-import { randPhrase, randParagraph, randWord } from "@ngneat/falso";
+import { randSentence } from "@ngneat/falso";
 import type { TabsProps } from "../types/tabs.js";
 
 const meta = {
@@ -9,23 +8,11 @@ const meta = {
   component: "wc-tabs",
   tags: ["autodocs"],
   argTypes: {
-    orientation: {
-      control: { type: "select" },
-      options: ["horizontal", "vertical"],
-      description: "Tab orientation",
-    },
-    variant: {
-      control: { type: "select" },
-      options: ["default", "pills", "underlined"],
-      description: "Visual variant",
-    },
     activeTab: {
-      control: { type: "range", min: 0, max: 4, step: 1 },
-      description: "Initially active tab index",
+      control: { type: "range", min: 0, max: 3, step: 1 },
     },
     disabled: {
       control: { type: "boolean" },
-      description: "Disable entire tabs component",
     },
   },
 } satisfies Meta<TabsProps>;
@@ -33,357 +20,195 @@ const meta = {
 export default meta;
 type Story = StoryObj<TabsProps>;
 
-const renderTabs = (args: TabsProps, tabs: unknown, panels: unknown) => html`
-  <wc-tabs
-    orientation=${args.orientation || "horizontal"}
-    variant=${args.variant || "default"}
-    active-tab=${(args.activeTab || 0).toString()}
-    ?disabled=${args.disabled ?? false}
-  >
-    ${tabs} ${panels}
-  </wc-tabs>
-`;
+const getActiveTab = (args: TabsProps) => args.activeTab ?? 0;
 
-const renderTab = (label: string, icon?: string, disabled?: boolean) => html`
-  <wc-tab
-    slot="tabs"
-    label=${label}
-    icon=${icon || ""}
-    ?disabled=${disabled ?? false}
-  ></wc-tab>
-`;
+const renderTabs = (args: TabsProps) => {
+  const activeTab = getActiveTab(args);
 
-const renderPanel = (content: unknown) => html`
-  <wc-tab-panel slot="panels">${content}</wc-tab-panel>
-`;
+  return html`
+    <wc-tabs active-tab="${activeTab}" ?disabled="${args.disabled ?? false}">
+      <!-- Tabs con contenido flexible via slot -->
+      <wc-tab slot="tabs" ?active="${activeTab === 0}">
+        <span class="icon-[garden--home-stroke-16] w-5 h-5"></span>
+        <span>Home</span>
+      </wc-tab>
 
-const renderBasicPanel = (label: string) => html`
-  <div class="space-y-4">
-    <h3 class="text-xl font-medium text-onSurface">${label} Content</h3>
-    <p class="text-onSurfaceVariant">${randParagraph()}</p>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-      <div class="p-4 bg-surfaceContainerLow border border-outlineVariant">
-        <h4 class="font-medium text-onSurface mb-2">${randWord()}</h4>
-        <p class="text-sm text-onSurfaceVariant">${randPhrase()}</p>
-      </div>
-      <div class="p-4 bg-surfaceContainerLow border border-outlineVariant">
-        <h4 class="font-medium text-onSurface mb-2">${randWord()}</h4>
-        <p class="text-sm text-onSurfaceVariant">${randPhrase()}</p>
-      </div>
-    </div>
-  </div>
-`;
+      <wc-tab slot="tabs" ?active="${activeTab === 1}">
+        <span class="icon-[garden--adjust-stroke-16] w-5 h-5"></span>
+        <span>Settings</span>
+      </wc-tab>
 
-export const Default: Story = {
-  render: (args) => html`
-    <div class="p-6 bg-background">
-      ${renderTabs(
-        args,
-        ["Overview", "Features", "Documentation", "Support", "Settings"].map(
-          (label, index) =>
-            renderTab(
-              label,
-              index === 2
-                ? "icon-[garden--book-stroke-16]"
-                : index === 4
-                  ? "icon-[garden--settings-stroke-16]"
-                  : "",
-              index === 4 && args.variant !== "underlined"
-            )
-        ),
-        ["Overview", "Features", "Documentation", "Support", "Settings"].map(
-          (label) => renderPanel(renderBasicPanel(label))
-        )
-      )}
-    </div>
-  `,
+      <wc-tab slot="tabs" ?active="${activeTab === 2}">
+        <span class="icon-[garden--messenger-stroke-16] w-5 h-5"></span>
+        <span>Help</span>
+      </wc-tab>
+
+      <wc-tab
+        slot="tabs"
+        ?active="${activeTab === 3}"
+        ?disabled="${args.disabled ?? false}"
+      >
+        <span class="icon-[garden--user-circle-stroke-16] w-5 h-5"></span>
+        <span>Profile</span>
+      </wc-tab>
+
+      <!-- Panels -->
+      <wc-tab-panel slot="panels" ?active="${activeTab === 0}">
+        <div class="p-6">
+          <h3 class="text-lg font-medium">Home Panel</h3>
+          <p>${randSentence()}</p>
+        </div>
+      </wc-tab-panel>
+
+      <wc-tab-panel slot="panels" ?active="${activeTab === 1}">
+        <div class="p-6">
+          <h3 class="text-lg font-medium">Settings Panel</h3>
+          <p>${randSentence()}</p>
+        </div>
+      </wc-tab-panel>
+
+      <wc-tab-panel slot="panels" ?active="${activeTab === 2}">
+        <div class="p-6">
+          <h3 class="text-lg font-medium">Help Panel</h3>
+          <p>${randSentence()}</p>
+        </div>
+      </wc-tab-panel>
+
+      <wc-tab-panel slot="panels" ?active="${activeTab === 3}">
+        <div class="p-6">
+          <h3 class="text-lg font-medium">Profile Panel</h3>
+          <p>${randSentence()}</p>
+        </div>
+      </wc-tab-panel>
+    </wc-tabs>
+  `;
+};
+
+export const Basic: Story = {
+  render: (args) => html` <div class="p-6">${renderTabs(args)}</div> `,
   args: {
-    orientation: "horizontal",
-    variant: "default",
     activeTab: 0,
     disabled: false,
   },
 };
 
-export const Vertical: Story = {
-  render: (args) => html`
-    <div class="p-6 bg-background">
-      ${renderTabs(
-        args,
-        ["Overview", "Features", "Documentation", "Support"].map((label) =>
-          renderTab(label)
-        ),
-        ["Overview", "Features", "Documentation", "Support"].map((label) =>
-          renderPanel(renderBasicPanel(label))
-        )
-      )}
-    </div>
-  `,
-  args: {
-    orientation: "vertical",
-    variant: "default",
-    activeTab: 1,
-    disabled: false,
-  },
-};
-
-export const Pills: Story = {
-  render: (args) => html`
-    <div class="p-6 bg-background">
-      ${renderTabs(
-        args,
-        ["Dashboard", "Analytics", "Messages", "Settings"].map((label) =>
-          renderTab(label)
-        ),
-        ["Dashboard", "Analytics", "Messages", "Settings"].map((label) =>
-          renderPanel(renderBasicPanel(label))
-        )
-      )}
-    </div>
-  `,
-  args: {
-    orientation: "horizontal",
-    variant: "pills",
-    activeTab: 0,
-    disabled: false,
-  },
-};
-
-export const VerticalPills: Story = {
-  render: (args) => html`
-    <div class="p-6 bg-background">
-      ${renderTabs(
-        args,
-        ["Profile", "Security", "Notifications", "Billing"].map((label) =>
-          renderTab(label)
-        ),
-        ["Profile", "Security", "Notifications", "Billing"].map((label) =>
-          renderPanel(renderBasicPanel(label))
-        )
-      )}
-    </div>
-  `,
-  args: {
-    orientation: "vertical",
-    variant: "pills",
-    activeTab: 2,
-    disabled: false,
-  },
-};
-
-export const Underlined: Story = {
-  render: (args) => html`
-    <div class="p-6 bg-background">
-      ${renderTabs(
-        args,
-        ["Home", "Products", "Services", "About", "Contact"].map((label) =>
-          renderTab(label)
-        ),
-        ["Home", "Products", "Services", "About", "Contact"].map((label) =>
-          renderPanel(renderBasicPanel(label))
-        )
-      )}
-    </div>
-  `,
-  args: {
-    orientation: "horizontal",
-    variant: "underlined",
-    activeTab: 1,
-    disabled: false,
-  },
-};
-
-export const DisabledState: Story = {
-  render: (args) => html`
-    <div class="p-6 bg-background">
-      ${renderTabs(
-        args,
-        ["Overview", "Features", "Documentation"].map((label) =>
-          renderTab(label)
-        ),
-        ["Overview", "Features", "Documentation"].map((label) =>
-          renderPanel(renderBasicPanel(label))
-        )
-      )}
-    </div>
-  `,
-  args: {
-    orientation: "horizontal",
-    variant: "default",
-    activeTab: 0,
-    disabled: true,
-  },
-};
-
-export const WithIcons: Story = {
+export const TextOnly: Story = {
   render: () => html`
-    <div class="p-6 bg-background">
-      <wc-tabs orientation="horizontal" variant="pills">
-        ${[
-          { label: "Dashboard", icon: "icon-[garden--home-stroke-16]" },
-          { label: "Analytics", icon: "icon-[garden--chart-bar-stroke-16]" },
-          { label: "Messages", icon: "icon-[garden--mail-stroke-16]" },
-          { label: "Settings", icon: "icon-[garden--settings-stroke-16]" },
-        ].map((tabData) => renderTab(tabData.label, tabData.icon))}
-        ${[
-          { label: "Dashboard", icon: "icon-[garden--home-stroke-16]" },
-          { label: "Analytics", icon: "icon-[garden--chart-bar-stroke-16]" },
-          { label: "Messages", icon: "icon-[garden--mail-stroke-16]" },
-          { label: "Settings", icon: "icon-[garden--settings-stroke-16]" },
-        ].map(
-          (tabData) => html`
-            <wc-tab-panel slot="panels">
-              <div class="p-6 space-y-4">
-                <div class="flex items-center gap-3 mb-4">
-                  <span class="${tabData.icon} w-8 h-8 text-primary"></span>
-                  <h2 class="text-2xl font-medium text-onSurface">
-                    ${tabData.label}
-                  </h2>
-                </div>
-                <p class="text-onSurfaceVariant leading-relaxed">
-                  ${randParagraph()}
-                </p>
-                <div
-                  class="mt-6 p-4 bg-primaryContainer border-l-4 border-l-primary"
-                >
-                  <p class="text-onPrimaryContainer font-medium">
-                    ${randPhrase()}
-                  </p>
-                </div>
-              </div>
-            </wc-tab-panel>
-          `
-        )}
-      </wc-tabs>
-    </div>
-  `,
-};
+    <div class="p-6">
+      <wc-tabs active-tab="1">
+        <wc-tab slot="tabs" ?active="${false}">Overview</wc-tab>
+        <wc-tab slot="tabs" ?active="${true}">Features</wc-tab>
+        <wc-tab slot="tabs" ?active="${false}">Documentation</wc-tab>
 
-export const IconsOnly: Story = {
-  render: () => html`
-    <div class="p-6 bg-background">
-      <wc-tabs orientation="horizontal" variant="pills">
-        ${[
-          { icon: "icon-[garden--home-stroke-16]", content: "Home" },
-          { icon: "icon-[garden--user-stroke-16]", content: "Profile" },
-          { icon: "icon-[garden--bell-stroke-16]", content: "Notifications" },
-          { icon: "icon-[garden--settings-stroke-16]", content: "Settings" },
-        ].map((data) => renderTab("", data.icon))}
-        ${[
-          { icon: "icon-[garden--home-stroke-16]", content: "Home" },
-          { icon: "icon-[garden--user-stroke-16]", content: "Profile" },
-          { icon: "icon-[garden--bell-stroke-16]", content: "Notifications" },
-          { icon: "icon-[garden--settings-stroke-16]", content: "Settings" },
-        ].map(
-          (data) => html`
-            <wc-tab-panel slot="panels">
-              <div class="text-center p-8">
-                <span
-                  class="${data.icon} w-16 h-16 text-primary mx-auto mb-4 block"
-                ></span>
-                <h2 class="text-2xl font-medium text-onSurface mb-4">
-                  ${data.content}
-                </h2>
-                <p class="text-onSurfaceVariant">${randParagraph()}</p>
-              </div>
-            </wc-tab-panel>
-          `
-        )}
-      </wc-tabs>
-    </div>
-  `,
-};
-
-export const SimpleContent: Story = {
-  render: () => html`
-    <div class="p-6 bg-background">
-      <wc-tabs>
-        ${["Tab 1", "Tab 2", "Tab 3"].map((label) => renderTab(label))}
-        ${["First", "Second", "Third"].map(
-          (content) => html`
-            <wc-tab-panel slot="panels">
-              <div class="p-4">
-                <h3 class="text-lg font-medium text-onSurface mb-3">
-                  ${content} Panel
-                </h3>
-                <p class="text-onSurfaceVariant">${randPhrase()}</p>
-              </div>
-            </wc-tab-panel>
-          `
-        )}
-      </wc-tabs>
-    </div>
-  `,
-};
-
-export const VariantComparison: Story = {
-  render: () => html`
-    <div class="p-6 bg-background space-y-8">
-      <h2 class="text-2xl font-bold text-onSurface">Tab Variant Comparison</h2>
-
-      ${["default", "pills", "underlined"].map(
-        (variant) => html`
-          <div>
-            <h3 class="text-lg font-medium text-onSurface mb-3 capitalize">
-              ${variant} Variant
-            </h3>
-            <wc-tabs variant=${variant} active-tab="0">
-              ${["Overview", "Features", "Settings"].map((label) =>
-                renderTab(label)
-              )}
-              ${["Overview", "Features", "Settings"].map((label) =>
-                renderPanel(html`
-                  <div class="p-4">
-                    <h4 class="font-medium text-onSurface mb-2">
-                      ${label} Content
-                    </h4>
-                    <p class="text-onSurfaceVariant">
-                      This is the ${label.toLowerCase()} panel with ${variant}
-                      styling.
-                    </p>
-                  </div>
-                `)
-              )}
-            </wc-tabs>
+        <wc-tab-panel slot="panels" ?active="${false}">
+          <div class="p-6">
+            <h3>Overview</h3>
+            <p>${randSentence()}</p>
           </div>
-        `
-      )}
+        </wc-tab-panel>
+
+        <wc-tab-panel slot="panels" ?active="${true}">
+          <div class="p-6">
+            <h3>Features</h3>
+            <p>${randSentence()}</p>
+          </div>
+        </wc-tab-panel>
+
+        <wc-tab-panel slot="panels" ?active="${false}">
+          <div class="p-6">
+            <h3>Documentation</h3>
+            <p>${randSentence()}</p>
+          </div>
+        </wc-tab-panel>
+      </wc-tabs>
     </div>
   `,
 };
 
-export const Playground: Story = {
-  render: (args) => html`
-    <div class="p-6 bg-background">
-      ${renderTabs(
-        args,
-        ["Overview", "Features", "Documentation", "Support", "Settings"].map(
-          (label, index) =>
-            renderTab(
-              label,
-              index === 2
-                ? "icon-[garden--book-stroke-16]"
-                : index === 4
-                  ? "icon-[garden--settings-stroke-16]"
-                  : "",
-              index === 4 && args.variant !== "underlined"
-            )
-        ),
-        ["Overview", "Features", "Documentation", "Support", "Settings"].map(
-          (label) => renderPanel(renderBasicPanel(label))
-        )
-      )}
+export const CustomContent: Story = {
+  render: () => html`
+    <div class="p-6">
+      <wc-tabs active-tab="0">
+        <wc-tab slot="tabs" ?active="${true}">
+          <span
+            class="icon-[garden--star-stroke-16] w-5 h-5 text-yellow-500"
+          ></span>
+          <span>Featured</span>
+          <span class="ml-2 px-2 py-1 bg-primary text-onPrimary text-xs rounded"
+            >New</span
+          >
+        </wc-tab>
+
+        <wc-tab slot="tabs" ?active="${false}">
+          <span class="icon-[garden--bar-chart-stroke-16] w-5 h-5"></span>
+          <span>Analytics</span>
+          <span class="ml-2 px-2 py-1 bg-error text-onError text-xs rounded"
+            >3</span
+          >
+        </wc-tab>
+
+        <wc-tab slot="tabs" ?active="${false}">
+          <img
+            src="https://i.pravatar.cc/300"
+            class="w-6 h-6 rounded"
+            alt="User"
+          />
+          <span>Account</span>
+        </wc-tab>
+
+        <wc-tab-panel slot="panels" ?active="${true}">
+          <div class="p-6">
+            <h3 class="text-lg font-medium">Featured Content</h3>
+            <p>${randSentence()}</p>
+          </div>
+        </wc-tab-panel>
+
+        <wc-tab-panel slot="panels" ?active="${false}">
+          <div class="p-6">
+            <h3 class="text-lg font-medium">Analytics</h3>
+            <p>${randSentence()}</p>
+          </div>
+        </wc-tab-panel>
+
+        <wc-tab-panel slot="panels" ?active="${false}">
+          <div class="p-6">
+            <h3 class="text-lg font-medium">Account Settings</h3>
+            <p>${randSentence()}</p>
+          </div>
+        </wc-tab-panel>
+      </wc-tabs>
     </div>
   `,
-  args: {
-    orientation: "horizontal",
-    variant: "default",
-    activeTab: 0,
-    disabled: false,
-  },
-  parameters: {
-    controls: {
-      expanded: true,
-    },
-  },
+};
+
+export const Disabled: Story = {
+  render: () => html`
+    <div class="p-6">
+      <wc-tabs active-tab="0" disabled>
+        <wc-tab slot="tabs" ?active="${true}">
+          <span class="icon-[garden--home-stroke-16] w-5 h-5"></span>
+          <span>Home</span>
+        </wc-tab>
+
+        <wc-tab slot="tabs" ?active="${false}">
+          <span class="icon-[garden--cutlery-stroke-16] w-5 h-5"></span>
+          <span>Settings</span>
+        </wc-tab>
+
+        <wc-tab-panel slot="panels" ?active="${true}">
+          <div class="p-6">
+            <h3 class="text-lg font-medium">Disabled Tabs</h3>
+            <p>Tabs cannot be clicked when disabled.</p>
+          </div>
+        </wc-tab-panel>
+
+        <wc-tab-panel slot="panels" ?active="${false}">
+          <div class="p-6">
+            <h3 class="text-lg font-medium">Settings</h3>
+            <p>This panel is not active.</p>
+          </div>
+        </wc-tab-panel>
+      </wc-tabs>
+    </div>
+  `,
 };
