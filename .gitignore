@@ -32,6 +32,8 @@ pnpm-lock.yaml
 
 # Temporary files
 tmp/
+storybook-screenshots/
+storybook-videos/
 
 # custom
 *storybook.log
