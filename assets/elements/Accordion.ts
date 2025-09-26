@@ -1,93 +1,47 @@
 import { LitElement, html, unsafeCSS } from "lit";
-import { customElement, property, state, query } from "lit/decorators.js";
+import {
+  customElement,
+  property,
+  queryAssignedElements,
+} from "lit/decorators.js";
 import mainCSS from "../main.css?inline";
-import type { AccordionVariant } from "../types/accordion.js";
+import type { AccordionProps } from "../types/accordion.js";
 
 @customElement("wc-accordion")
-export class WcAccordion extends LitElement {
+export class WcAccordion extends LitElement implements AccordionProps {
   static styles = [unsafeCSS(mainCSS)];
 
-  @property({ type: Boolean }) multiple = false;
-  @property({ type: String }) variant: AccordionVariant = "default";
+  @property({ type: Boolean, reflect: true }) multiple = false;
+  @property({ type: String }) variant: "default" | "bordered" | "separated" =
+    "default";
 
-  @state() private openItems = new Set<number>();
-  @state() private itemsCount = 0;
-
-  @query("slot") private slotElement?: HTMLSlotElement;
+  @queryAssignedElements({ selector: "wc-accordion-item" })
+  private items!: HTMLElement[];
 
   connectedCallback() {
     super.connectedCallback();
-    this.addEventListener(
-      "accordion-item-toggle",
-      this.handleItemToggle as EventListener
-    );
+    this.addEventListener("accordion-toggle", this.onToggle as EventListener);
   }
 
   disconnectedCallback() {
-    super.disconnectedCallback();
     this.removeEventListener(
-      "accordion-item-toggle",
-      this.handleItemToggle as EventListener
+      "accordion-toggle",
+      this.onToggle as EventListener
     );
+    super.disconnectedCallback();
   }
 
-  protected firstUpdated() {
-    this.updateItems();
-  }
+  private onToggle(e: CustomEvent<{ index: number }>) {
+    const { index } = e.detail;
 
-  private updateItems() {
-    if (!this.slotElement) return;
-
-    const assignedElements = this.slotElement.assignedElements();
-    this.itemsCount = assignedElements.length;
-
-    assignedElements.forEach((element, index) => {
-      if (
-        element instanceof HTMLElement &&
-        element.tagName.toLowerCase() === "wc-accordion-item"
-      ) {
-        element.setAttribute("data-index", index.toString());
-        element.setAttribute("data-variant", this.variant);
-        element.setAttribute("data-multiple", this.multiple.toString());
-
-        // Set initial state
-        const isOpen = this.openItems.has(index);
-        if (isOpen) {
-          element.setAttribute("open", "");
-        } else {
-          element.removeAttribute("open");
-        }
+    this.items.forEach((item, i) => {
+      if (i === index) {
+        (item as any).open = !(item as any).open;
+      } else if (!this.multiple) {
+        (item as any).open = false;
       }
     });
   }
-
-  private handleItemToggle = (event: CustomEvent) => {
-    const { index, open } = event.detail;
-
-    if (open) {
-      if (!this.multiple) {
-        // Close all other items if multiple is false
-        this.openItems.clear();
-      }
-      this.openItems.add(index);
-    } else {
-      this.openItems.delete(index);
-    }
-
-    this.updateItems();
-    this.requestUpdate();
-
-    // Dispatch accordion change event
-    this.dispatchEvent(
-      new CustomEvent("accordion-change", {
-        detail: {
-          openItems: Array.from(this.openItems),
-          changedItem: index,
-        },
-        bubbles: true,
-      })
-    );
-  };
 
   private getAccordionClasses() {
     return [
@@ -98,10 +52,6 @@ export class WcAccordion extends LitElement {
   }
 
   render() {
-    return html`
-      <div class="${this.getAccordionClasses()}">
-        <slot @slotchange="${this.updateItems}"></slot>
-      </div>
-    `;
+    return html`<div class="${this.getAccordionClasses()}"><slot></slot></div>`;
   }
 }

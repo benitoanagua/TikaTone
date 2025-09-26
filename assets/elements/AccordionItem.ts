@@ -1,42 +1,47 @@
 import { LitElement, html, unsafeCSS } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
 import mainCSS from "../main.css?inline";
-import type { AccordionVariant } from "../types/accordion.js";
+import type { AccordionItemProps } from "../types/accordion.js";
 
 @customElement("wc-accordion-item")
-export class WcAccordionItem extends LitElement {
+export class WcAccordionItem extends LitElement implements AccordionItemProps {
   static styles = [unsafeCSS(mainCSS)];
 
-  @property({ type: String }) title = "";
-  @property({ type: String }) subtitle = "";
   @property({ type: Boolean, reflect: true }) open = false;
-  @property({ type: Boolean }) disabled = false;
+  @property({ type: Boolean, reflect: true }) disabled = false;
 
-  @state() private index = 0;
-  @state() private variant: AccordionVariant = "default";
-  @state() private multiple = false;
-
-  // Deshabilitar Shadow DOM para mejor integración con el sistema
   protected createRenderRoot() {
-    return this;
+    const shadowRoot = super.createRenderRoot();
+
+    // Ensure theme style element is created
+    const themeStyle = document.createElement("style");
+    themeStyle.id = "theme-vars";
+    shadowRoot.appendChild(themeStyle);
+
+    return shadowRoot;
   }
 
-  connectedCallback() {
-    super.connectedCallback();
-    this.setupAttributes();
+  private toggle() {
+    if (this.disabled) return;
+
+    const index = Array.from(this.parentElement?.children || []).indexOf(this);
+
+    this.dispatchEvent(
+      new CustomEvent("accordion-toggle", {
+        bubbles: true,
+        composed: true,
+        detail: { index },
+      })
+    );
   }
 
-  private setupAttributes() {
-    // Get configuration from parent accordion
-    const indexAttr = this.getAttribute("data-index");
-    const variantAttr = this.getAttribute("data-variant");
-    const multipleAttr = this.getAttribute("data-multiple");
+  private handleKeyDown(e: KeyboardEvent) {
+    if (this.disabled) return;
 
-    if (indexAttr) this.index = parseInt(indexAttr, 10);
-    if (variantAttr) this.variant = variantAttr as AccordionVariant;
-    if (multipleAttr) this.multiple = multipleAttr === "true";
-
-    this.updateClasses();
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      this.toggle();
+    }
   }
 
   private updateClasses() {
@@ -49,7 +54,6 @@ export class WcAccordionItem extends LitElement {
     // Add current state classes
     this.classList.add("wc-accordion-item");
     this.classList.add("wc-accordion-item--flat");
-    this.classList.add(`wc-accordion-item--${this.variant}`);
 
     if (this.open) {
       this.classList.add("wc-accordion-item--open");
@@ -64,77 +68,31 @@ export class WcAccordionItem extends LitElement {
     this.updateClasses();
   }
 
-  private toggleItem() {
-    if (this.disabled) return;
-
-    this.open = !this.open;
-
-    // Dispatch toggle event to parent accordion
-    this.dispatchEvent(
-      new CustomEvent("accordion-item-toggle", {
-        detail: {
-          index: this.index,
-          open: this.open,
-        },
-        bubbles: true,
-      })
-    );
-  }
-
-  private handleKeyDown(event: KeyboardEvent) {
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
-      this.toggleItem();
-    }
-  }
-
   render() {
-    const headerClass = `
-      wc-accordion-item__header
-      ${this.disabled ? "wc-accordion-item__header--disabled" : ""}
-    `.trim();
-
     return html`
-      <div class="wc-accordion-item__container">
+      <div class="wc-accordion-item">
         <button
-          class="${headerClass}"
-          @click="${this.toggleItem}"
+          class="wc-accordion-item__header"
+          @click="${this.toggle}"
           @keydown="${this.handleKeyDown}"
           ?disabled="${this.disabled}"
           aria-expanded="${this.open}"
-          aria-controls="content-${this.index}"
-          id="header-${this.index}"
+          aria-disabled="${this.disabled}"
         >
-          <div class="wc-accordion-item__header-content">
-            <div class="wc-accordion-item__header-text">
-              <h3 class="wc-accordion-item__title">${this.title}</h3>
-              ${this.subtitle
-                ? html`<p class="wc-accordion-item__subtitle">
-                    ${this.subtitle}
-                  </p>`
-                : ""}
-            </div>
-            <div
-              class="wc-accordion-item__icon ${this.open
-                ? "wc-accordion-item__icon--open"
+          <span class="wc-accordion-item__label">
+            <slot name="header"></slot>
+          </span>
+          <span class="wc-accordion-item__icon">
+            <span
+              class="icon-[garden--chevron-down-stroke-16] w-5 h-5 transition-transform duration-200 ${this
+                .open
+                ? "rotate-180"
                 : ""}"
-            >
-              <span
-                class="icon-[garden--plus-stroke-16] w-5 h-5 transition-transform duration-200"
-              ></span>
-            </div>
-          </div>
+            ></span>
+          </span>
         </button>
-
-        <div
-          class="wc-accordion-item__content ${this.open
-            ? "wc-accordion-item__content--open"
-            : ""}"
-          id="content-${this.index}"
-          role="region"
-          aria-labelledby="header-${this.index}"
-        >
-          <div class="wc-accordion-item__body">
+        <div class="wc-accordion-item__panel" ?hidden="${!this.open}">
+          <div class="wc-accordion-item__content">
             <slot></slot>
           </div>
         </div>
