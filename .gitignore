@@ -34,6 +34,8 @@ pnpm-lock.yaml
 tmp/
 storybook-screenshots/
 storybook-videos/
+playwright-report/
+test-results/
 
 # custom
 *storybook.log

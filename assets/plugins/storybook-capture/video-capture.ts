@@ -7,6 +7,7 @@ import {
   validateStorybookUrl,
   generateStoryUrl,
 } from "./storybook-utils";
+import { safeClick, COMPONENT_SELECTORS } from "./selectors";
 
 export class VideoCapture {
   private options: Required<StorybookCaptureOptions>;
@@ -108,50 +109,51 @@ export class VideoCapture {
     try {
       switch (componentId) {
         case "carousel":
-          // Interactuar con el carousel
-          await page.click(".wc-carousel__arrow--next");
-          await page.waitForTimeout(1000);
-          await page.click(".wc-carousel__arrow--prev");
+          await safeClick(page, [
+            COMPONENT_SELECTORS.carousel.next,
+            COMPONENT_SELECTORS.carousel.fallback,
+          ]);
           await page.waitForTimeout(1000);
           break;
 
         case "stack":
-          // Click en botones del stack
-          const stackButtons = await page.$$(".wc-stack__button");
-          if (stackButtons.length > 0) {
-            await stackButtons[0].click();
-            await page.waitForTimeout(1000);
-          }
+          await safeClick(page, [
+            COMPONENT_SELECTORS.stack.firstButton,
+            COMPONENT_SELECTORS.stack.button,
+            COMPONENT_SELECTORS.stack.fallback,
+          ]);
+          await page.waitForTimeout(1000);
           break;
 
         case "accordion":
-          // Abrir/cerrar accordion
-          const accordionHeaders = await page.$$(".wc-accordion-item__header");
-          if (accordionHeaders.length > 0) {
-            await accordionHeaders[0].click();
-            await page.waitForTimeout(1000);
-          }
+          await safeClick(page, [
+            COMPONENT_SELECTORS.accordion.firstHeader,
+            COMPONENT_SELECTORS.accordion.header,
+            COMPONENT_SELECTORS.accordion.fallback,
+          ]);
+          await page.waitForTimeout(1000);
           break;
 
         case "tabs":
-          // Cambiar entre tabs
-          const tabButtons = await page.$$(".wc-tab__button");
-          if (tabButtons.length > 1) {
-            await tabButtons[1].click();
-            await page.waitForTimeout(1000);
-          }
+          await safeClick(page, [
+            COMPONENT_SELECTORS.tabs.secondButton,
+            COMPONENT_SELECTORS.tabs.button,
+            COMPONENT_SELECTORS.tabs.fallback,
+          ]);
+          await page.waitForTimeout(1000);
           break;
 
         case "theme-toggle":
-          // Toggle del tema
-          await page.click(".wc-theme-toggle");
+          await safeClick(page, [
+            COMPONENT_SELECTORS.themeToggle.button,
+            COMPONENT_SELECTORS.themeToggle.fallback,
+          ]);
           await page.waitForTimeout(1000);
           break;
       }
     } catch (error) {
       console.warn(
-        `⚠️  No se pudieron realizar interacciones para ${componentId}:`,
-        error instanceof Error ? error.message : String(error)
+        `⚠️  No se pudieron realizar interacciones para ${componentId}`
       );
     }
   }
