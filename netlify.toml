@@ -4,7 +4,6 @@
 
 [build.environment]
   NODE_VERSION = "20"
-  PHP_VERSION = "0"
 
 [[headers]]
   for = "/*"
@@ -22,3 +21,18 @@
   from = "/*"
   to = "/index.html"
   status = 200
+
+[[redirects]]
+  from = "/composer.json"
+  to = "/404.html"
+  status = 404
+
+[[redirects]]
+  from = "/composer.lock"
+  to = "/404.html"
+  status = 404
+
+[[redirects]]
+  from = "/vendor/*"
+  to = "/404.html"
+  status = 404
