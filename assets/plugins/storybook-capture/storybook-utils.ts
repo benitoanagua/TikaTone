@@ -1,17 +1,14 @@
-// import { THEME_CSS_VARS } from "../../types/material";
-
-// Stories disponibles para captura
 export const AVAILABLE_STORIES = [
   { id: "card", name: "Card", delay: 4000 },
-  { id: "overlay", name: "Overlay", delay: 3500 },
-  { id: "stack", name: "Stack", delay: 5000 },
-  { id: "carousel", name: "Carousel", delay: 6000 },
-  { id: "grille", name: "Grille", delay: 3000 },
-  { id: "navbar", name: "Navbar", delay: 3500 },
-  { id: "theme-toggle", name: "ThemeToggle", delay: 3000 },
-  { id: "accordion", name: "Accordion", delay: 4500 },
-  { id: "tabs", name: "Tabs", delay: 4000 },
-  { id: "slideshow", name: "Slideshow", delay: 5000 },
+  { id: "overlay", name: "Overlay", delay: 4000 },
+  { id: "stack", name: "Stack", delay: 6000 },
+  { id: "carousel", name: "Carousel", delay: 8000 },
+  { id: "grille", name: "Grille", delay: 4000 },
+  { id: "navbar", name: "Navbar", delay: 6000 },
+  { id: "themetoggle", name: "ThemeToggle", delay: 4000 },
+  { id: "accordion", name: "Accordion", delay: 6000 },
+  { id: "tabs", name: "Tabs", delay: 6000 },
+  { id: "slideshow", name: "Slideshow", delay: 7000 },
 ];
 
 export function getStoriesByNames(storyNames: string[] = []) {

@@ -1,16 +1,19 @@
 export const COMPONENT_SELECTORS = {
   themeToggle: {
     button: "wc-theme-toggle button",
+    element: "wc-theme-toggle",
     fallback: "button[data-theme]",
   },
   accordion: {
     header: "wc-accordion-item button.wc-accordion-item__header",
+    item: "wc-accordion-item",
     firstHeader:
       "wc-accordion-item:first-child button.wc-accordion-item__header",
     fallback: "button[aria-expanded]",
   },
   tabs: {
     button: "wc-tab .wc-tab__button",
+    tab: "wc-tab",
     secondButton: "wc-tab:nth-child(2) .wc-tab__button",
     fallback: '[role="tab"] button',
   },
@@ -37,7 +40,6 @@ export const COMPONENT_SELECTORS = {
   },
 };
 
-// Utilidad para clicks seguros (usada en ambos)
 export async function safeClick(
   page: any,
   selectors: string[],
