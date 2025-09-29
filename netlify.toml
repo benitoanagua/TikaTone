@@ -1,6 +1,6 @@
 [build]
   publish = "storybook-static"
-  command = "pnpm build && pnpm build-storybook"
+  command = "rm -f composer.json composer.lock && pnpm build && pnpm build-storybook"
 
 [build.environment]
   NODE_VERSION = "20"
@@ -21,18 +21,3 @@
   from = "/*"
   to = "/index.html"
   status = 200
-
-[[redirects]]
-  from = "/composer.json"
-  to = "/404.html"
-  status = 404
-
-[[redirects]]
-  from = "/composer.lock"
-  to = "/404.html"
-  status = 404
-
-[[redirects]]
-  from = "/vendor/*"
-  to = "/404.html"
-  status = 404
