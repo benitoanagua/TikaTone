@@ -1,5 +1,5 @@
-import { LitElement, html, PropertyValueMap, unsafeCSS } from "lit";
-import { customElement, property, state, query } from "lit/decorators.js";
+import { LitElement, html, unsafeCSS } from "lit";
+import { customElement, property } from "lit/decorators.js";
 import mainCSS from "../main.css?inline";
 import type {
   CardHeading,
@@ -37,46 +37,8 @@ export class WcCard extends BaseClass {
   @property({ type: String, attribute: "published-at" }) published_at = "";
   @property({ type: Boolean, attribute: "auto-layout" }) auto_layout = false;
 
-  @state() private imageSize = { width: 0, height: 0 };
-
-  @query("img") private imageElement?: HTMLImageElement;
-
-  private metaObserver?: ResizeObserver;
-  private imageObserver?: ResizeObserver;
-
   protected createRenderRoot() {
     return this;
-  }
-
-  protected updated(changedProperties: PropertyValueMap<any>) {
-    super.updated(changedProperties);
-    this.setupObservers();
-  }
-
-  disconnectedCallback() {
-    super.disconnectedCallback();
-    this.cleanupObservers();
-  }
-
-  private setupObservers() {
-    this.cleanupObservers();
-
-    if (this.imageElement) {
-      this.imageObserver = new ResizeObserver((entries) => {
-        for (const entry of entries) {
-          this.imageSize = {
-            width: entry.contentRect.width,
-            height: entry.contentRect.height,
-          };
-        }
-      });
-      this.imageObserver.observe(this.imageElement);
-    }
-  }
-
-  private cleanupObservers() {
-    this.metaObserver?.disconnect();
-    this.imageObserver?.disconnect();
   }
 
   private getCardClasses() {

@@ -17,14 +17,12 @@ export class WcSlideshow extends LitElement implements SlideshowProps {
   @state() private currentIndex = 0;
   @state() private childCount = 0;
   @state() private itemWidth = 0;
-  @state() private isMobile = false;
   @state() private canGoLeft = false;
   @state() private canGoRight = true;
   @state() private isDragging = false;
   @state() private startX = 0;
   @state() private currentTranslate = 0;
   @state() private prevTranslate = 0;
-
   @query(".wc-slideshow__container") private containerElement?: HTMLElement;
   @query("slot") private slotElement?: HTMLSlotElement;
 
@@ -184,7 +182,6 @@ export class WcSlideshow extends LitElement implements SlideshowProps {
 
   private setupMediaQuery() {
     this.mediaQuery = window.matchMedia("(max-width: 768px)");
-    this.isMobile = this.mediaQuery.matches;
     this.mediaQuery.addEventListener("change", this.handleMediaChange);
   }
 
@@ -192,8 +189,7 @@ export class WcSlideshow extends LitElement implements SlideshowProps {
     this.mediaQuery?.removeEventListener("change", this.handleMediaChange);
   }
 
-  private handleMediaChange = (e: MediaQueryListEvent) => {
-    this.isMobile = e.matches;
+  private handleMediaChange = () => {
     this.updateLayout();
   };
 
