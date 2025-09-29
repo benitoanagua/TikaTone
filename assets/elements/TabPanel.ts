@@ -9,9 +9,21 @@ export class WcTabPanel extends LitElement implements TabPanelProps {
 
   @property({ type: Boolean, reflect: true }) active = false;
 
-  // Deshabilitar Shadow DOM para mejor integración
   protected createRenderRoot() {
-    return this;
+    const shadowRoot = super.createRenderRoot();
+
+    // Ensure theme style element is created
+    const themeStyle = document.createElement("style");
+    themeStyle.id = "theme-vars";
+    shadowRoot.appendChild(themeStyle);
+
+    return shadowRoot;
+  }
+
+  protected willUpdate(changedProperties: Map<string, any>) {
+    if (changedProperties.has("active")) {
+      this.style.display = this.active ? "block" : "none";
+    }
   }
 
   render() {
@@ -19,7 +31,7 @@ export class WcTabPanel extends LitElement implements TabPanelProps {
       <div
         class="wc-tab-panel__content"
         role="tabpanel"
-        ?hidden="${!this.active}"
+        aria-hidden="${!this.active}"
       >
         <slot></slot>
       </div>

@@ -1,6 +1,6 @@
 /* Accordion Component - Flat Design */
 .wc-accordion {
-  @apply w-full bg-surface border-l-4 border-l-primary;
+  @apply w-full bg-surface;
 }
 
 .wc-accordion--flat {
@@ -8,7 +8,7 @@
 }
 
 .wc-accordion-item {
-  @apply border-b border-outlineVariant last:border-b-0 transition-colors duration-200;
+  @apply bg-surfaceContainer border-b border-outlineVariant last:border-b-0;
 }
 
 .wc-accordion-item--flat {
@@ -45,7 +45,7 @@
 }
 
 .wc-accordion-item__panel {
-  @apply overflow-hidden transition-all duration-300 ease-in-out;
+  @apply bg-surface overflow-hidden transition-all duration-300 ease-in-out;
 }
 
 .wc-accordion-item__panel[hidden] {
@@ -53,7 +53,7 @@
 }
 
 .wc-accordion-item__content {
-  @apply p-4 md:p-6 pt-0 text-onSurface;
+  @apply p-4 md:p-6 pt-0 text-onSurfaceVariant;
 }
 
 .wc-accordion[multiple] .wc-accordion-item {
