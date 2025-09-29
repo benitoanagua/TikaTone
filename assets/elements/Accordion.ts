@@ -6,9 +6,12 @@ import {
 } from "lit/decorators.js";
 import mainCSS from "../main.css?inline";
 import type { AccordionProps } from "../types/accordion.js";
+import { ThemeAwareMixin } from "../mixins/ThemeAwareMixin.js";
+
+const ThemeAwareBase = ThemeAwareMixin(LitElement);
 
 @customElement("wc-accordion")
-export class WcAccordion extends LitElement implements AccordionProps {
+export class WcAccordion extends ThemeAwareBase implements AccordionProps {
   static styles = [unsafeCSS(mainCSS)];
 
   @property({ type: Boolean, reflect: true }) multiple = false;

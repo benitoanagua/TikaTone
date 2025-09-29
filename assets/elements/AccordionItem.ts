@@ -2,9 +2,15 @@ import { LitElement, html, unsafeCSS } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import mainCSS from "../main.css?inline";
 import type { AccordionItemProps } from "../types/accordion.js";
+import { ThemeAwareMixin } from "../mixins/ThemeAwareMixin.js";
+
+const ThemeAwareBase = ThemeAwareMixin(LitElement);
 
 @customElement("wc-accordion-item")
-export class WcAccordionItem extends LitElement implements AccordionItemProps {
+export class WcAccordionItem
+  extends ThemeAwareBase
+  implements AccordionItemProps
+{
   static styles = [unsafeCSS(mainCSS)];
 
   @property({ type: Boolean, reflect: true }) open = false;
@@ -64,7 +70,7 @@ export class WcAccordionItem extends LitElement implements AccordionItemProps {
     }
   }
 
-  protected updated() {
+  protected willUpdate() {
     this.updateClasses();
   }
 

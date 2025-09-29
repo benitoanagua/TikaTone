@@ -2,9 +2,12 @@ import { LitElement, html, unsafeCSS } from "lit";
 import { customElement, property, state, query } from "lit/decorators.js";
 import mainCSS from "../main.css?inline";
 import type { SlideshowProps } from "../types/slideshow.js";
+import { ThemeAwareMixin } from "../mixins/ThemeAwareMixin.js";
+
+const ThemeAwareBase = ThemeAwareMixin(LitElement);
 
 @customElement("wc-slideshow")
-export class WcSlideshow extends LitElement implements SlideshowProps {
+export class WcSlideshow extends ThemeAwareBase implements SlideshowProps {
   static styles = [unsafeCSS(mainCSS)];
 
   @property({ type: Boolean, attribute: "show-nav" }) showNav = true;
@@ -57,7 +60,7 @@ export class WcSlideshow extends LitElement implements SlideshowProps {
     this.setupTouchEvents();
   }
 
-  protected updated(changedProperties: Map<string, any>) {
+  protected willUpdate(changedProperties: Map<string, any>) {
     if (
       changedProperties.has("modal") ||
       changedProperties.has("showNav") ||

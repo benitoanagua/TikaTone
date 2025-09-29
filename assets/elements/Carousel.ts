@@ -2,9 +2,12 @@ import { LitElement, html, unsafeCSS } from "lit";
 import { customElement, property, state, query } from "lit/decorators.js";
 import mainCSS from "../main.css?inline";
 import type { CarouselProps } from "../types/carousel.js";
+import { ThemeAwareMixin } from "../mixins/ThemeAwareMixin.js";
+
+const ThemeAwareBase = ThemeAwareMixin(LitElement);
 
 @customElement("wc-carousel")
-export class WcCarousel extends LitElement implements CarouselProps {
+export class WcCarousel extends ThemeAwareBase implements CarouselProps {
   static styles = [unsafeCSS(mainCSS)];
 
   @property({ type: Number }) desktop = 3;
@@ -86,7 +89,7 @@ export class WcCarousel extends LitElement implements CarouselProps {
     this.setupAutoPlay();
   }
 
-  protected updated(changedProperties: Map<string, any>) {
+  protected willUpdate(changedProperties: Map<string, any>) {
     if (
       changedProperties.has("desktop") ||
       changedProperties.has("mobile") ||
