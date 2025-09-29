@@ -4,12 +4,14 @@
 
 [build.environment]
   NODE_VERSION = "20"
+  PHP_VERSION = "0"
 
 [[headers]]
   for = "/*"
   [headers.values]
-    X-Frame-Options = "DENY"
+    X-Frame-Options = "ALLOWALL"
     X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
 
 [[headers]]
   for = "/assets/*"
