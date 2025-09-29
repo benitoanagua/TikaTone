@@ -1,4 +1,5 @@
 import { test, expect } from "../setup";
+import { COMPONENT_SELECTORS } from "../utils/component-selectors";
 
 test.describe("Tabs Component", () => {
   test.beforeEach(async ({ page }) => {
@@ -58,19 +59,19 @@ test.describe("Tabs Component", () => {
 
     await page.waitForSelector("wc-tabs");
 
-    const tabButtons = page.locator("wc-tab button");
+    const tabButtons = page.locator(COMPONENT_SELECTORS.tabs.button);
     const panels = page.locator("wc-tab-panel");
 
-    // Inicialmente primer tab debería estar activo
+    // Initially first tab active
     await expect(tabButtons.nth(0)).toHaveAttribute("aria-selected", "true");
     await expect(panels.nth(0)).toBeVisible();
     await expect(panels.nth(1)).toBeHidden();
 
-    // Click segundo tab
+    // Click second tab
     await tabButtons.nth(1).click();
     await page.waitForTimeout(100);
 
-    // Segundo tab debería estar activo ahora
+    // Second tab should be active
     await expect(tabButtons.nth(1)).toHaveAttribute("aria-selected", "true");
     await expect(panels.nth(0)).toBeHidden();
     await expect(panels.nth(1)).toBeVisible();
@@ -92,21 +93,21 @@ test.describe("Tabs Component", () => {
 
     const tabsContainer = page.locator(".wc-tabs__header");
 
-    // Focus en el contenedor de tabs
+    // Focus tabs container
     await tabsContainer.focus();
 
-    // Presionar flecha derecha para mover al siguiente tab
+    // Navigate with arrow keys
     await page.keyboard.press("ArrowRight");
     await page.waitForTimeout(100);
 
-    const secondTab = page.locator("wc-tab button").nth(1);
+    const secondTab = page.locator(COMPONENT_SELECTORS.tabs.button).nth(1);
     await expect(secondTab).toHaveAttribute("aria-selected", "true");
 
-    // Presionar flecha izquierda para mover al tab anterior
+    // Navigate back
     await page.keyboard.press("ArrowLeft");
     await page.waitForTimeout(100);
 
-    const firstTab = page.locator("wc-tab button").nth(0);
+    const firstTab = page.locator(COMPONENT_SELECTORS.tabs.button).nth(0);
     await expect(firstTab).toHaveAttribute("aria-selected", "true");
   });
 

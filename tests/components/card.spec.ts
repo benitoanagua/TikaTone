@@ -1,4 +1,5 @@
 import { test, expect } from "../setup";
+import { COMPONENT_SELECTORS } from "../utils/component-selectors";
 
 test.describe("Card Component", () => {
   test.beforeEach(async ({ page }) => {
@@ -30,12 +31,12 @@ test.describe("Card Component", () => {
 
     await page.waitForSelector("wc-card");
 
-    // Check if card is rendered
+    // Card should be visible
     const card = page.locator("wc-card");
     await expect(card).toBeVisible();
 
-    // Check title
-    const title = card.locator(".wc-card__title-link");
+    // Title should be correct
+    const title = card.locator(COMPONENT_SELECTORS.card.title);
     await expect(title).toHaveText("Test Title");
     await expect(title).toHaveAttribute("href", "https://example.com");
   });
@@ -53,7 +54,7 @@ test.describe("Card Component", () => {
     });
 
     const card = page.locator("wc-card");
-    const image = card.locator(".wc-card__figure img");
+    const image = card.locator(COMPONENT_SELECTORS.card.image);
 
     await expect(image).toBeVisible();
     await expect(image).toHaveAttribute("src", "https://picsum.photos/400/300");

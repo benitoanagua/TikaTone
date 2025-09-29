@@ -1,4 +1,5 @@
 import { test, expect } from "../setup";
+import { COMPONENT_SELECTORS } from "../utils/component-selectors";
 
 test.describe("Accordion Component", () => {
   test.beforeEach(async ({ page }) => {
@@ -34,7 +35,7 @@ test.describe("Accordion Component", () => {
       `;
     });
 
-    await page.waitForSelector("wc-accordion"); // Esperar a que se renderice
+    await page.waitForSelector("wc-accordion");
 
     const accordion = page.locator("wc-accordion");
     const items = accordion.locator("wc-accordion-item");
@@ -59,18 +60,18 @@ test.describe("Accordion Component", () => {
     await page.waitForSelector("wc-accordion-item");
 
     const item = page.locator("wc-accordion-item");
-    const header = item.locator("button"); // Cambiar selector
-    const panel = item.locator('[role="region"]'); // Usar atributo ARIA
+    const header = item.locator(COMPONENT_SELECTORS.accordion.header);
+    const panel = item.locator('[role="region"]');
 
-    // Inicialmente colapsado
-    await expect(panel).toBeHidden(); // Cambiar a toBeHidden
+    // Initially collapsed
+    await expect(panel).toBeHidden();
 
-    // Click para expandir
+    // Expand on click
     await header.click();
-    await page.waitForTimeout(100); // Pequeña espera para la animación
+    await page.waitForTimeout(100);
     await expect(panel).toBeVisible();
 
-    // Click para colapsar
+    // Collapse on click
     await header.click();
     await page.waitForTimeout(100);
     await expect(panel).toBeHidden();
@@ -96,16 +97,20 @@ test.describe("Accordion Component", () => {
     await page.waitForSelector("wc-accordion-item");
 
     const items = page.locator("wc-accordion-item");
-    const firstHeader = items.nth(0).locator("button");
-    const secondHeader = items.nth(1).locator("button");
+    const firstHeader = items
+      .nth(0)
+      .locator(COMPONENT_SELECTORS.accordion.header);
+    const secondHeader = items
+      .nth(1)
+      .locator(COMPONENT_SELECTORS.accordion.header);
 
-    // Abrir ambos items
+    // Click both headers
     await firstHeader.click();
     await page.waitForTimeout(100);
     await secondHeader.click();
     await page.waitForTimeout(100);
 
-    // Ambos deberían permanecer abiertos en modo múltiple
+    // Both should be open in multiple mode
     const firstPanel = items.nth(0).locator('[role="region"]');
     const secondPanel = items.nth(1).locator('[role="region"]');
 
@@ -133,17 +138,21 @@ test.describe("Accordion Component", () => {
     await page.waitForSelector("wc-accordion-item");
 
     const items = page.locator("wc-accordion-item");
-    const firstHeader = items.nth(0).locator("button");
-    const secondHeader = items.nth(1).locator("button");
+    const firstHeader = items
+      .nth(0)
+      .locator(COMPONENT_SELECTORS.accordion.header);
+    const secondHeader = items
+      .nth(1)
+      .locator(COMPONENT_SELECTORS.accordion.header);
 
-    // Abrir primer item
+    // Click first header
     await firstHeader.click();
     await page.waitForTimeout(100);
 
     let firstPanel = items.nth(0).locator('[role="region"]');
     await expect(firstPanel).toBeVisible();
 
-    // Abrir segundo item - debería cerrar el primero
+    // Click second header - first should collapse
     await secondHeader.click();
     await page.waitForTimeout(100);
 
@@ -169,14 +178,14 @@ test.describe("Accordion Component", () => {
 
     await page.waitForSelector("wc-accordion-item");
 
-    const header = page.locator("wc-accordion-item button");
+    const header = page.locator(COMPONENT_SELECTORS.accordion.header);
     const panel = page.locator('[role="region"]');
 
-    // Debería estar deshabilitado
+    // Should be disabled
     await expect(header).toBeDisabled();
 
-    // Click no debería expandir
-    await header.click({ force: true }); // force para elementos disabled
+    // Should not expand when clicked
+    await header.click({ force: true });
     await page.waitForTimeout(100);
     await expect(panel).toBeHidden();
   });
@@ -196,18 +205,18 @@ test.describe("Accordion Component", () => {
 
     await page.waitForSelector("wc-accordion-item");
 
-    const header = page.locator("wc-accordion-item button");
+    const header = page.locator(COMPONENT_SELECTORS.accordion.header);
     const panel = page.locator('[role="region"]');
 
-    // Focus en el header
+    // Focus and use keyboard
     await header.focus();
 
-    // Presionar Enter para alternar
+    // Expand with Enter
     await page.keyboard.press("Enter");
     await page.waitForTimeout(100);
     await expect(panel).toBeVisible();
 
-    // Presionar Space para alternar
+    // Collapse with Space
     await page.keyboard.press("Space");
     await page.waitForTimeout(100);
     await expect(panel).toBeHidden();
@@ -228,11 +237,11 @@ test.describe("Accordion Component", () => {
 
     await page.waitForSelector("wc-accordion-item");
 
-    const header = page.locator("wc-accordion-item button");
+    const header = page.locator(COMPONENT_SELECTORS.accordion.header);
 
     await expect(header).toHaveAttribute("aria-expanded", "false");
 
-    // Expandir el item
+    // Expand and check ARIA
     await header.click();
     await page.waitForTimeout(100);
     await expect(header).toHaveAttribute("aria-expanded", "true");

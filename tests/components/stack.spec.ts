@@ -1,4 +1,5 @@
 import { test, expect } from "../setup";
+import { COMPONENT_SELECTORS } from "../utils/component-selectors";
 
 test.describe("Stack Component", () => {
   test.beforeEach(async ({ page }) => {
@@ -52,7 +53,7 @@ test.describe("Stack Component", () => {
 
     const items = page.locator(".wc-stack-item");
 
-    // Check z-index classes are applied
+    // Check stacking classes
     const topItem = items.locator(".wc-stack-item--top").first();
     const middleItem = items.locator(".wc-stack-item--middle").first();
     const bottomItem = items.locator(".wc-stack-item--bottom").first();
@@ -76,14 +77,14 @@ test.describe("Stack Component", () => {
 
     await page.waitForTimeout(200);
 
-    // Find a button that's not currently on top
-    const buttons = page.locator(".wc-stack__button");
+    // Use centralized selectors
+    const buttons = page.locator(COMPONENT_SELECTORS.stack.button);
     const secondButton = buttons.nth(1);
 
     await secondButton.click();
     await page.waitForTimeout(200);
 
-    // The stack order should have changed
+    // All items should still be visible
     const items = page.locator(".wc-stack-item");
     await expect(items).toHaveCount(3);
   });
@@ -101,8 +102,11 @@ test.describe("Stack Component", () => {
 
       // Usar un nombre único para evitar conflictos
       (window as any).testStackEvents = [];
-      document.addEventListener("stack-change", (e: CustomEvent) => {
-        (window as any).testStackEvents.push(e.detail);
+
+      // Usar EventListener en lugar de tipo específico CustomEvent
+      document.addEventListener("stack-change", (e: Event) => {
+        const customEvent = e as CustomEvent;
+        (window as any).testStackEvents.push(customEvent.detail);
       });
     });
 

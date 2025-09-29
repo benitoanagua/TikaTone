@@ -1,4 +1,5 @@
 import { test, expect } from "../setup";
+import { COMPONENT_SELECTORS } from "../utils/component-selectors";
 
 test.describe("Slideshow Component", () => {
   test.beforeEach(async ({ page }) => {
@@ -49,9 +50,11 @@ test.describe("Slideshow Component", () => {
     });
 
     const slideshow = page.locator("wc-slideshow");
-    const prevButton = slideshow.locator(".wc-slideshow__nav-button--prev");
-    const nextButton = slideshow.locator(".wc-slideshow__nav-button--next");
-    const indicators = slideshow.locator(".wc-slideshow__indicator");
+    const prevButton = slideshow.locator(COMPONENT_SELECTORS.slideshow.prev);
+    const nextButton = slideshow.locator(COMPONENT_SELECTORS.slideshow.next);
+    const indicators = slideshow.locator(
+      COMPONENT_SELECTORS.slideshow.indicators
+    );
     const counter = slideshow.locator(".wc-slideshow__counter");
 
     await expect(prevButton).toBeVisible();
@@ -72,32 +75,32 @@ test.describe("Slideshow Component", () => {
       `;
     });
 
-    const nextButton = page.locator(".wc-slideshow__nav-button--next");
-    const prevButton = page.locator(".wc-slideshow__nav-button--prev");
+    const nextButton = page.locator(COMPONENT_SELECTORS.slideshow.next);
+    const prevButton = page.locator(COMPONENT_SELECTORS.slideshow.prev);
     const counter = page.locator(".wc-slideshow__counter");
 
-    // Initially should show 1/3
+    // Initially at slide 1
     await expect(counter).toContainText("1/3");
 
-    // Initially prev should be disabled
+    // Prev button should be disabled initially
     await expect(prevButton).toHaveClass(/wc-slideshow__nav-button--disabled/);
 
-    // Click next
+    // Click next button
     await nextButton.click();
     await page.waitForTimeout(200);
     await expect(counter).toContainText("2/3");
 
-    // Prev should now be enabled
+    // Prev button should now be enabled
     await expect(prevButton).not.toHaveClass(
       /wc-slideshow__nav-button--disabled/
     );
 
-    // Click next again to reach end
+    // Click next again
     await nextButton.click();
     await page.waitForTimeout(200);
     await expect(counter).toContainText("3/3");
 
-    // Next should now be disabled
+    // Next button should be disabled at end
     await expect(nextButton).toHaveClass(/wc-slideshow__nav-button--disabled/);
   });
 
@@ -113,7 +116,7 @@ test.describe("Slideshow Component", () => {
       `;
     });
 
-    const indicators = page.locator(".wc-slideshow__indicator");
+    const indicators = page.locator(COMPONENT_SELECTORS.slideshow.indicators);
     const counter = page.locator(".wc-slideshow__counter");
 
     // Click third indicator
@@ -218,16 +221,21 @@ test.describe("Slideshow Component", () => {
 
       // Usar un nombre único para evitar conflictos
       (window as any).testSlideshowEvents = [];
-      document.addEventListener("slideshow-change", (e: CustomEvent) => {
+
+      // Usar EventListener en lugar de tipo específico CustomEvent
+      document.addEventListener("slideshow-change", (e: Event) => {
+        const customEvent = e as CustomEvent;
         (window as any).testSlideshowEvents.push({
           type: "change",
-          detail: e.detail,
+          detail: customEvent.detail,
         });
       });
-      document.addEventListener("slideshow-navigation", (e: CustomEvent) => {
+
+      document.addEventListener("slideshow-navigation", (e: Event) => {
+        const customEvent = e as CustomEvent;
         (window as any).testSlideshowEvents.push({
           type: "navigation",
-          detail: e.detail,
+          detail: customEvent.detail,
         });
       });
     });
@@ -248,7 +256,6 @@ test.describe("Slideshow Component", () => {
     expect(changeEvent.detail.currentIndex).toBe(1);
     expect(navEvent.detail.direction).toBe("next");
   });
-
   test("handles modal mode", async ({ page }) => {
     await page.evaluate(() => {
       const container = document.getElementById("test-container");

@@ -7,7 +7,11 @@ import {
   validateStorybookUrl,
   generateStoryUrl,
 } from "./storybook-utils";
-import { safeClick, COMPONENT_SELECTORS } from "./selectors";
+export {
+  COMPONENT_SELECTORS,
+  safeClick,
+} from "../../../tests/utils/component-selectors";
+import { ComponentTestHelpers } from "../../../tests/utils/test-helpers";
 
 export class VideoCapture {
   private options: Required<StorybookCaptureOptions>;
@@ -106,56 +110,8 @@ export class VideoCapture {
   }
 
   private async performComponentInteractions(page: any, componentId: string) {
-    try {
-      switch (componentId) {
-        case "carousel":
-          await safeClick(page, [
-            COMPONENT_SELECTORS.carousel.next,
-            COMPONENT_SELECTORS.carousel.fallback,
-          ]);
-          await page.waitForTimeout(1000);
-          break;
-
-        case "stack":
-          await safeClick(page, [
-            COMPONENT_SELECTORS.stack.firstButton,
-            COMPONENT_SELECTORS.stack.button,
-            COMPONENT_SELECTORS.stack.fallback,
-          ]);
-          await page.waitForTimeout(1000);
-          break;
-
-        case "accordion":
-          await safeClick(page, [
-            COMPONENT_SELECTORS.accordion.firstHeader,
-            COMPONENT_SELECTORS.accordion.header,
-            COMPONENT_SELECTORS.accordion.fallback,
-          ]);
-          await page.waitForTimeout(1000);
-          break;
-
-        case "tabs":
-          await safeClick(page, [
-            COMPONENT_SELECTORS.tabs.secondButton,
-            COMPONENT_SELECTORS.tabs.button,
-            COMPONENT_SELECTORS.tabs.fallback,
-          ]);
-          await page.waitForTimeout(1000);
-          break;
-
-        case "theme-toggle":
-          await safeClick(page, [
-            COMPONENT_SELECTORS.themeToggle.button,
-            COMPONENT_SELECTORS.themeToggle.fallback,
-          ]);
-          await page.waitForTimeout(1000);
-          break;
-      }
-    } catch (error) {
-      console.warn(
-        `⚠️  No se pudieron realizar interacciones para ${componentId}`
-      );
-    }
+    const helpers = new ComponentTestHelpers(page);
+    await helpers.performComponentInteractions(componentId);
   }
 }
 

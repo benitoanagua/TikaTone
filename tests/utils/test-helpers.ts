@@ -1,4 +1,5 @@
-import { Page } from "@playwright/test"; // Eliminar expect y Locator no utilizados
+import { Page, expect } from "@playwright/test";
+import { COMPONENT_SELECTORS, safeClick } from "./component-selectors";
 
 export interface ComponentDiagnostics {
   exists: boolean;
@@ -132,5 +133,72 @@ export class ComponentTestHelpers {
         container.innerHTML = componentHtml;
       }
     }, html);
+  }
+
+  /**
+   * Perform component-specific interactions
+   */
+  async performComponentInteractions(componentId: string): Promise<boolean> {
+    try {
+      switch (componentId) {
+        case "carousel":
+          return await safeClick(this.page, [
+            COMPONENT_SELECTORS.carousel.next,
+            COMPONENT_SELECTORS.carousel.fallback,
+          ]);
+
+        case "stack":
+          return await safeClick(this.page, [
+            COMPONENT_SELECTORS.stack.firstButton,
+            COMPONENT_SELECTORS.stack.button,
+            COMPONENT_SELECTORS.stack.fallback,
+          ]);
+
+        case "accordion":
+          return await safeClick(this.page, [
+            COMPONENT_SELECTORS.accordion.firstHeader,
+            COMPONENT_SELECTORS.accordion.header,
+            COMPONENT_SELECTORS.accordion.fallback,
+          ]);
+
+        case "tabs":
+          return await safeClick(this.page, [
+            COMPONENT_SELECTORS.tabs.secondButton,
+            COMPONENT_SELECTORS.tabs.button,
+            COMPONENT_SELECTORS.tabs.fallback,
+          ]);
+
+        case "theme-toggle":
+          return await safeClick(this.page, [
+            COMPONENT_SELECTORS.themeToggle.button,
+            COMPONENT_SELECTORS.themeToggle.fallback,
+          ]);
+
+        case "slideshow":
+          return await safeClick(this.page, [
+            COMPONENT_SELECTORS.slideshow.next,
+            COMPONENT_SELECTORS.slideshow.fallback,
+          ]);
+
+        default:
+          console.warn(`No hay interacciones definidas para: ${componentId}`);
+          return false;
+      }
+    } catch (error) {
+      console.warn(`Error en interacciones para ${componentId}:`, error);
+      return false;
+    }
+  }
+
+  /**
+   * Capture component screenshot (used in visual tests and capture)
+   */
+  async captureComponentScreenshot(
+    selector: string,
+    name: string
+  ): Promise<void> {
+    const element = this.page.locator(selector);
+    await expect(element).toBeVisible();
+    await expect(element).toHaveScreenshot(`${name}.png`);
   }
 }

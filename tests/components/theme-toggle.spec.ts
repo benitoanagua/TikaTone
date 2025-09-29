@@ -1,4 +1,5 @@
 import { test, expect } from "../setup";
+import { COMPONENT_SELECTORS } from "../utils/component-selectors";
 
 test.describe("ThemeToggle Component", () => {
   test.beforeEach(async ({ page }) => {
@@ -25,31 +26,31 @@ test.describe("ThemeToggle Component", () => {
 
     await page.waitForSelector("wc-theme-toggle");
 
-    // Verificar que el componente existe
+    // Toggle should be visible
     const toggle = page.locator("wc-theme-toggle");
     await expect(toggle).toBeVisible();
 
-    // Verificar que el botón es clickeable
-    const button = toggle.locator("button");
+    // Button should be enabled
+    const button = toggle.locator(COMPONENT_SELECTORS.themeToggle.button);
     await expect(button).toBeEnabled();
 
-    // Verificar tema inicial
+    // Initially light theme
     let theme = await page.evaluate(() =>
       document.documentElement.getAttribute("data-theme")
     );
     expect(theme).toBe("light");
 
-    // Click debería cambiar el tema
+    // Click to toggle to dark
     await button.click();
     await page.waitForTimeout(100);
 
-    // Verificar que cambió el tema
+    // Should be dark theme
     theme = await page.evaluate(() =>
       document.documentElement.getAttribute("data-theme")
     );
     expect(theme).toBe("dark");
 
-    // Click nuevamente debería volver a light
+    // Click again to toggle back to light
     await button.click();
     await page.waitForTimeout(100);
 
@@ -68,17 +69,17 @@ test.describe("ThemeToggle Component", () => {
     await page.waitForSelector("wc-theme-toggle");
 
     const toggle = page.locator("wc-theme-toggle");
-    const button = toggle.locator("button");
+    const button = toggle.locator(COMPONENT_SELECTORS.themeToggle.button);
 
-    // Tema light debería mostrar icono de sol
+    // Initially sun icon (light theme)
     let icon = button.locator(".wc-theme-toggle-icon");
     await expect(icon).toHaveClass(/icon-\[carbon--sun\]/);
 
-    // Cambiar a dark theme
+    // Click to toggle to dark
     await button.click();
     await page.waitForTimeout(100);
 
-    // Tema dark debería mostrar icono de luna
+    // Should show moon icon
     icon = button.locator(".wc-theme-toggle-icon");
     await expect(icon).toHaveClass(/icon-\[carbon--moon\]/);
   });

@@ -1,4 +1,5 @@
 import { test, expect } from "../setup";
+import { COMPONENT_SELECTORS } from "../utils/component-selectors";
 
 test.describe("Carousel Component", () => {
   test.beforeEach(async ({ page }) => {
@@ -37,7 +38,6 @@ test.describe("Carousel Component", () => {
     await expect(items).toHaveCount(5);
   });
 
-  // En el test "shows navigation arrows and dots", corregir:
   test("shows navigation arrows and dots", async ({ page }) => {
     await page.evaluate(() => {
       const container = document.getElementById("test-container");
@@ -51,16 +51,16 @@ test.describe("Carousel Component", () => {
     `;
     });
 
-    await page.waitForSelector("wc-carousel"); // Agregar espera
+    await page.waitForSelector("wc-carousel");
 
     const carousel = page.locator("wc-carousel");
-    const prevArrow = carousel.locator("button").first(); // Selector más genérico
-    const nextArrow = carousel.locator("button").last(); // Selector más genérico
-    const dots = carousel.locator('[role="tab"]'); // Usar atributo ARIA
+    const prevArrow = carousel.locator(COMPONENT_SELECTORS.carousel.prev);
+    const nextArrow = carousel.locator(COMPONENT_SELECTORS.carousel.next);
+    const dots = carousel.locator('[role="tab"]');
 
     await expect(prevArrow).toBeVisible();
     await expect(nextArrow).toBeVisible();
-    await expect(dots).toHaveCount(2); // Ajustar expectativa realista
+    await expect(dots).toHaveCount(2);
   });
 
   test("navigates with arrow buttons", async ({ page }) => {
@@ -78,17 +78,17 @@ test.describe("Carousel Component", () => {
 
     await page.waitForTimeout(200);
 
-    const nextArrow = page.locator(".wc-carousel__arrow--next");
-    const prevArrow = page.locator(".wc-carousel__arrow--prev");
+    const nextArrow = page.locator(COMPONENT_SELECTORS.carousel.next);
+    const prevArrow = page.locator(COMPONENT_SELECTORS.carousel.prev);
 
-    // Initially, prev should be disabled
+    // Initially prev arrow should be disabled
     await expect(prevArrow).toHaveClass(/wc-carousel__arrow--disabled/);
 
     // Click next arrow
     await nextArrow.click();
     await page.waitForTimeout(200);
 
-    // Now prev should be enabled
+    // Now prev arrow should be enabled
     await expect(prevArrow).not.toHaveClass(/wc-carousel__arrow--disabled/);
   });
 

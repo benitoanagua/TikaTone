@@ -24,13 +24,25 @@ export const COMPONENT_SELECTORS = {
     firstButton: ".wc-stack__button:first-child",
     fallback: "button",
   },
+  slideshow: {
+    next: ".wc-slideshow__nav-button--next",
+    prev: ".wc-slideshow__nav-button--prev",
+    indicators: ".wc-slideshow__indicator",
+    fallback: 'button[aria-label*="next"]',
+  },
+  card: {
+    title: ".wc-card__title-link",
+    image: ".wc-card__figure img",
+    fallback: "wc-card",
+  },
 };
 
+// Utilidad para clicks seguros (usada en ambos)
 export async function safeClick(
   page: any,
   selectors: string[],
   timeout = 10000
-) {
+): Promise<boolean> {
   for (const selector of selectors) {
     try {
       const element = await page.waitForSelector(selector, {
@@ -38,12 +50,10 @@ export async function safeClick(
         state: "visible",
       });
       if (element) {
-        // Intentar click normal primero
         try {
           await element.click({ timeout: 2000 });
           return true;
         } catch {
-          // Fallback a click forzado
           await element.click({ force: true });
           return true;
         }
