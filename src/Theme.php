@@ -8,6 +8,8 @@
 
 namespace TikaToneTheme;
 
+use TikaToneTheme\Shortcodes\ComponentShortcodes;
+
 class Theme
 {
 
@@ -55,6 +57,8 @@ class Theme
         $this->components['setup'] = new Setup\ThemeSetup();
         $this->components['assets'] = new Setup\EnqueueAssets();
         $this->components['blocks'] = new Blocks\BlockRegistry();
+        $this->components['customizer'] = new Customizer\Customizer();
+        $this->components['shortcodes'] = new ComponentShortcodes();
     }
 
     /**

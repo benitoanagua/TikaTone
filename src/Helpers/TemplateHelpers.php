@@ -172,4 +172,14 @@ class TemplateHelpers
         );
         echo '</span>';
     }
+
+    /**
+     * Calculate reading time
+     */
+    public static function reading_time_minutes(): int
+    {
+        $content = get_post_field('post_content', get_the_ID());
+        $word_count = str_word_count(strip_tags($content));
+        return (int) ceil($word_count / 200); // 200 words per minute
+    }
 }

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Enqueue theme assets
+ * Enqueue theme assets with ES module support
  *
  * @package TikaToneTheme
  */
@@ -10,7 +10,6 @@ namespace TikaToneTheme\Setup;
 
 class EnqueueAssets
 {
-
     /**
      * Initialize assets
      */
@@ -18,7 +17,23 @@ class EnqueueAssets
     {
         add_action('wp_enqueue_scripts', [$this, 'enqueue_scripts']);
         add_action('wp_enqueue_scripts', [$this, 'enqueue_styles']);
-        add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_assets']);
+        add_action('wp_head', [$this, 'add_module_scripts']);
+    }
+
+    /**
+     * Add module scripts in head
+     */
+    public function add_module_scripts(): void
+    {
+        if (!defined('TIKA_TONE_THEME_URL')) {
+            return;
+        }
+
+        echo '<script type="module">';
+        echo 'import("' . esc_url(TIKA_TONE_THEME_URL . '/public/tika-tone-elements.es.js') . '")';
+        echo '.then(() => console.log("TikaTone Elements loaded"))';
+        echo '.catch(err => console.error("Error loading TikaTone Elements:", err));';
+        echo '</script>';
     }
 
     /**
@@ -30,13 +45,7 @@ class EnqueueAssets
             return;
         }
 
-        wp_enqueue_script(
-            'tika-tone-theme',
-            TIKA_TONE_THEME_URL . '/assets/js/theme.js',
-            [],
-            TIKA_TONE_THEME_VERSION,
-            true
-        );
+
 
         // Localize script for AJAX
         wp_localize_script(
@@ -45,6 +54,10 @@ class EnqueueAssets
             [
                 'ajaxUrl' => admin_url('admin-ajax.php'),
                 'nonce'   => wp_create_nonce('tika_tone_nonce'),
+                'theme'   => [
+                    'mode' => get_theme_mod('theme_mode', 'light')
+                ],
+                'elementsLoaded' => false
             ]
         );
     }
@@ -58,6 +71,7 @@ class EnqueueAssets
             return;
         }
 
+        // Estilo principal del tema
         wp_enqueue_style(
             'tika-tone-style',
             get_stylesheet_uri(),
@@ -65,36 +79,12 @@ class EnqueueAssets
             TIKA_TONE_THEME_VERSION
         );
 
+        // Estilos de los componentes Lit
         wp_enqueue_style(
-            'tika-tone-main',
-            TIKA_TONE_THEME_URL . '/assets/css/style.css',
+            'tika-tone-components',
+            TIKA_TONE_THEME_URL . '/public/tika-tone-elements.css',
             [],
             TIKA_TONE_THEME_VERSION
-        );
-    }
-
-    /**
-     * Enqueue admin assets
-     */
-    public function enqueue_admin_assets(): void
-    {
-        if (!defined('TIKA_TONE_THEME_URL') || !defined('TIKA_TONE_THEME_VERSION')) {
-            return;
-        }
-
-        wp_enqueue_style(
-            'tika-tone-admin',
-            TIKA_TONE_THEME_URL . '/assets/css/admin.css',
-            [],
-            TIKA_TONE_THEME_VERSION
-        );
-
-        wp_enqueue_script(
-            'tika-tone-admin',
-            TIKA_TONE_THEME_URL . '/assets/js/admin.js',
-            ['jquery'],
-            TIKA_TONE_THEME_VERSION,
-            true
         );
     }
 }
