@@ -1,17 +1,20 @@
 <?php
+
 /**
  * The sidebar containing the main widget area
  *
- * @package Tika Tone
+ * @package TikaTone
  */
 
-if (!is_active_sidebar('sidebar-main')) {
+if (!defined('ABSPATH')) {
+    exit;
+}
+
+if (!is_active_sidebar('sidebar-1')) {
     return;
 }
 ?>
 
-<aside id="secondary" class="widget-area sidebar">
-    <div class="sidebar-content">
-        <?php dynamic_sidebar('sidebar-main'); ?>
-    </div>
-</aside>
+<aside id="secondary" class="widget-area" role="complementary">
+    <?php dynamic_sidebar('sidebar-1'); ?>
+</aside><!-- #secondary -->

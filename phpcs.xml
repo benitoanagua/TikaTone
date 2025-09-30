@@ -1,21 +1,46 @@
 <?xml version="1.0"?>
-<ruleset name="WordPress Theme Coding Standards">
-  <description>Custom coding standards for Tika Tone</description>
-  
-  <file>./src</file>
-  <file>./inc</file>
-  
-  <exclude-pattern>*/node_modules/*</exclude-pattern>
-  <exclude-pattern>*/vendor/*</exclude-pattern>
-  <exclude-pattern>*/public/*</exclude-pattern>
-  
-  <rule ref="WordPress">
-    <exclude name="WordPress.Files.FileName.NotHyphenatedLowercase" />
-    <exclude name="WordPress.NamingConventions.PrefixAllGlobals" />
-  </rule>
-  
-  <arg name="extensions" value="php"/>
-  <arg name="parallel" value="8"/>
-  <arg name="colors"/>
-  <arg name="warning-severity" value="0"/>
+<ruleset name="Tika Tone Theme">
+    <description>PHP_CodeSniffer rules for Tika Tone Theme.</description>
+
+    <!-- Scan these files and directories -->
+    <file>src</file>
+    <file>templates</file>
+    <file>template-parts</file>
+    <file>functions.php</file>
+    <file>index.php</file>
+
+    <!-- Exclude these directories -->
+    <exclude-pattern>vendor/*</exclude-pattern>
+    <exclude-pattern>node_modules/*</exclude-pattern>
+    <exclude-pattern>assets/*</exclude-pattern>
+    <exclude-pattern>languages/*</exclude-pattern>
+
+    <!-- Use WordPress Coding Standards -->
+    <rule ref="WordPress">
+        <!-- Allow PSR-4 namespaces -->
+        <exclude name="WordPress.Files.FileName.NotHyphenatedLowercase" />
+        <exclude name="WordPress.Files.FileName.InvalidClassFileName" />
+        
+        <!-- Allow modern PHP features -->
+        <exclude name="WordPress.Arrays.ArrayDeclarationSpacing.AssociativeArrayFound" />
+        <exclude name="WordPress.WhiteSpace.ControlStructureSpacing.NoSpaceAfterOpenParenthesis" />
+        <exclude name="WordPress.WhiteSpace.ControlStructureSpacing.NoSpaceBeforeCloseParenthesis" />
+        
+        <!-- Allow type hints -->
+        <exclude name="WordPress.Functions.FunctionDeclarationArgumentSpacing.SpacingAfterHint" />
+    </rule>
+
+    <!-- Additional rules -->
+    <rule ref="Generic.Commenting.DocComment"/>
+    <rule ref="Squiz.Commenting.FunctionComment"/>
+    
+    <!-- Custom rules -->
+    <rule ref="WordPress.Security.EscapeOutput">
+        <properties>
+            <property name="customAutoEscapedFunctions" type="array" value="apply_filters,esc_html__,esc_attr__,esc_url,wp_kses,wp_kses_post,sprintf,printf,get_search_form,the_custom_logo,wp_nav_menu,dynamic_sidebar,get_the_category_list,get_the_tag_list,comments_popup_link,edit_post_link,get_the_post_navigation,the_post_navigation,post_class,body_class,has_custom_logo,get_search_query,bloginfo,home_url,get_author_posts_url,get_the_author,get_the_date,get_the_modified_date,get_permalink,get_the_title,get_the_ID,get_post_field,get_the_time,get_edit_post_link,is_singular,is_search,has_post_thumbnail,the_post_thumbnail,the_title_attribute,get_post_type,post_password_required,comments_open,get_comments_number,date_i18n,__,_x,esc_html_e,esc_attr_e,get_stylesheet_uri,get_template_directory,get_template_directory_uri,add_action,add_filter,apply_filters,load_theme_textdomain,add_theme_support,add_theme_page,settings_fields,do_settings_sections,submit_button,register_setting,add_settings_section,wp_link_pages,the_content,the_title,the_excerpt,the_permalink,comments_template,get_header,get_footer,get_sidebar,the_post,have_posts"/>
+        </properties>
+    </rule>
+
+    <!-- Set the minimum supported WordPress version -->
+    <config name="minimum_supported_wp_version" value="6.0"/>
 </ruleset>

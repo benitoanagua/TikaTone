@@ -1,14 +1,26 @@
 <?php
 
 /**
- * The main template file
+ * The template for displaying archive pages
  *
  * @package TikaTone
  */
 
-get_header(); ?>
+if (!defined('ABSPATH')) {
+    exit;
+}
+
+get_header();
+?>
 
 <main id="main" class="site-main">
+    <header class="page-header">
+        <?php
+        the_archive_title('<h1 class="page-title">', '</h1>');
+        the_archive_description('<div class="archive-description">', '</div>');
+        ?>
+    </header>
+
     <?php
     if (have_posts()) :
         while (have_posts()) :
