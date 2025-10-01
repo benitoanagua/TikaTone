@@ -16,37 +16,15 @@ if (!defined('ABSPATH')) {
 <footer class="site-footer bg-surfaceContainerHigh border-t border-outlineVariant mt-auto">
     <div class="container mx-auto px-4 py-8">
         <wc-grille desktop="4" mobile="1" gap="large" class="mb-6">
-            <?php if (is_active_sidebar('footer-1')) : ?>
-                <wc-grille-item>
-                    <div class="footer-widget">
-                        <?php dynamic_sidebar('footer-1'); ?>
-                    </div>
-                </wc-grille-item>
-            <?php endif; ?>
-
-            <?php if (is_active_sidebar('footer-2')) : ?>
-                <wc-grille-item>
-                    <div class="footer-widget">
-                        <?php dynamic_sidebar('footer-2'); ?>
-                    </div>
-                </wc-grille-item>
-            <?php endif; ?>
-
-            <?php if (is_active_sidebar('footer-3')) : ?>
-                <wc-grille-item>
-                    <div class="footer-widget">
-                        <?php dynamic_sidebar('footer-3'); ?>
-                    </div>
-                </wc-grille-item>
-            <?php endif; ?>
-
-            <?php if (is_active_sidebar('footer-4')) : ?>
-                <wc-grille-item>
-                    <div class="footer-widget">
-                        <?php dynamic_sidebar('footer-4'); ?>
-                    </div>
-                </wc-grille-item>
-            <?php endif; ?>
+            <?php for ($i = 1; $i <= 4; $i++) : ?>
+                <?php if (is_active_sidebar("footer-{$i}")) : ?>
+                    <wc-grille-item>
+                        <div class="footer-widget">
+                            <?php dynamic_sidebar("footer-{$i}"); ?>
+                        </div>
+                    </wc-grille-item>
+                <?php endif; ?>
+            <?php endfor; ?>
         </wc-grille>
 
         <div class="footer-bottom border-t border-outlineVariant pt-6">
