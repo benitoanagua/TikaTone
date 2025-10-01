@@ -16,7 +16,7 @@
   "bugs": "https://github.com/benitoanagua/TikaTone/issues",
   "contributors": "https://github.com/benitoanagua/TikaTone/graphs/contributors",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite build",
     "build": "vite build",
     "build:watch": "vite build --watch",
     "preview": "vite preview",
